@@ -42,7 +42,7 @@ export const DeviceDetailModal = ({ device, open, onOpenChange }: DeviceDetailMo
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto" hideCloseButton={true}>
         <DialogHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
           <DialogTitle className="flex items-center gap-3 text-xl">
             {getFormFactorIcon(device.formFactor)}

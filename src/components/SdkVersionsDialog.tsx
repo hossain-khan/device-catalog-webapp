@@ -47,7 +47,7 @@ export const SdkVersionsDialog = ({ open, onOpenChange, stats }: SdkVersionsDial
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[80vh] overflow-hidden flex flex-col">
+      <DialogContent className="max-w-4xl max-h-[80vh] overflow-hidden flex flex-col" hideCloseButton={true}>
         <DialogHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
           <DialogTitle className="text-xl font-semibold">
             All SDK Versions Distribution ({sortedSdkVersions.length})

@@ -47,8 +47,11 @@ function DialogOverlay({
 function DialogContent({
   className,
   children,
+  hideCloseButton = false,
   ...props
-}: ComponentProps<typeof DialogPrimitive.Content>) {
+}: ComponentProps<typeof DialogPrimitive.Content> & {
+  hideCloseButton?: boolean
+}) {
   return (
     <DialogPortal data-slot="dialog-portal">
       <DialogOverlay />
@@ -60,14 +63,16 @@ function DialogContent({
         )}
         {...props}
       >
-        <div className="flex items-center justify-between p-6 pb-4">
-          <div className="flex-1" />
-          <DialogPrimitive.Close className="ring-offset-background focus:ring-ring data-[state=open]:bg-accent data-[state=open]:text-muted-foreground rounded-xs opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4">
-            <XIcon />
-            <span className="sr-only">Close</span>
-          </DialogPrimitive.Close>
-        </div>
-        <div className="px-6 pb-6 flex-1 overflow-auto">
+        {!hideCloseButton && (
+          <div className="flex items-center justify-between p-6 pb-4">
+            <div className="flex-1" />
+            <DialogPrimitive.Close className="ring-offset-background focus:ring-ring data-[state=open]:bg-accent data-[state=open]:text-muted-foreground rounded-xs opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4">
+              <XIcon />
+              <span className="sr-only">Close</span>
+            </DialogPrimitive.Close>
+          </div>
+        )}
+        <div className={cn("px-6 pb-6 flex-1 overflow-auto", !hideCloseButton ? "" : "pt-6")}>
           {children}
         </div>
       </DialogPrimitive.Content>

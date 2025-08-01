@@ -33,7 +33,7 @@ export const DeviceJsonModal = ({ device, open, onOpenChange }: DeviceJsonModalP
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-6xl max-h-[90vh] flex flex-col">
+      <DialogContent className="max-w-6xl max-h-[90vh] flex flex-col" hideCloseButton={true}>
         <DialogHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
           <DialogTitle className="flex items-center gap-2">
             <Code className="h-5 w-5" />
