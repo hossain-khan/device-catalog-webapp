@@ -219,6 +219,8 @@ function App() {
       }
     }, 150); // Small delay to ensure tab content is rendered
   }, []);
+
+  const handleClearDevices = () => {
     setUploadedDevices([]);
     // Reset filters when clearing data
     const defaultRamRange = getRamRange(sampleDevices);
