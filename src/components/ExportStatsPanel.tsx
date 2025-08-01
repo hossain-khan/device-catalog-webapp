@@ -1,6 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Download, Database, FileText, Code2, FileCode } from '@phosphor-icons/react';
+import { Download, Database, FileText, FileTsx, FileCode } from '@phosphor-icons/react';
 import { AndroidDevice } from '@/types/device';
 import { getExportSizeEstimate, generateExportSummary, ExportFormat } from '@/lib/exportUtils';
 
@@ -11,7 +11,7 @@ interface ExportStatsPanelProps {
 const formatIcons = {
   json: Database,
   csv: FileText,
-  xml: Code2,
+  xml: FileTsx,
   yaml: FileCode
 };
 

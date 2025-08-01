@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Download, FileText, Database, Code2, FileCode } from '@phosphor-icons/react';
+import { Download, FileText, Database, FileTsx, FileCode } from '@phosphor-icons/react';
 import { toast } from 'sonner';
 import { AndroidDevice } from '@/types/device';
 import { exportDevices, ExportFormat } from '@/lib/exportUtils';
@@ -16,7 +16,7 @@ interface QuickExportProps {
 const formatIcons = {
   json: Database,
   csv: FileText,
-  xml: Code2,
+  xml: FileTsx,
   yaml: FileCode
 };
 

@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
-import { Download, FileText, Database, Code2, FileCode } from '@phosphor-icons/react';
+import { Download, FileText, Database, FileTsx, FileCode } from '@phosphor-icons/react';
 import { toast } from 'sonner';
 import { AndroidDevice } from '@/types/device';
 import { 
@@ -27,7 +27,7 @@ interface DeviceExportPanelProps {
 const formatIcons = {
   json: Database,
   csv: FileText,
-  xml: Code2,
+  xml: FileTsx,
   yaml: FileCode
 };
 
