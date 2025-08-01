@@ -81,13 +81,13 @@ export const ColorModeControls = ({ colorMode, onColorModeChange }: ColorModeCon
           
           <DropdownMenuItem 
             onClick={() => onColorModeChange('formFactor')}
-            className={colorMode === 'formFactor' ? 'bg-accent' : ''}
+            className={colorMode === 'formFactor' ? 'bg-accent text-accent-foreground' : ''}
           >
             <div className="flex items-start gap-3 w-full">
               <DeviceMobile className="h-4 w-4 mt-0.5 flex-shrink-0" />
               <div className="flex-1 min-w-0">
                 <div className="font-medium">Form Factor</div>
-                <div className="text-xs text-muted-foreground">
+                <div className={`text-xs ${colorMode === 'formFactor' ? 'text-accent-foreground/70' : 'text-muted-foreground'}`}>
                   Colors by device type
                 </div>
               </div>
@@ -96,13 +96,13 @@ export const ColorModeControls = ({ colorMode, onColorModeChange }: ColorModeCon
           
           <DropdownMenuItem 
             onClick={() => onColorModeChange('performance')}
-            className={colorMode === 'performance' ? 'bg-accent' : ''}
+            className={colorMode === 'performance' ? 'bg-accent text-accent-foreground' : ''}
           >
             <div className="flex items-start gap-3 w-full">
               <Lightning className="h-4 w-4 mt-0.5 flex-shrink-0" />
               <div className="flex-1 min-w-0">
                 <div className="font-medium">Performance Tier</div>
-                <div className="text-xs text-muted-foreground">
+                <div className={`text-xs ${colorMode === 'performance' ? 'text-accent-foreground/70' : 'text-muted-foreground'}`}>
                   Colors by RAM and performance
                 </div>
               </div>
@@ -111,13 +111,13 @@ export const ColorModeControls = ({ colorMode, onColorModeChange }: ColorModeCon
           
           <DropdownMenuItem 
             onClick={() => onColorModeChange('manufacturer')}
-            className={colorMode === 'manufacturer' ? 'bg-accent' : ''}
+            className={colorMode === 'manufacturer' ? 'bg-accent text-accent-foreground' : ''}
           >
             <div className="flex items-start gap-3 w-full">
               <Factory className="h-4 w-4 mt-0.5 flex-shrink-0" />
               <div className="flex-1 min-w-0">
                 <div className="font-medium">Manufacturer</div>
-                <div className="text-xs text-muted-foreground">
+                <div className={`text-xs ${colorMode === 'manufacturer' ? 'text-accent-foreground/70' : 'text-muted-foreground'}`}>
                   Colors by device brand
                 </div>
               </div>
@@ -126,13 +126,13 @@ export const ColorModeControls = ({ colorMode, onColorModeChange }: ColorModeCon
           
           <DropdownMenuItem 
             onClick={() => onColorModeChange('sdkEra')}
-            className={colorMode === 'sdkEra' ? 'bg-accent' : ''}
+            className={colorMode === 'sdkEra' ? 'bg-accent text-accent-foreground' : ''}
           >
             <div className="flex items-start gap-3 w-full">
               <Clock className="h-4 w-4 mt-0.5 flex-shrink-0" />
               <div className="flex-1 min-w-0">
                 <div className="font-medium">SDK Era</div>
-                <div className="text-xs text-muted-foreground">
+                <div className={`text-xs ${colorMode === 'sdkEra' ? 'text-accent-foreground/70' : 'text-muted-foreground'}`}>
                   Colors by Android version era
                 </div>
               </div>
