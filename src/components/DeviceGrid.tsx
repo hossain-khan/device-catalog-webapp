@@ -29,8 +29,7 @@ const CARDS_PER_ROW = {
   lg: 3,
   xl: 4
 };
-const ROW_GAP = 24; // Gap between rows
-const GRID_GAP = 24; // Gap between cards
+const ROW_GAP = 16; // Gap between rows (reduced to prevent overlap)
 const ROW_HEIGHT = CARD_HEIGHT + ROW_GAP;
 const VIRTUAL_LIST_HEIGHT = 600;
 const VIRTUAL_THRESHOLD = 200; // Switch to virtual scrolling when more than this many devices
@@ -49,24 +48,22 @@ const VirtualRow = memo(({
   const startIndex = index * cardsPerRow;
   const rowDevices = devices.slice(startIndex, startIndex + cardsPerRow);
 
-  // Create a custom style that ensures proper spacing and no overlap
-  const rowStyle = {
+  // Apply the react-window style directly and ensure proper positioning
+  const rowStyle: React.CSSProperties = {
     ...style,
-    paddingLeft: '16px',
-    paddingRight: '16px',
-    paddingBottom: `${ROW_GAP}px`,
-    display: 'flex',
-    alignItems: 'flex-start'
+    padding: '0 16px',
+    boxSizing: 'border-box',
+    display: 'block',
+    overflow: 'visible'
   };
 
   return (
     <div style={rowStyle}>
-      <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4" style={{ height: `${CARD_HEIGHT}px` }}>
         {rowDevices.map((device, cardIndex) => (
           <div 
             key={`${device.device}-${device.modelName}-${startIndex + cardIndex}`}
-            style={{ height: `${CARD_HEIGHT}px` }}
-            className="flex"
+            className="w-full h-full"
           >
             <DeviceCard
               device={device}
@@ -78,8 +75,7 @@ const VirtualRow = memo(({
         {Array.from({ length: cardsPerRow - rowDevices.length }, (_, i) => (
           <div 
             key={`empty-${i}`} 
-            style={{ height: `${CARD_HEIGHT}px` }} 
-            className="invisible flex"
+            className="w-full h-full invisible"
           />
         ))}
       </div>
@@ -105,8 +101,13 @@ export const DeviceGrid = memo(({
   const virtualDevices = allFilteredDevices || devices;
   const shouldShowVirtualToggle = virtualDevices.length > VIRTUAL_THRESHOLD;
   
-  // Calculate virtual scrolling parameters
-  const cardsPerRow = CARDS_PER_ROW.xl; // Use XL breakpoint for calculations
+  // Calculate virtual scrolling parameters with responsive design
+  const getCardsPerRow = useCallback(() => {
+    // Use a more conservative estimate for virtual scrolling to ensure consistency
+    return 4; // Assume xl breakpoint for virtual scrolling calculations
+  }, []);
+  
+  const cardsPerRow = getCardsPerRow();
   const totalRows = Math.ceil(virtualDevices.length / cardsPerRow);
   
   // Virtual list data

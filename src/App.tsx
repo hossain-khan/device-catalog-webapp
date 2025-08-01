@@ -237,6 +237,7 @@ function App() {
                 onDevicesLoaded={handleDevicesLoaded}
                 onClearDevices={handleClearDevices}
                 deviceCount={devices.length}
+                currentDevices={devices}
               />
             </TabsContent>
 

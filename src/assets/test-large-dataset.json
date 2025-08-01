@@ -1,0 +1,32 @@
+[
+  {
+    "brand": "samsung",
+    "device": "SM-G998B",
+    "manufacturer": "Samsung",
+    "modelName": "Galaxy S21 Ultra 5G",
+    "ram": "12GB",
+    "formFactor": "Phone",
+    "processorName": "Qualcomm SM8350",
+    "gpu": "Qualcomm Adreno 660 (840 MHz)",
+    "screenSizes": ["1440x3200"],
+    "screenDensities": [515],
+    "abis": ["arm64-v8a", "armeabi-v7a"],
+    "sdkVersions": [30, 31, 32, 33],
+    "openGlEsVersions": ["3.2"]
+  },
+  {
+    "brand": "google",
+    "device": "oriole",
+    "manufacturer": "Google",
+    "modelName": "Pixel 6",
+    "ram": "8GB",
+    "formFactor": "Phone",
+    "processorName": "Google Tensor",
+    "gpu": "ARM Mali-G78 MP20",
+    "screenSizes": ["1080x2400"],
+    "screenDensities": [411],
+    "abis": ["arm64-v8a", "armeabi-v7a"],
+    "sdkVersions": [31, 32, 33, 34],
+    "openGlEsVersions": ["3.2"]
+  }
+]

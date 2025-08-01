@@ -4,20 +4,40 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Upload, FileText, Check, AlertCircle, Trash2 } from '@phosphor-icons/react';
+import { Upload, FileText, Check, AlertCircle, Trash2, TestTube, Download } from '@phosphor-icons/react';
 import { AndroidDevice } from '@/types/device';
 import { validateDeviceData } from '@/lib/deviceValidation';
+import { generateTestDevices, downloadDevicesAsJson } from '@/lib/testDataGenerator';
 
 interface FileUploadPanelProps {
   onDevicesLoaded: (devices: AndroidDevice[]) => void;
   onClearDevices: () => void;
   deviceCount: number;
+  currentDevices?: AndroidDevice[]; // Add current devices for download
 }
 
-export function FileUploadPanel({ onDevicesLoaded, onClearDevices, deviceCount }: FileUploadPanelProps) {
+export function FileUploadPanel({ onDevicesLoaded, onClearDevices, deviceCount, currentDevices }: FileUploadPanelProps) {
   const [uploadStatus, setUploadStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [isDragOver, setIsDragOver] = useState(false);
+  const [testDataCount, setTestDataCount] = useState<number>(5000);
+
+  const generateTestData = useCallback(async () => {
+    setUploadStatus('loading');
+    setErrorMessage('');
+
+    try {
+      // Use setTimeout to allow UI to update before heavy computation
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      const devices = generateTestDevices(testDataCount);
+      onDevicesLoaded(devices);
+      setUploadStatus('success');
+    } catch (error) {
+      setUploadStatus('error');
+      setErrorMessage(error instanceof Error ? error.message : 'Failed to generate test data');
+    }
+  }, [testDataCount, onDevicesLoaded]);
 
   const processFile = useCallback(async (file: File) => {
     setUploadStatus('loading');
@@ -92,6 +112,13 @@ export function FileUploadPanel({ onDevicesLoaded, onClearDevices, deviceCount }
     setErrorMessage('');
   }, [onClearDevices]);
 
+  const handleDownloadData = useCallback(() => {
+    if (currentDevices && currentDevices.length > 0) {
+      const filename = `android-devices-${currentDevices.length}-${new Date().toISOString().split('T')[0]}.json`;
+      downloadDevicesAsJson(currentDevices, filename);
+    }
+  }, [currentDevices]);
+
   return (
     <Card>
       <CardHeader>
@@ -106,15 +133,26 @@ export function FileUploadPanel({ onDevicesLoaded, onClearDevices, deviceCount }
             Currently loaded: <span className="font-medium">{deviceCount}</span> devices
           </p>
           {deviceCount > 0 && (
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={handleClearData}
-              className="flex items-center gap-2"
-            >
-              <Trash2 className="w-4 h-4" />
-              Clear Data
-            </Button>
+            <div className="flex gap-2">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={handleDownloadData}
+                className="flex items-center gap-2"
+              >
+                <Download className="w-4 h-4" />
+                Download
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={handleClearData}
+                className="flex items-center gap-2"
+              >
+                <Trash2 className="w-4 h-4" />
+                Clear
+              </Button>
+            </div>
           )}
         </div>
 
@@ -186,6 +224,42 @@ export function FileUploadPanel({ onDevicesLoaded, onClearDevices, deviceCount }
             </AlertDescription>
           </Alert>
         )}
+
+        {/* Test data generation section */}
+        <div className="border-t pt-4">
+          <h4 className="text-sm font-medium mb-3 flex items-center gap-2">
+            <TestTube className="w-4 h-4" />
+            Performance Testing
+          </h4>
+          <div className="flex items-center gap-3">
+            <div className="flex-1">
+              <Label htmlFor="test-count" className="text-xs">Device Count</Label>
+              <Input
+                id="test-count"
+                type="number"
+                min="1000"
+                max="50000"
+                step="1000"
+                value={testDataCount}
+                onChange={(e) => setTestDataCount(parseInt(e.target.value) || 5000)}
+                className="mt-1"
+                placeholder="5000"
+              />
+            </div>
+            <Button 
+              onClick={generateTestData}
+              disabled={uploadStatus === 'loading'}
+              variant="outline"
+              size="sm"
+              className="mt-5"
+            >
+              Generate Test Data
+            </Button>
+          </div>
+          <p className="text-xs text-muted-foreground mt-2">
+            Generate synthetic device data for performance testing (recommended: 20,000+ devices)
+          </p>
+        </div>
 
         <div className="text-xs text-muted-foreground">
           <p className="font-medium mb-2">Expected JSON format:</p>
