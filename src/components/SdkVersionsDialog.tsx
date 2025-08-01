@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { ModalHeader } from "@/components/ui/modal-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { DeviceStats } from "@/types/device";
-import { ChartBar, List, X } from "@phosphor-icons/react";
+import { ChartBar, List } from "@phosphor-icons/react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 interface SdkVersionsDialogProps {
@@ -48,37 +49,30 @@ export const SdkVersionsDialog = ({ open, onOpenChange, stats }: SdkVersionsDial
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-4xl max-h-[80vh] overflow-hidden flex flex-col" hideCloseButton={true}>
-        <DialogHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-          <DialogTitle className="text-xl font-semibold">
-            All SDK Versions Distribution ({sortedSdkVersions.length})
-          </DialogTitle>
-          <div className="flex items-center gap-2">
-            <Button
-              variant={viewMode === 'chart' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setViewMode('chart')}
-            >
-              <ChartBar size={16} className="mr-1" />
-              Chart
-            </Button>
-            <Button
-              variant={viewMode === 'list' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setViewMode('list')}
-            >
-              <List size={16} className="mr-1" />
-              List
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => onOpenChange(false)}
-              className="h-8 w-8 p-0"
-            >
-              <X size={16} />
-            </Button>
-          </div>
-        </DialogHeader>
+        <ModalHeader
+          title={`All SDK Versions Distribution (${sortedSdkVersions.length})`}
+          actions={
+            <>
+              <Button
+                variant={viewMode === 'chart' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setViewMode('chart')}
+              >
+                <ChartBar size={16} className="mr-1" />
+                Chart
+              </Button>
+              <Button
+                variant={viewMode === 'list' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setViewMode('list')}
+              >
+                <List size={16} className="mr-1" />
+                List
+              </Button>
+            </>
+          }
+          onClose={() => onOpenChange(false)}
+        />
 
         <div className="flex-1 overflow-auto">
           <Card>

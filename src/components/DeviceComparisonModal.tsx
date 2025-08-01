@@ -1,4 +1,5 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { ModalHeader } from "@/components/ui/modal-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -78,15 +79,17 @@ export const DeviceComparisonModal = ({ open, onOpenChange }: DeviceComparisonMo
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-6xl h-[90vh] flex flex-col">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            Device Comparison
+      <DialogContent className="max-w-6xl h-[90vh] flex flex-col" hideCloseButton={true}>
+        <ModalHeader
+          title="Device Comparison"
+          subtitle={`Compare specifications across ${comparedDevices.length} devices`}
+          actions={
             <Badge variant="secondary">
               {comparedDevices.length} devices
             </Badge>
-          </DialogTitle>
-        </DialogHeader>
+          }
+          onClose={() => onOpenChange(false)}
+        />
 
         <ScrollArea className="flex-1">
           <div className="space-y-6">

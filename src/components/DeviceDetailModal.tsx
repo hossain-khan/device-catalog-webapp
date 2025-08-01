@@ -1,10 +1,11 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { ModalHeader } from "@/components/ui/modal-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AndroidDevice } from "@/types/device";
 import { formatRam } from "@/lib/deviceUtils";
-import { DeviceMobile, Monitor, DeviceTablet, Television, Car, Laptop, Watch, GameController, Cpu, VideoCard, Display, Code, X } from "@phosphor-icons/react";
+import { DeviceMobile, Monitor, DeviceTablet, Television, Car, Laptop, Watch, GameController, Cpu, VideoCard, Display, Code } from "@phosphor-icons/react";
 import { DeviceJsonModal } from "./DeviceJsonModal";
 import { useState } from "react";
 
@@ -43,17 +44,11 @@ export const DeviceDetailModal = ({ device, open, onOpenChange }: DeviceDetailMo
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto" hideCloseButton={true}>
-        <DialogHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-          <DialogTitle className="flex items-center gap-3 text-xl">
-            {getFormFactorIcon(device.formFactor)}
-            <div>
-              <div>{device.modelName}</div>
-              <div className="text-sm font-normal text-muted-foreground">
-                {device.manufacturer} • {device.brand}
-              </div>
-            </div>
-          </DialogTitle>
-          <div className="flex items-center gap-2">
+        <ModalHeader
+          title={device.modelName}
+          subtitle={`${device.manufacturer} • ${device.brand}`}
+          icon={getFormFactorIcon(device.formFactor)}
+          actions={
             <Button
               variant="outline"
               size="sm"
@@ -62,18 +57,11 @@ export const DeviceDetailModal = ({ device, open, onOpenChange }: DeviceDetailMo
               <Code className="h-4 w-4 mr-2" />
               View JSON
             </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => onOpenChange(false)}
-              className="h-8 w-8 p-0"
-            >
-              <X size={16} />
-            </Button>
-          </div>
-        </DialogHeader>
+          }
+          onClose={() => onOpenChange(false)}
+        />
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-base">

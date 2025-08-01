@@ -1,10 +1,6 @@
 import { useState } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { ModalHeader } from "@/components/ui/modal-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { DeviceStats } from "@/types/device";
@@ -68,13 +64,12 @@ export const FormFactorsDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[80vh] overflow-auto">
-        <DialogHeader>
-          <div className="flex items-center justify-between">
-            <DialogTitle className="text-xl font-semibold">
-              Form Factor Distribution ({formFactorData.length} types)
-            </DialogTitle>
-            <div className="flex gap-2">
+      <DialogContent className="max-w-4xl max-h-[80vh] overflow-auto" hideCloseButton={true}>
+        <ModalHeader
+          title={`Form Factor Distribution (${formFactorData.length} types)`}
+          subtitle="Click on any form factor to filter devices by that type"
+          actions={
+            <>
               <Button
                 variant={viewMode === 'pie' ? 'default' : 'outline'}
                 size="sm"
@@ -99,9 +94,10 @@ export const FormFactorsDialog = ({
                 <List size={16} className="mr-1" />
                 List
               </Button>
-            </div>
-          </div>
-        </DialogHeader>
+            </>
+          }
+          onClose={() => onOpenChange(false)}
+        />
         
         {viewMode === 'pie' && (
           <div className="flex flex-col lg:flex-row gap-6">
@@ -201,10 +197,6 @@ export const FormFactorsDialog = ({
             ))}
           </div>
         )}
-        
-        <div className="text-sm text-muted-foreground">
-          Click on any form factor to filter devices by that type
-        </div>
       </DialogContent>
     </Dialog>
   );

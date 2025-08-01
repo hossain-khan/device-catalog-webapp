@@ -1,7 +1,8 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { ModalHeader } from "@/components/ui/modal-header";
 import { Button } from "@/components/ui/button";
 import { AndroidDevice } from "@/types/device";
-import { Copy, Check, Code, X } from "@phosphor-icons/react";
+import { Copy, Check, Code } from "@phosphor-icons/react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -34,12 +35,10 @@ export const DeviceJsonModal = ({ device, open, onOpenChange }: DeviceJsonModalP
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-6xl max-h-[90vh] flex flex-col" hideCloseButton={true}>
-        <DialogHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-          <DialogTitle className="flex items-center gap-2">
-            <Code className="h-5 w-5" />
-            Source JSON - {device.modelName}
-          </DialogTitle>
-          <div className="flex items-center gap-2">
+        <ModalHeader
+          title={`Source JSON - ${device.modelName}`}
+          icon={<Code className="h-5 w-5" />}
+          actions={
             <Button
               variant="outline"
               size="sm"
@@ -52,16 +51,9 @@ export const DeviceJsonModal = ({ device, open, onOpenChange }: DeviceJsonModalP
               )}
               {copied ? 'Copied!' : 'Copy JSON'}
             </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => onOpenChange(false)}
-              className="h-8 w-8 p-0"
-            >
-              <X size={16} />
-            </Button>
-          </div>
-        </DialogHeader>
+          }
+          onClose={() => onOpenChange(false)}
+        />
 
         <div className="flex-1 overflow-hidden">
           <div className="h-full overflow-auto border rounded-lg">
