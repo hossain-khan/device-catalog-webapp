@@ -26,6 +26,7 @@ import {
 } from '@/lib/deviceUtils';
 import { sanitizeDeviceData } from '@/lib/deviceValidation';
 import { paginateArray, DEFAULT_ITEMS_PER_PAGE } from '@/lib/paginationUtils';
+import androidLogo from '@/assets/images/android.svg';
 
 function App() {
   // Use uploaded devices if available, otherwise fall back to sample data
@@ -221,12 +222,21 @@ function App() {
       <div className="min-h-screen bg-background pb-20">
         <div className="container mx-auto py-8 px-4">
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-primary mb-2">
-              Android Device Catalog Browser
-            </h1>
-            <p className="text-muted-foreground">
-              Explore and analyze Android devices from the official Device Catalog
-            </p>
+            <div className="flex items-center gap-4 mb-4">
+              <img 
+                src={androidLogo} 
+                alt="Android Logo" 
+                className="w-12 h-12"
+              />
+              <div>
+                <h1 className="text-3xl font-bold text-primary mb-2">
+                  Android Device Catalog Browser
+                </h1>
+                <p className="text-muted-foreground">
+                  Explore and analyze Android devices from the official Device Catalog
+                </p>
+              </div>
+            </div>
           </div>
 
           <Tabs defaultValue="devices" className="space-y-6">
