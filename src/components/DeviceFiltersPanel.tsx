@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { Search, X, Funnel, SlidersHorizontal, CaretDown } from "@phosphor-icons/react";
+import { MagnifyingGlass, X, Funnel, SlidersHorizontal, CaretDown } from "@phosphor-icons/react";
 import { DeviceFilters } from "@/types/device";
 import { formatRam } from "@/lib/deviceUtils";
 import { getFormFactorColors } from "@/lib/deviceColors";
@@ -68,7 +68,7 @@ export const DeviceFiltersPanel = ({
     <div className="space-y-4">
       <div className="flex items-center gap-4 flex-wrap">
         <div className="relative flex-1 min-w-[300px]">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <MagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Search devices, manufacturers, processors..."
             value={filters.search}
