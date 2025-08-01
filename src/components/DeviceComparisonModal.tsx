@@ -3,7 +3,7 @@ import { ModalHeader } from "@/components/ui/modal-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { AndroidDevice } from "@/types/device";
 import { formatRam } from "@/lib/deviceUtils";
 import { DeviceMobile, Monitor, DeviceTablet, Television, Car, Laptop, Watch, GameController, X } from "@phosphor-icons/react";
@@ -92,14 +92,14 @@ export const DeviceComparisonModal = ({ open, onOpenChange }: DeviceComparisonMo
         />
 
         <ScrollArea className="flex-1">
-          <div className="space-y-6">
+          <div className="min-w-max overflow-x-auto">
             {/* Device Headers */}
-            <div className="grid gap-3" style={{ gridTemplateColumns: `200px repeat(${comparedDevices.length}, minmax(200px, 1fr))` }}>
-              <div></div>
+            <div className="flex gap-3 mb-6">
+              <div className="w-48 flex-shrink-0"></div>
               {comparedDevices.map(device => {
                 const deviceId = `${device.brand}-${device.device}`;
                 return (
-                  <Card key={deviceId} className="min-w-0">
+                  <Card key={deviceId} className="w-64 flex-shrink-0">
                     <CardHeader className="pb-3 px-3">
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex-1 min-w-0">
@@ -138,10 +138,9 @@ export const DeviceComparisonModal = ({ open, onOpenChange }: DeviceComparisonMo
               {comparisonFields.map(field => (
                 <div 
                   key={field.key}
-                  className="grid gap-3 items-center py-3 border-b border-border last:border-b-0"
-                  style={{ gridTemplateColumns: `200px repeat(${comparedDevices.length}, minmax(200px, 1fr))` }}
+                  className="flex gap-3 items-center py-3 border-b border-border last:border-b-0"
                 >
-                  <div className="font-medium text-sm text-muted-foreground">
+                  <div className="w-48 flex-shrink-0 font-medium text-sm text-muted-foreground pr-3">
                     {field.label}
                   </div>
                   {comparedDevices.map(device => {
@@ -149,7 +148,7 @@ export const DeviceComparisonModal = ({ open, onOpenChange }: DeviceComparisonMo
                     const value = getComparisonValue(device, field.key);
                     
                     return (
-                      <div key={deviceId} className="text-sm min-w-0">
+                      <div key={deviceId} className="w-64 flex-shrink-0 text-sm">
                         {field.key === 'abis' || field.key === 'openGlEsVersions' ? (
                           <div className="flex flex-wrap gap-1">
                             {(device[field.key as keyof AndroidDevice] as string[]).map((item, index) => (
@@ -173,6 +172,7 @@ export const DeviceComparisonModal = ({ open, onOpenChange }: DeviceComparisonMo
               ))}
             </div>
           </div>
+          <ScrollBar orientation="horizontal" />
         </ScrollArea>
       </DialogContent>
     </Dialog>
