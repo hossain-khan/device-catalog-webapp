@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { Search, X, Filter, SlidersHorizontal, CaretDown } from "@phosphor-icons/react";
+import { Search, X, Funnel, SlidersHorizontal, CaretDown } from "@phosphor-icons/react";
 import { DeviceFilters } from "@/types/device";
 import { formatRam } from "@/lib/deviceUtils";
 import { getFormFactorColors } from "@/lib/deviceColors";
@@ -80,7 +80,7 @@ export const DeviceFiltersPanel = ({
 
       <div className="flex flex-wrap items-center gap-4">
         <div className="flex items-center gap-2">
-          <Filter className="h-4 w-4 text-muted-foreground" />
+          <Funnel className="h-4 w-4 text-muted-foreground" />
           <span className="text-sm text-muted-foreground">Filters:</span>
         </div>
         <Select value={filters.formFactor} onValueChange={(value) => updateFilter('formFactor', value)}>
