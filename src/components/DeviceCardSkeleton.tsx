@@ -40,6 +40,14 @@ export const DeviceCardSkeleton = ({ count = 12 }: DeviceCardSkeletonProps) => {
               <Skeleton className="h-6 w-14 rounded" />
             </div>
           </CardContent>
+          {/* JSON Source Section Skeleton */}
+          <div className="border-t p-3 bg-muted/20">
+            <div className="flex items-center justify-between mb-2">
+              <Skeleton className="h-3 w-20" />
+              <Skeleton className="h-6 w-12" />
+            </div>
+            <Skeleton className="h-32 w-full rounded" />
+          </div>
         </Card>
       ))}
     </div>

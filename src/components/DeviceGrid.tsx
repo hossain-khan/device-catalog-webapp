@@ -27,7 +27,7 @@ interface DeviceGridProps {
 }
 
 // Constants for virtual scrolling
-const CARD_HEIGHT = 200; // Height of each device card (matches DeviceCard fixed height)
+const CARD_HEIGHT = 360; // Height of each device card (increased to accommodate JSON section)
 const CARDS_PER_ROW = {
   default: 1,
   sm: 1,
