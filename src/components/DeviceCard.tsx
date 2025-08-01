@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { AndroidDevice } from "@/types/device";
 import { formatRam } from "@/lib/deviceUtils";
-import { DevicePhone, Monitor, Tablet, Plus, Minus } from "@phosphor-icons/react";
+import { DeviceMobile, Monitor, Tablet, Plus, Minus } from "@phosphor-icons/react";
 import { useComparison } from "@/contexts/ComparisonContext";
 
 interface DeviceCardProps {
@@ -19,7 +19,7 @@ export const DeviceCard = ({ device, onClick }: DeviceCardProps) => {
   const getFormFactorIcon = (formFactor: string) => {
     switch (formFactor.toLowerCase()) {
       case 'phone':
-        return <DevicePhone className="h-4 w-4" />;
+        return <DeviceMobile className="h-4 w-4" />;
       case 'tablet':
         return <Tablet className="h-4 w-4" />;
       case 'tv':
@@ -29,11 +29,11 @@ export const DeviceCard = ({ device, onClick }: DeviceCardProps) => {
       case 'chromebook':
         return <Monitor className="h-4 w-4" />;
       case 'wearable':
-        return <DevicePhone className="h-4 w-4" />;
+        return <DeviceMobile className="h-4 w-4" />;
       case 'google play games on pc':
         return <Monitor className="h-4 w-4" />;
       default:
-        return <DevicePhone className="h-4 w-4" />;
+        return <DeviceMobile className="h-4 w-4" />;
     }
   };
 
