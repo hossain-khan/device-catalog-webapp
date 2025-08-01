@@ -22,13 +22,18 @@ export const ManufacturersDialog = ({
 }: ManufacturersDialogProps) => {
   const [viewMode, setViewMode] = useState<'chart' | 'list'>('chart');
   
-  const manufacturerData = Object.entries(stats.manufacturerCounts)
+  const allManufacturerData = Object.entries(stats.manufacturerCounts)
     .sort(([,a], [,b]) => b - a)
     .map(([manufacturer, count]) => ({
       manufacturer,
       count,
       displayName: manufacturer.length > 12 ? `${manufacturer.substring(0, 12)}...` : manufacturer
     }));
+
+  // For chart view, limit to top 10 manufacturers if there are more than 10
+  const chartManufacturerData = allManufacturerData.length > 10 
+    ? allManufacturerData.slice(0, 10)
+    : allManufacturerData;
 
   const handleManufacturerClick = (manufacturer: string) => {
     onFilterByManufacturer(manufacturer);
@@ -39,8 +44,11 @@ export const ManufacturersDialog = ({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-4xl max-h-[80vh] overflow-auto" hideCloseButton={true}>
         <ModalHeader
-          title={`All Manufacturers (${manufacturerData.length})`}
-          subtitle="Click on any manufacturer to filter devices by that brand"
+          title={`All Manufacturers (${allManufacturerData.length})`}
+          subtitle={viewMode === 'chart' && allManufacturerData.length > 10 
+            ? `Chart shows top 10 manufacturers. Click on any manufacturer to filter devices by that brand`
+            : "Click on any manufacturer to filter devices by that brand"
+          }
           actions={
             <>
               <Button
@@ -68,7 +76,7 @@ export const ManufacturersDialog = ({
           <div className="h-96">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
-                data={manufacturerData}
+                data={chartManufacturerData}
                 margin={{
                   top: 20,
                   right: 30,
@@ -106,7 +114,7 @@ export const ManufacturersDialog = ({
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 max-h-96 overflow-y-auto">
-            {manufacturerData.map(({ manufacturer, count }) => (
+            {allManufacturerData.map(({ manufacturer, count }) => (
               <button
                 key={manufacturer}
                 onClick={() => handleManufacturerClick(manufacturer)}
