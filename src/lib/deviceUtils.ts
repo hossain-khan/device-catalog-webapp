@@ -161,3 +161,13 @@ export const getSdkVersionRange = (devices: AndroidDevice[]): [number, number] =
   const maxSdk = Math.max(...allSdkVersions);
   return [minSdk, maxSdk];
 };
+
+/**
+ * Smoothly scrolls to the top of the page
+ */
+export const scrollToTop = () => {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
+};

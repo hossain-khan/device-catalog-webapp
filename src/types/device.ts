@@ -25,6 +25,12 @@ export interface DeviceFilters {
   sdkVersionRange: [number, number]; // [min, max] SDK version
 }
 
+export interface PaginationState {
+  currentPage: number;
+  itemsPerPage: number;
+  totalItems: number;
+}
+
 export interface DeviceStats {
   totalDevices: number;
   manufacturerCounts: { [key: string]: number };

@@ -21,6 +21,7 @@ interface DeviceFiltersProps {
   totalDevices: number;
   ramRange: [number, number];
   sdkVersionRange: [number, number];
+  isFiltering?: boolean;
 }
 
 export const DeviceFiltersPanel = ({
@@ -32,7 +33,8 @@ export const DeviceFiltersPanel = ({
   deviceCount,
   totalDevices,
   ramRange,
-  sdkVersionRange
+  sdkVersionRange,
+  isFiltering = false
 }: DeviceFiltersProps) => {
   const updateFilter = (key: keyof DeviceFilters, value: any) => {
     onFiltersChange({ ...filters, [key]: value });
@@ -203,7 +205,14 @@ export const DeviceFiltersPanel = ({
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Badge variant="outline" className="text-sm">
-            {deviceCount} of {totalDevices} devices
+            {isFiltering ? (
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                Filtering...
+              </div>
+            ) : (
+              `${deviceCount.toLocaleString()} of ${totalDevices.toLocaleString()} devices`
+            )}
           </Badge>
           
           {hasActiveFilters && (

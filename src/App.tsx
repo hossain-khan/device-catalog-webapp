@@ -1,5 +1,6 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { useKV } from '@github/spark/hooks';
+import { useDebounce } from '@/hooks/useDebounce';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DeviceStatsPanel } from '@/components/DeviceStatsPanel';
 import { DeviceFiltersPanel } from '@/components/DeviceFiltersPanel';
@@ -8,9 +9,11 @@ import { DeviceDetailModal } from '@/components/DeviceDetailModal';
 import { ComparisonBar } from '@/components/ComparisonBar';
 import { DeviceComparisonModal } from '@/components/DeviceComparisonModal';
 import { FileUploadPanel } from '@/components/FileUploadPanel';
+import { PerformanceBanner } from '@/components/PerformanceBanner';
+import { BackToTopButton } from '@/components/BackToTopButton';
 import { ComparisonProvider } from '@/contexts/ComparisonContext';
 import { sampleDevices } from '@/data/devices';
-import { AndroidDevice, DeviceFilters } from '@/types/device';
+import { AndroidDevice, DeviceFilters, PaginationState } from '@/types/device';
 import { 
   filterDevices, 
   calculateDeviceStats, 
@@ -21,6 +24,7 @@ import {
   getSdkVersionRange
 } from '@/lib/deviceUtils';
 import { sanitizeDeviceData } from '@/lib/deviceValidation';
+import { paginateArray, DEFAULT_ITEMS_PER_PAGE } from '@/lib/paginationUtils';
 
 function App() {
   // Use uploaded devices if available, otherwise fall back to sample data
@@ -40,6 +44,17 @@ function App() {
     ramRange: [0, 16384], // Default fallback range
     sdkVersionRange: [23, 35] // Default fallback range
   });
+
+  // Pagination state
+  const [pagination, setPagination] = useKV<PaginationState>('device-pagination', {
+    currentPage: 1,
+    itemsPerPage: DEFAULT_ITEMS_PER_PAGE,
+    totalItems: 0
+  });
+
+  // Debounce search to improve performance
+  const debouncedFilters = useDebounce(filters, 300);
+  const [isFiltering, setIsFiltering] = useState(false);
   
   // Update ranges in filters when devices change
   useMemo(() => {
@@ -58,9 +73,29 @@ function App() {
   const [detailModalOpen, setDetailModalOpen] = useState(false);
   const [comparisonModalOpen, setComparisonModalOpen] = useState(false);
 
-  const filteredDevices = useMemo(() => 
-    filterDevices(devices, filters), 
-    [devices, filters]
+  // Filter devices with debounced search
+  const filteredDevices = useMemo(() => {
+    const filtered = filterDevices(devices, debouncedFilters);
+    // Reset to page 1 when filters change and update total items
+    if (filtered.length !== pagination.totalItems) {
+      setPagination(current => ({
+        ...current,
+        currentPage: 1,
+        totalItems: filtered.length
+      }));
+    }
+    return filtered;
+  }, [devices, debouncedFilters, pagination.totalItems, setPagination]);
+
+  // Track filtering state
+  useMemo(() => {
+    setIsFiltering(filters !== debouncedFilters);
+  }, [filters, debouncedFilters]);
+
+  // Paginate filtered devices
+  const { items: paginatedDevices, pagination: paginationInfo } = useMemo(() => 
+    paginateArray(filteredDevices, pagination.currentPage, pagination.itemsPerPage),
+    [filteredDevices, pagination.currentPage, pagination.itemsPerPage]
   );
 
   const stats = useMemo(() => 
@@ -105,6 +140,26 @@ function App() {
     setComparisonModalOpen(true);
   };
 
+  // Pagination handlers
+  const handlePageChange = useCallback((page: number) => {
+    setPagination(current => ({ ...current, currentPage: page }));
+  }, [setPagination]);
+
+  const handleItemsPerPageChange = useCallback((itemsPerPage: number) => {
+    setPagination(current => ({ 
+      ...current, 
+      itemsPerPage, 
+      currentPage: 1 // Reset to first page when changing page size
+    }));
+  }, [setPagination]);
+
+  // Optimized filter change handler
+  const handleFiltersChange = useCallback((newFilters: DeviceFilters) => {
+    setFilters(newFilters);
+    // Reset pagination when filters change
+    setPagination(current => ({ ...current, currentPage: 1 }));
+  }, [setFilters, setPagination]);
+
   const handleDevicesLoaded = (newDevices: AndroidDevice[]) => {
     // Clear old device data and comparison state before loading new data
     const sanitizedDevices = sanitizeDeviceData(newDevices);
@@ -124,6 +179,13 @@ function App() {
       ramRange: newRamRange,
       sdkVersionRange: newSdkVersionRange
     });
+
+    // Reset pagination
+    setPagination({
+      currentPage: 1,
+      itemsPerPage: DEFAULT_ITEMS_PER_PAGE,
+      totalItems: sanitizedDevices.length
+    });
   };
 
   const handleClearDevices = () => {
@@ -140,6 +202,13 @@ function App() {
       sdkVersion: 'all',
       ramRange: defaultRamRange,
       sdkVersionRange: defaultSdkVersionRange
+    });
+
+    // Reset pagination
+    setPagination({
+      currentPage: 1,
+      itemsPerPage: DEFAULT_ITEMS_PER_PAGE,
+      totalItems: sampleDevices.length
     });
   };
 
@@ -172,9 +241,17 @@ function App() {
             </TabsContent>
 
             <TabsContent value="devices" className="space-y-6">
+              <PerformanceBanner
+                totalDevices={devices.length}
+                filteredDevices={filteredDevices.length}
+                isFiltering={isFiltering}
+                currentPage={pagination.currentPage}
+                itemsPerPage={pagination.itemsPerPage}
+              />
+
               <DeviceFiltersPanel
                 filters={filters}
-                onFiltersChange={setFilters}
+                onFiltersChange={handleFiltersChange}
                 manufacturers={uniqueManufacturers}
                 formFactors={uniqueFormFactors}
                 sdkVersions={uniqueSdkVersions}
@@ -182,11 +259,17 @@ function App() {
                 totalDevices={devices.length}
                 ramRange={ramRange}
                 sdkVersionRange={sdkVersionRange}
+                isFiltering={isFiltering}
               />
 
               <DeviceGrid
-                devices={filteredDevices}
+                devices={paginatedDevices}
                 onDeviceClick={handleDeviceClick}
+                pagination={paginationInfo}
+                onPageChange={handlePageChange}
+                onItemsPerPageChange={handleItemsPerPageChange}
+                isLoading={isFiltering}
+                totalDevices={filteredDevices.length}
               />
             </TabsContent>
 
@@ -212,6 +295,7 @@ function App() {
         </div>
 
         <ComparisonBar onOpenComparison={handleOpenComparison} />
+        <BackToTopButton />
       </div>
     </ComparisonProvider>
   );

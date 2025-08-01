@@ -17,9 +17,14 @@
 - **Success Criteria**: Validates JSON structure, clears old data before loading new, provides clear error messaging
 
 ### Device Browser
-- **Functionality**: Grid-based display of Android devices with search and filtering capabilities, including advanced range-based filtering
-- **Purpose**: Allow users to quickly find and explore devices based on specific criteria with precise control over ranges
-- **Success Criteria**: Users can filter by manufacturer, form factor, RAM, and SDK version with real-time results, plus use advanced sliders for precise RAM and SDK version range selection
+- **Functionality**: Grid-based display of Android devices with search and filtering capabilities, including advanced range-based filtering, pagination for large datasets (20k+ devices), and debounced search
+- **Purpose**: Allow users to quickly find and explore devices based on specific criteria with precise control over ranges while maintaining performance with large datasets
+- **Success Criteria**: Users can filter by manufacturer, form factor, RAM, and SDK version with real-time results, plus use advanced sliders for precise RAM and SDK version range selection. Pagination ensures smooth performance with any dataset size.
+
+### Performance Optimizations
+- **Functionality**: Pagination, debounced search, loading states, performance indicators, and smooth scrolling
+- **Purpose**: Ensure responsive user experience even with extremely large device catalogs (20,000+ devices)
+- **Success Criteria**: Sub-300ms search responsiveness, smooth pagination transitions, clear loading indicators, and intuitive navigation aids
 
 ### Advanced Range Filtering
 - **Functionality**: Interactive slider controls for RAM size and SDK version ranges with real-time filtering
@@ -80,8 +85,18 @@
 
 ### State Management
 - Persistent device filters using useKV for user preferences
+- Persistent pagination state for user convenience
 - Comparison selection state persisted across sessions
 - Modal states managed locally for immediate responsiveness
+- Debounced search inputs to prevent excessive filtering operations
+
+### Performance Architecture
+- Pagination with configurable page sizes (12, 24, 48, 96 items)
+- Debounced search with 300ms delay for optimal performance
+- Loading skeletons during filter operations
+- Scroll-to-top functionality for better navigation
+- Performance indicators for large datasets
+- Efficient re-rendering with optimized React hooks
 
 ### Data Structure
 - Type-safe device interfaces matching Kotlin model
@@ -98,6 +113,9 @@
 - **Empty States**: Appropriate messaging when no devices match filters
 - **Comparison Limits**: Clear indication when comparison is full (4 devices)
 - **Mobile Experience**: Optimized comparison view for smaller screens
+- **Large Datasets**: Performance monitoring and pagination for 20k+ devices
+- **Network Delays**: Loading states and skeleton components during operations
+- **Memory Management**: Efficient pagination prevents browser performance issues
 - **Data Variations**: Graceful handling of missing or varied specification formats
 
 ## Reflection
