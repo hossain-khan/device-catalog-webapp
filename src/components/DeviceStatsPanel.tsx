@@ -3,6 +3,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { SdkVersionsDialog } from "@/components/SdkVersionsDialog";
+import { ManufacturersDialog } from "@/components/ManufacturersDialog";
+import { FormFactorsDialog } from "@/components/FormFactorsDialog";
+import { RamDistributionDialog } from "@/components/RamDistributionDialog";
+import { AnalyticsOverview } from "@/components/AnalyticsOverview";
 import { DeviceStats } from "@/types/device";
 import { ChartBar } from "@phosphor-icons/react";
 
@@ -32,6 +36,9 @@ interface DeviceStatsProps {
 
 export const DeviceStatsPanel = ({ stats, onFilterByManufacturer, onFilterByFormFactor }: DeviceStatsProps) => {
   const [sdkDialogOpen, setSdkDialogOpen] = useState(false);
+  const [manufacturersDialogOpen, setManufacturersDialogOpen] = useState(false);
+  const [formFactorsDialogOpen, setFormFactorsDialogOpen] = useState(false);
+  const [ramDialogOpen, setRamDialogOpen] = useState(false);
   
   const topManufacturers = Object.entries(stats.manufacturerCounts)
     .sort(([,a], [,b]) => b - a)
@@ -43,6 +50,12 @@ export const DeviceStatsPanel = ({ stats, onFilterByManufacturer, onFilterByForm
 
   return (
     <div className="space-y-6">
+      <AnalyticsOverview 
+        stats={stats}
+        onFilterByManufacturer={onFilterByManufacturer}
+        onFilterByFormFactor={onFilterByFormFactor}
+      />
+      
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatsCard 
           title="Total Devices" 
@@ -68,8 +81,17 @@ export const DeviceStatsPanel = ({ stats, onFilterByManufacturer, onFilterByForm
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
-          <CardHeader>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
             <CardTitle className="text-lg">Top Manufacturers</CardTitle>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setManufacturersDialogOpen(true)}
+              className="h-8 px-3"
+            >
+              <ChartBar size={16} className="mr-1" />
+              Show All
+            </Button>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
@@ -91,8 +113,17 @@ export const DeviceStatsPanel = ({ stats, onFilterByManufacturer, onFilterByForm
         </Card>
 
         <Card>
-          <CardHeader>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
             <CardTitle className="text-lg">Form Factors</CardTitle>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setFormFactorsDialogOpen(true)}
+              className="h-8 px-3"
+            >
+              <ChartBar size={16} className="mr-1" />
+              Show All
+            </Button>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
@@ -114,8 +145,17 @@ export const DeviceStatsPanel = ({ stats, onFilterByManufacturer, onFilterByForm
         </Card>
 
         <Card>
-          <CardHeader>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
             <CardTitle className="text-lg">RAM Distribution</CardTitle>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setRamDialogOpen(true)}
+              className="h-8 px-3"
+            >
+              <ChartBar size={16} className="mr-1" />
+              Show All
+            </Button>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
@@ -162,6 +202,26 @@ export const DeviceStatsPanel = ({ stats, onFilterByManufacturer, onFilterByForm
       <SdkVersionsDialog
         open={sdkDialogOpen}
         onOpenChange={setSdkDialogOpen}
+        stats={stats}
+      />
+
+      <ManufacturersDialog
+        open={manufacturersDialogOpen}
+        onOpenChange={setManufacturersDialogOpen}
+        stats={stats}
+        onFilterByManufacturer={onFilterByManufacturer}
+      />
+
+      <FormFactorsDialog
+        open={formFactorsDialogOpen}
+        onOpenChange={setFormFactorsDialogOpen}
+        stats={stats}
+        onFilterByFormFactor={onFilterByFormFactor}
+      />
+
+      <RamDistributionDialog
+        open={ramDialogOpen}
+        onOpenChange={setRamDialogOpen}
         stats={stats}
       />
     </div>
