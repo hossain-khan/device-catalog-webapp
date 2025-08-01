@@ -79,7 +79,7 @@ export const parseRamValue = (ram: string): number => {
 export const formatRam = (ram: string): string => {
   const ramMB = parseRamValue(ram);
   if (ramMB >= 1024) {
-    return `${(ramMB / 1024).toFixed(1)}GB`;
+    return `${Math.ceil(ramMB / 1024)}GB`;
   }
   return `${ramMB}MB`;
 };
