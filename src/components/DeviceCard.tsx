@@ -1,8 +1,10 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { AndroidDevice } from "@/types/device";
 import { formatRam } from "@/lib/deviceUtils";
-import { DevicePhone, Monitor, Tablet } from "@phosphor-icons/react";
+import { DevicePhone, Monitor, Tablet, Plus, Minus } from "@phosphor-icons/react";
+import { useComparison } from "@/contexts/ComparisonContext";
 
 interface DeviceCardProps {
   device: AndroidDevice;
@@ -10,6 +12,10 @@ interface DeviceCardProps {
 }
 
 export const DeviceCard = ({ device, onClick }: DeviceCardProps) => {
+  const { addToComparison, removeFromComparison, isInComparison, canAddToComparison } = useComparison();
+  const deviceId = `${device.brand}-${device.device}`;
+  const inComparison = isInComparison(deviceId);
+
   const getFormFactorIcon = (formFactor: string) => {
     switch (formFactor.toLowerCase()) {
       case 'phone':
@@ -23,9 +29,20 @@ export const DeviceCard = ({ device, onClick }: DeviceCardProps) => {
     }
   };
 
+  const handleComparisonToggle = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (inComparison) {
+      removeFromComparison(deviceId);
+    } else {
+      addToComparison(device);
+    }
+  };
+
   return (
     <Card 
-      className="cursor-pointer hover:bg-accent/50 transition-colors duration-200 h-full"
+      className={`cursor-pointer hover:bg-accent/50 transition-colors duration-200 h-full relative ${
+        inComparison ? 'ring-2 ring-primary ring-offset-2' : ''
+      }`}
       onClick={onClick}
     >
       <CardHeader className="pb-3">
@@ -38,9 +55,25 @@ export const DeviceCard = ({ device, onClick }: DeviceCardProps) => {
               {device.manufacturer}
             </p>
           </div>
-          <div className="flex items-center gap-1 text-muted-foreground">
-            {getFormFactorIcon(device.formFactor)}
-            <span className="text-xs">{device.formFactor}</span>
+          <div className="flex flex-col items-end gap-2">
+            <Button
+              variant={inComparison ? "default" : "outline"}
+              size="sm"
+              className="h-8 w-8 p-0"
+              onClick={handleComparisonToggle}
+              disabled={!inComparison && !canAddToComparison}
+              title={inComparison ? "Remove from comparison" : "Add to comparison"}
+            >
+              {inComparison ? (
+                <Minus className="h-4 w-4" />
+              ) : (
+                <Plus className="h-4 w-4" />
+              )}
+            </Button>
+            <div className="flex items-center gap-1 text-muted-foreground">
+              {getFormFactorIcon(device.formFactor)}
+              <span className="text-xs">{device.formFactor}</span>
+            </div>
           </div>
         </div>
       </CardHeader>

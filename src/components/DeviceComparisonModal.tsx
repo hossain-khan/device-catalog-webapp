@@ -1,0 +1,167 @@
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { AndroidDevice } from "@/types/device";
+import { formatRam } from "@/lib/deviceUtils";
+import { DevicePhone, Monitor, Tablet, X } from "@phosphor-icons/react";
+import { useComparison } from "@/contexts/ComparisonContext";
+
+interface DeviceComparisonModalProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}
+
+export const DeviceComparisonModal = ({ open, onOpenChange }: DeviceComparisonModalProps) => {
+  const { comparedDevices, removeFromComparison } = useComparison();
+
+  const getFormFactorIcon = (formFactor: string) => {
+    switch (formFactor.toLowerCase()) {
+      case 'phone':
+        return <DevicePhone className="h-4 w-4" />;
+      case 'tablet':
+        return <Tablet className="h-4 w-4" />;
+      case 'tv':
+        return <Monitor className="h-4 w-4" />;
+      default:
+        return <DevicePhone className="h-4 w-4" />;
+    }
+  };
+
+  const getComparisonValue = (device: AndroidDevice, field: string) => {
+    switch (field) {
+      case 'ram':
+        return formatRam(device.ram);
+      case 'sdkVersions':
+        return device.sdkVersions.length === 1 
+          ? `API ${device.sdkVersions[0]}` 
+          : `API ${Math.min(...device.sdkVersions)}-${Math.max(...device.sdkVersions)}`;
+      case 'screenSizes':
+        return device.screenSizes.join(', ');
+      case 'screenDensities':
+        return device.screenDensities.join(', ') + ' dpi';
+      case 'abis':
+        return device.abis.join(', ');
+      case 'openGlEsVersions':
+        return device.openGlEsVersions.join(', ');
+      default:
+        return device[field as keyof AndroidDevice] as string;
+    }
+  };
+
+  const comparisonFields = [
+    { key: 'manufacturer', label: 'Manufacturer' },
+    { key: 'modelName', label: 'Model Name' },
+    { key: 'formFactor', label: 'Form Factor' },
+    { key: 'ram', label: 'RAM' },
+    { key: 'processorName', label: 'Processor' },
+    { key: 'gpu', label: 'GPU' },
+    { key: 'screenSizes', label: 'Screen Sizes' },
+    { key: 'screenDensities', label: 'Screen Densities' },
+    { key: 'sdkVersions', label: 'SDK Versions' },
+    { key: 'abis', label: 'ABIs' },
+    { key: 'openGlEsVersions', label: 'OpenGL ES' }
+  ];
+
+  if (comparedDevices.length === 0) {
+    return null;
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-6xl h-[90vh] flex flex-col">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            Device Comparison
+            <Badge variant="secondary">
+              {comparedDevices.length} devices
+            </Badge>
+          </DialogTitle>
+        </DialogHeader>
+
+        <ScrollArea className="flex-1">
+          <div className="space-y-6">
+            {/* Device Headers */}
+            <div className="grid gap-4" style={{ gridTemplateColumns: `200px repeat(${comparedDevices.length}, 1fr)` }}>
+              <div></div>
+              {comparedDevices.map(device => {
+                const deviceId = `${device.brand}-${device.device}`;
+                return (
+                  <Card key={deviceId}>
+                    <CardHeader className="pb-3">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex-1 min-w-0">
+                          <CardTitle className="text-lg leading-tight line-clamp-2">
+                            {device.modelName}
+                          </CardTitle>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            {device.manufacturer}
+                          </p>
+                        </div>
+                        <div className="flex flex-col items-end gap-2">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => removeFromComparison(deviceId)}
+                            className="h-8 w-8 p-0 hover:bg-destructive hover:text-destructive-foreground"
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                          <div className="flex items-center gap-1 text-muted-foreground">
+                            {getFormFactorIcon(device.formFactor)}
+                            <span className="text-xs">{device.formFactor}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </CardHeader>
+                  </Card>
+                );
+              })}
+            </div>
+
+            {/* Comparison Table */}
+            <div className="space-y-2">
+              {comparisonFields.map(field => (
+                <div 
+                  key={field.key}
+                  className="grid gap-4 items-center py-3 border-b border-border last:border-b-0"
+                  style={{ gridTemplateColumns: `200px repeat(${comparedDevices.length}, 1fr)` }}
+                >
+                  <div className="font-medium text-sm text-muted-foreground">
+                    {field.label}
+                  </div>
+                  {comparedDevices.map(device => {
+                    const deviceId = `${device.brand}-${device.device}`;
+                    const value = getComparisonValue(device, field.key);
+                    
+                    return (
+                      <div key={deviceId} className="text-sm">
+                        {field.key === 'abis' || field.key === 'openGlEsVersions' ? (
+                          <div className="flex flex-wrap gap-1">
+                            {(device[field.key as keyof AndroidDevice] as string[]).map((item, index) => (
+                              <Badge key={index} variant="outline" className="text-xs">
+                                {item}
+                              </Badge>
+                            ))}
+                          </div>
+                        ) : field.key === 'formFactor' ? (
+                          <div className="flex items-center gap-2">
+                            {getFormFactorIcon(device.formFactor)}
+                            <span>{device.formFactor}</span>
+                          </div>
+                        ) : (
+                          <span className="break-words">{value}</span>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              ))}
+            </div>
+          </div>
+        </ScrollArea>
+      </DialogContent>
+    </Dialog>
+  );
+};
