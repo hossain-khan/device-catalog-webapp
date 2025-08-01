@@ -4,22 +4,20 @@ import { Button } from "@/components/ui/button";
 import { AndroidDevice } from "@/types/device";
 import { formatRam } from "@/lib/deviceUtils";
 import { getDeviceColors, getDeviceCategoryLabel, parseRamMB, ColorMode } from "@/lib/deviceColors";
-import { DeviceMobile, Monitor, DeviceTablet, Television, Car, Laptop, Watch, GameController, Plus, Minus, Copy, Check } from "@phosphor-icons/react";
+import { DeviceMobile, Monitor, DeviceTablet, Television, Car, Laptop, Watch, GameController, Plus, Minus, Code } from "@phosphor-icons/react";
 import { useComparison } from "@/contexts/ComparisonContext";
-import { useState } from "react";
-import { toast } from "sonner";
 
 interface DeviceCardProps {
   device: AndroidDevice;
   onClick: () => void;
+  onShowJson: () => void;
   colorMode?: ColorMode;
 }
 
-export const DeviceCard = ({ device, onClick, colorMode = 'formFactor' }: DeviceCardProps) => {
+export const DeviceCard = ({ device, onClick, onShowJson, colorMode = 'formFactor' }: DeviceCardProps) => {
   const { addToComparison, removeFromComparison, isInComparison, canAddToComparison } = useComparison();
   const deviceId = `${device.brand}-${device.device}`;
   const inComparison = isInComparison(deviceId);
-  const [copied, setCopied] = useState(false);
   
   // Get color scheme for the device
   const colors = getDeviceColors(device, colorMode);
@@ -57,17 +55,9 @@ export const DeviceCard = ({ device, onClick, colorMode = 'formFactor' }: Device
     }
   };
 
-  const handleCopyJson = async (e: React.MouseEvent) => {
+  const handleShowJson = (e: React.MouseEvent) => {
     e.stopPropagation();
-    try {
-      const jsonString = JSON.stringify(device, null, 2);
-      await navigator.clipboard.writeText(jsonString);
-      setCopied(true);
-      toast.success("JSON copied to clipboard");
-      setTimeout(() => setCopied(false), 2000);
-    } catch (error) {
-      toast.error("Failed to copy JSON");
-    }
+    onShowJson();
   };
 
   return (
@@ -124,6 +114,15 @@ export const DeviceCard = ({ device, onClick, colorMode = 'formFactor' }: Device
               ) : (
                 <Plus className="h-4 w-4" />
               )}
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 w-8 p-0"
+              onClick={handleShowJson}
+              title="View source JSON"
+            >
+              <Code className="h-4 w-4" />
             </Button>
             <div className="flex items-center gap-1">
               {getFormFactorIcon(device.formFactor)}
@@ -197,32 +196,6 @@ export const DeviceCard = ({ device, onClick, colorMode = 'formFactor' }: Device
           )}
         </div>
       </CardContent>
-
-      {/* JSON Source Section */}
-      <div className="border-t p-3 bg-muted/20">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-xs font-medium opacity-75">Source JSON</span>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-6 px-2 text-xs"
-            onClick={handleCopyJson}
-            title="Copy JSON to clipboard"
-          >
-            {copied ? (
-              <Check className="h-3 w-3 mr-1" />
-            ) : (
-              <Copy className="h-3 w-3 mr-1" />
-            )}
-            {copied ? 'Copied' : 'Copy'}
-          </Button>
-        </div>
-        <pre className="text-xs bg-card border rounded p-2 overflow-x-auto max-h-32 overflow-y-auto scrollbar-thin">
-          <code className="json-code text-foreground">
-            {JSON.stringify(device, null, 2)}
-          </code>
-        </pre>
-      </div>
     </Card>
   );
 };

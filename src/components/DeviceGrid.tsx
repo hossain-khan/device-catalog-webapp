@@ -2,6 +2,7 @@ import { memo, useCallback, useMemo, useState } from 'react';
 import { FixedSizeList as List } from 'react-window';
 import { DeviceCard } from "./DeviceCard";
 import { DeviceCardSkeleton } from "./DeviceCardSkeleton";
+import { DeviceJsonModal } from "./DeviceJsonModal";
 import { PaginationControls } from "./PaginationControls";
 import { ColorModeControls } from "./ColorModeControls";
 import { DeviceColorInfo } from "./DeviceColorInfo";
@@ -27,7 +28,7 @@ interface DeviceGridProps {
 }
 
 // Constants for virtual scrolling
-const CARD_HEIGHT = 360; // Height of each device card (increased to accommodate JSON section)
+const CARD_HEIGHT = 320; // Height of each device card (reduced after removing JSON section)
 const CARDS_PER_ROW = {
   default: 1,
   sm: 1,
@@ -48,9 +49,15 @@ const VirtualRow = memo(({
 }: { 
   index: number; 
   style: React.CSSProperties; 
-  data: { devices: AndroidDevice[]; onDeviceClick: (device: AndroidDevice) => void; cardsPerRow: number; colorMode: ColorMode } 
+  data: { 
+    devices: AndroidDevice[]; 
+    onDeviceClick: (device: AndroidDevice) => void; 
+    onShowJson: (device: AndroidDevice) => void;
+    cardsPerRow: number; 
+    colorMode: ColorMode 
+  } 
 }) => {
-  const { devices, onDeviceClick, cardsPerRow, colorMode } = data;
+  const { devices, onDeviceClick, onShowJson, cardsPerRow, colorMode } = data;
   const startIndex = index * cardsPerRow;
   const rowDevices = devices.slice(startIndex, startIndex + cardsPerRow);
 
@@ -74,6 +81,7 @@ const VirtualRow = memo(({
             <DeviceCard
               device={device}
               onClick={() => onDeviceClick(device)}
+              onShowJson={() => onShowJson(device)}
               colorMode={colorMode}
             />
           </div>
@@ -105,6 +113,8 @@ export const DeviceGrid = memo(({
   onColorModeChange
 }: DeviceGridProps) => {
   const [useVirtualScrolling, setUseVirtualScrolling] = useState(false);
+  const [jsonModalDevice, setJsonModalDevice] = useState<AndroidDevice | null>(null);
+  const [jsonModalOpen, setJsonModalOpen] = useState(false);
   
   // Determine the actual device list to use
   const virtualDevices = allFilteredDevices || devices;
@@ -123,12 +133,21 @@ export const DeviceGrid = memo(({
   const virtualListData = useMemo(() => ({
     devices: virtualDevices,
     onDeviceClick,
+    onShowJson: (device: AndroidDevice) => {
+      setJsonModalDevice(device);
+      setJsonModalOpen(true);
+    },
     cardsPerRow,
     colorMode
   }), [virtualDevices, onDeviceClick, cardsPerRow, colorMode]);
 
   const handleToggleVirtualScrolling = useCallback(() => {
     setUseVirtualScrolling(prev => !prev);
+  }, []);
+
+  const handleShowJson = useCallback((device: AndroidDevice) => {
+    setJsonModalDevice(device);
+    setJsonModalOpen(true);
   }, []);
 
   if (isLoading) {
@@ -257,6 +276,7 @@ export const DeviceGrid = memo(({
                 key={`${device.device}-${index}`}
                 device={device}
                 onClick={() => onDeviceClick(device)}
+                onShowJson={() => handleShowJson(device)}
                 colorMode={colorMode}
               />
             ))}
@@ -271,6 +291,13 @@ export const DeviceGrid = memo(({
           )}
         </>
       )}
+
+      {/* JSON Modal */}
+      <DeviceJsonModal
+        device={jsonModalDevice}
+        open={jsonModalOpen}
+        onOpenChange={setJsonModalOpen}
+      />
     </div>
   );
 });

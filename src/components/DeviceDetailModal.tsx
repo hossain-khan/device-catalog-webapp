@@ -1,9 +1,12 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AndroidDevice } from "@/types/device";
 import { formatRam } from "@/lib/deviceUtils";
-import { DeviceMobile, Monitor, DeviceTablet, Television, Car, Laptop, Watch, GameController, Cpu, VideoCard, Display } from "@phosphor-icons/react";
+import { DeviceMobile, Monitor, DeviceTablet, Television, Car, Laptop, Watch, GameController, Cpu, VideoCard, Display, Code, X } from "@phosphor-icons/react";
+import { DeviceJsonModal } from "./DeviceJsonModal";
+import { useState } from "react";
 
 interface DeviceDetailModalProps {
   device: AndroidDevice | null;
@@ -12,6 +15,8 @@ interface DeviceDetailModalProps {
 }
 
 export const DeviceDetailModal = ({ device, open, onOpenChange }: DeviceDetailModalProps) => {
+  const [jsonModalOpen, setJsonModalOpen] = useState(false);
+  
   if (!device) return null;
 
   const getFormFactorIcon = (formFactor: string) => {
@@ -38,7 +43,7 @@ export const DeviceDetailModal = ({ device, open, onOpenChange }: DeviceDetailMo
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
+        <DialogHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
           <DialogTitle className="flex items-center gap-3 text-xl">
             {getFormFactorIcon(device.formFactor)}
             <div>
@@ -48,6 +53,24 @@ export const DeviceDetailModal = ({ device, open, onOpenChange }: DeviceDetailMo
               </div>
             </div>
           </DialogTitle>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setJsonModalOpen(true)}
+            >
+              <Code className="h-4 w-4 mr-2" />
+              View JSON
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onOpenChange(false)}
+              className="h-8 w-8 p-0"
+            >
+              <X size={16} />
+            </Button>
+          </div>
         </DialogHeader>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
@@ -193,6 +216,13 @@ export const DeviceDetailModal = ({ device, open, onOpenChange }: DeviceDetailMo
             </CardContent>
           </Card>
         </div>
+
+        {/* JSON Modal */}
+        <DeviceJsonModal
+          device={device}
+          open={jsonModalOpen}
+          onOpenChange={setJsonModalOpen}
+        />
       </DialogContent>
     </Dialog>
   );
