@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AndroidDevice } from "@/types/device";
 import { formatRam } from "@/lib/deviceUtils";
-import { DevicePhone, Monitor, Tablet, Cpu, VideoCard, Display } from "@phosphor-icons/react";
+import { DeviceMobile, Monitor, DeviceTablet, Television, Car, Laptop, Watch, GameController, Cpu, VideoCard, Display } from "@phosphor-icons/react";
 
 interface DeviceDetailModalProps {
   device: AndroidDevice | null;
@@ -17,13 +17,21 @@ export const DeviceDetailModal = ({ device, open, onOpenChange }: DeviceDetailMo
   const getFormFactorIcon = (formFactor: string) => {
     switch (formFactor.toLowerCase()) {
       case 'phone':
-        return <DevicePhone className="h-5 w-5" />;
+        return <DeviceMobile className="h-5 w-5" />;
       case 'tablet':
-        return <Tablet className="h-5 w-5" />;
+        return <DeviceTablet className="h-5 w-5" />;
       case 'tv':
-        return <Monitor className="h-5 w-5" />;
+        return <Television className="h-5 w-5" />;
+      case 'android automotive':
+        return <Car className="h-5 w-5" />;
+      case 'chromebook':
+        return <Laptop className="h-5 w-5" />;
+      case 'wearable':
+        return <Watch className="h-5 w-5" />;
+      case 'google play games on pc':
+        return <GameController className="h-5 w-5" />;
       default:
-        return <DevicePhone className="h-5 w-5" />;
+        return <DeviceMobile className="h-5 w-5" />;
     }
   };
 

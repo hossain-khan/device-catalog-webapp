@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { AndroidDevice } from "@/types/device";
 import { formatRam } from "@/lib/deviceUtils";
-import { DeviceMobile, Monitor, Tablet, Plus, Minus } from "@phosphor-icons/react";
+import { DeviceMobile, Monitor, DeviceTablet, Television, Car, Laptop, Watch, GameController, Plus, Minus } from "@phosphor-icons/react";
 import { useComparison } from "@/contexts/ComparisonContext";
 
 interface DeviceCardProps {
@@ -21,17 +21,17 @@ export const DeviceCard = ({ device, onClick }: DeviceCardProps) => {
       case 'phone':
         return <DeviceMobile className="h-4 w-4" />;
       case 'tablet':
-        return <Tablet className="h-4 w-4" />;
+        return <DeviceTablet className="h-4 w-4" />;
       case 'tv':
-        return <Monitor className="h-4 w-4" />;
+        return <Television className="h-4 w-4" />;
       case 'android automotive':
-        return <Monitor className="h-4 w-4" />;
+        return <Car className="h-4 w-4" />;
       case 'chromebook':
-        return <Monitor className="h-4 w-4" />;
+        return <Laptop className="h-4 w-4" />;
       case 'wearable':
-        return <DeviceMobile className="h-4 w-4" />;
+        return <Watch className="h-4 w-4" />;
       case 'google play games on pc':
-        return <Monitor className="h-4 w-4" />;
+        return <GameController className="h-4 w-4" />;
       default:
         return <DeviceMobile className="h-4 w-4" />;
     }
