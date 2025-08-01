@@ -65,14 +65,17 @@ export const DeviceJsonModal = ({ device, open, onOpenChange }: DeviceJsonModalP
               customStyle={{
                 margin: 0,
                 padding: '1rem',
-                fontSize: '0.875rem',
-                lineHeight: '1.4',
+                fontSize: '0.75rem',
+                lineHeight: '1.2',
                 height: '100%',
-                background: 'transparent'
+                background: 'transparent',
+                textShadow: 'none'
               }}
               codeTagProps={{
                 style: {
-                  fontFamily: 'var(--font-mono), ui-monospace, "Cascadia Code", "Segoe UI Mono", "Ubuntu Mono", "Roboto Mono", "Fira Code", monospace'
+                  fontFamily: 'var(--font-mono), ui-monospace, "Cascadia Code", "Segoe UI Mono", "Ubuntu Mono", "Roboto Mono", "Fira Code", monospace',
+                  textShadow: 'none',
+                  color: 'var(--foreground)'
                 }
               }}
             >

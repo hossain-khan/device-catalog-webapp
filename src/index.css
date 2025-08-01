@@ -155,3 +155,8 @@ body{
   white-space: pre-wrap;
   word-break: break-all;
 }
+
+/* Remove text shadow from JSON syntax highlighting */
+.hljs, .hljs * {
+  text-shadow: none !important;
+}
