@@ -11,6 +11,11 @@
 
 ## Essential Features
 
+### File Upload & Data Management
+- **Functionality**: Upload custom device catalog JSON files to replace default sample data
+- **Purpose**: Allow users to work with their own device datasets or updated catalog information
+- **Success Criteria**: Validates JSON structure, clears old data before loading new, provides clear error messaging
+
 ### Device Browser
 - **Functionality**: Grid-based display of Android devices with search and filtering capabilities
 - **Purpose**: Allow users to quickly find and explore devices based on specific criteria

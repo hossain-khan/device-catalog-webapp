@@ -7,6 +7,7 @@ import { DeviceGrid } from '@/components/DeviceGrid';
 import { DeviceDetailModal } from '@/components/DeviceDetailModal';
 import { ComparisonBar } from '@/components/ComparisonBar';
 import { DeviceComparisonModal } from '@/components/DeviceComparisonModal';
+import { FileUploadPanel } from '@/components/FileUploadPanel';
 import { ComparisonProvider } from '@/contexts/ComparisonContext';
 import { sampleDevices } from '@/data/devices';
 import { AndroidDevice, DeviceFilters } from '@/types/device';
@@ -17,6 +18,7 @@ import {
   getUniqueFormFactors, 
   getUniqueSdkVersions 
 } from '@/lib/deviceUtils';
+import { sanitizeDeviceData } from '@/lib/deviceValidation';
 
 function App() {
   const [filters, setFilters] = useKV<DeviceFilters>('device-filters', {
@@ -27,11 +29,13 @@ function App() {
     sdkVersion: 'all'
   });
 
+  const [uploadedDevices, setUploadedDevices] = useKV<AndroidDevice[]>('uploaded-devices', []);
   const [selectedDevice, setSelectedDevice] = useState<AndroidDevice | null>(null);
   const [detailModalOpen, setDetailModalOpen] = useState(false);
   const [comparisonModalOpen, setComparisonModalOpen] = useState(false);
 
-  const devices = sampleDevices;
+  // Use uploaded devices if available, otherwise fall back to sample data
+  const devices = uploadedDevices.length > 0 ? uploadedDevices : sampleDevices;
 
   const filteredDevices = useMemo(() => 
     filterDevices(devices, filters), 
@@ -80,6 +84,33 @@ function App() {
     setComparisonModalOpen(true);
   };
 
+  const handleDevicesLoaded = (newDevices: AndroidDevice[]) => {
+    // Clear old device data and comparison state before loading new data
+    const sanitizedDevices = sanitizeDeviceData(newDevices);
+    setUploadedDevices(sanitizedDevices);
+    
+    // Reset filters to default when new data is loaded
+    setFilters({
+      search: '',
+      formFactor: 'all',
+      manufacturer: 'all',
+      minRam: 'all',
+      sdkVersion: 'all'
+    });
+  };
+
+  const handleClearDevices = () => {
+    setUploadedDevices([]);
+    // Reset filters when clearing data
+    setFilters({
+      search: '',
+      formFactor: 'all',
+      manufacturer: 'all',
+      minRam: 'all',
+      sdkVersion: 'all'
+    });
+  };
+
   return (
     <ComparisonProvider>
       <div className="min-h-screen bg-background pb-20">
@@ -94,10 +125,19 @@ function App() {
           </div>
 
           <Tabs defaultValue="devices" className="space-y-6">
-            <TabsList className="grid w-full max-w-md grid-cols-2">
+            <TabsList className="grid w-full max-w-lg grid-cols-3">
+              <TabsTrigger value="upload">Upload Data</TabsTrigger>
               <TabsTrigger value="devices">Device Browser</TabsTrigger>
               <TabsTrigger value="analytics">Analytics</TabsTrigger>
             </TabsList>
+
+            <TabsContent value="upload" className="space-y-6">
+              <FileUploadPanel
+                onDevicesLoaded={handleDevicesLoaded}
+                onClearDevices={handleClearDevices}
+                deviceCount={devices.length}
+              />
+            </TabsContent>
 
             <TabsContent value="devices" className="space-y-6">
               <DeviceFiltersPanel
