@@ -4,7 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Upload, FileText, Check, AlertCircle, Trash2, TestTube, Download } from '@phosphor-icons/react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Upload, FileText, Check, AlertCircle, Trash2, TestTube, Download, Globe } from '@phosphor-icons/react';
 import { AndroidDevice } from '@/types/device';
 import { validateDeviceData } from '@/lib/deviceValidation';
 import { generateTestDevices, downloadDevicesAsJson } from '@/lib/testDataGenerator';
@@ -21,6 +22,66 @@ export function FileUploadPanel({ onDevicesLoaded, onClearDevices, deviceCount, 
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [isDragOver, setIsDragOver] = useState(false);
   const [testDataCount, setTestDataCount] = useState<number>(5000);
+  const [urlInput, setUrlInput] = useState<string>('https://raw.githubusercontent.com/hossain-khan/android-device-catalog-parser/refs/heads/main/sample/src/main/resources/android-devices-catalog.json');
+
+  const loadFromUrl = useCallback(async () => {
+    if (!urlInput.trim()) {
+      setUploadStatus('error');
+      setErrorMessage('Please enter a valid URL');
+      return;
+    }
+
+    setUploadStatus('loading');
+    setErrorMessage('');
+
+    try {
+      const response = await fetch(urlInput.trim());
+      
+      if (!response.ok) {
+        throw new Error(`Failed to fetch data: ${response.status} ${response.statusText}`);
+      }
+
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        // Try to parse anyway, as some servers don't set proper content-type
+        console.warn('Content-Type is not application/json, but attempting to parse as JSON');
+      }
+
+      const text = await response.text();
+      let data;
+      
+      try {
+        data = JSON.parse(text);
+      } catch (parseError) {
+        throw new Error('Invalid JSON format received from URL. Please check the URL and try again.');
+      }
+
+      // Validate that data is an array
+      if (!Array.isArray(data)) {
+        throw new Error('URL must return an array of device objects.');
+      }
+
+      if (data.length === 0) {
+        throw new Error('URL returned no device data.');
+      }
+
+      // Validate device structure
+      const validationResult = validateDeviceData(data);
+      if (!validationResult.isValid) {
+        throw new Error(`Invalid device data from URL: ${validationResult.errors.join(', ')}`);
+      }
+
+      onDevicesLoaded(data);
+      setUploadStatus('success');
+    } catch (error) {
+      setUploadStatus('error');
+      if (error instanceof TypeError && error.message.includes('fetch')) {
+        setErrorMessage('Network error: Please check your internet connection and try again.');
+      } else {
+        setErrorMessage(error instanceof Error ? error.message : 'Failed to load data from URL');
+      }
+    }
+  }, [urlInput, onDevicesLoaded]);
 
   const generateTestData = useCallback(async () => {
     setUploadStatus('loading');
@@ -110,6 +171,8 @@ export function FileUploadPanel({ onDevicesLoaded, onClearDevices, deviceCount, 
     onClearDevices();
     setUploadStatus('idle');
     setErrorMessage('');
+    // Reset URL to default value when clearing
+    setUrlInput('https://raw.githubusercontent.com/hossain-khan/android-device-catalog-parser/refs/heads/main/sample/src/main/resources/android-devices-catalog.json');
   }, [onClearDevices]);
 
   const handleDownloadData = useCallback(() => {
@@ -156,58 +219,103 @@ export function FileUploadPanel({ onDevicesLoaded, onClearDevices, deviceCount, 
           )}
         </div>
 
-        <div
-          className={`
-            border-2 border-dashed rounded-lg p-6 text-center transition-colors cursor-pointer
-            ${isDragOver ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50'}
-            ${uploadStatus === 'loading' ? 'pointer-events-none opacity-50' : ''}
-          `}
-          onDrop={handleDrop}
-          onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
-        >
-          <div className="flex flex-col items-center gap-3">
-            <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
-              {uploadStatus === 'loading' ? (
-                <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-              ) : uploadStatus === 'success' ? (
-                <Check className="w-6 h-6 text-green-600" />
-              ) : uploadStatus === 'error' ? (
-                <AlertCircle className="w-6 h-6 text-destructive" />
-              ) : (
-                <Upload className="w-6 h-6 text-muted-foreground" />
-              )}
-            </div>
-            
-            <div>
-              <p className="font-medium">
-                {uploadStatus === 'loading' ? 'Processing file...' :
-                 uploadStatus === 'success' ? 'File uploaded successfully!' :
-                 'Drop your JSON file here or click to browse'}
-              </p>
-              <p className="text-sm text-muted-foreground mt-1">
-                Supports JSON files with Android device catalog data
-              </p>
-            </div>
+        <Tabs defaultValue="file" className="w-full">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="file">Upload File</TabsTrigger>
+            <TabsTrigger value="url">Load from URL</TabsTrigger>
+          </TabsList>
 
-            <Label htmlFor="file-upload" className="cursor-pointer">
-              <Input
-                id="file-upload"
-                type="file"
-                accept=".json,application/json"
-                onChange={handleFileSelect}
-                className="hidden"
-              />
-              <Button 
-                variant="outline" 
-                className="mt-2"
-                disabled={uploadStatus === 'loading'}
-              >
-                Browse Files
-              </Button>
-            </Label>
-          </div>
-        </div>
+          <TabsContent value="file" className="space-y-4">
+            <div
+              className={`
+                border-2 border-dashed rounded-lg p-6 text-center transition-colors cursor-pointer
+                ${isDragOver ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50'}
+                ${uploadStatus === 'loading' ? 'pointer-events-none opacity-50' : ''}
+              `}
+              onDrop={handleDrop}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+            >
+              <div className="flex flex-col items-center gap-3">
+                <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
+                  {uploadStatus === 'loading' ? (
+                    <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                  ) : uploadStatus === 'success' ? (
+                    <Check className="w-6 h-6 text-green-600" />
+                  ) : uploadStatus === 'error' ? (
+                    <AlertCircle className="w-6 h-6 text-destructive" />
+                  ) : (
+                    <Upload className="w-6 h-6 text-muted-foreground" />
+                  )}
+                </div>
+                
+                <div>
+                  <p className="font-medium">
+                    {uploadStatus === 'loading' ? 'Processing file...' :
+                     uploadStatus === 'success' ? 'File uploaded successfully!' :
+                     'Drop your JSON file here or click to browse'}
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Supports JSON files with Android device catalog data
+                  </p>
+                </div>
+
+                <Label htmlFor="file-upload" className="cursor-pointer">
+                  <Input
+                    id="file-upload"
+                    type="file"
+                    accept=".json,application/json"
+                    onChange={handleFileSelect}
+                    className="hidden"
+                  />
+                  <Button 
+                    variant="outline" 
+                    className="mt-2"
+                    disabled={uploadStatus === 'loading'}
+                  >
+                    Browse Files
+                  </Button>
+                </Label>
+              </div>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="url" className="space-y-4">
+            <div className="space-y-3">
+              <div>
+                <Label htmlFor="url-input" className="text-sm font-medium">
+                  JSON URL
+                </Label>
+                <div className="flex gap-2 mt-1">
+                  <Input
+                    id="url-input"
+                    type="url"
+                    placeholder="https://example.com/devices.json"
+                    value={urlInput}
+                    onChange={(e) => setUrlInput(e.target.value)}
+                    disabled={uploadStatus === 'loading'}
+                    className="flex-1"
+                  />
+                  <Button 
+                    onClick={loadFromUrl}
+                    disabled={uploadStatus === 'loading' || !urlInput.trim()}
+                    className="flex items-center gap-2"
+                  >
+                    {uploadStatus === 'loading' ? (
+                      <div className="w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
+                    ) : (
+                      <Globe className="w-4 h-4" />
+                    )}
+                    Load
+                  </Button>
+                </div>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Enter a URL that returns JSON data with Android device catalog information
+              </p>
+            </div>
+          </TabsContent>
+        </Tabs>
 
         {uploadStatus === 'error' && errorMessage && (
           <Alert variant="destructive">
