@@ -24,6 +24,14 @@ export const DeviceCard = ({ device, onClick }: DeviceCardProps) => {
         return <Tablet className="h-4 w-4" />;
       case 'tv':
         return <Monitor className="h-4 w-4" />;
+      case 'android automotive':
+        return <Monitor className="h-4 w-4" />;
+      case 'chromebook':
+        return <Monitor className="h-4 w-4" />;
+      case 'wearable':
+        return <DevicePhone className="h-4 w-4" />;
+      case 'google play games on pc':
+        return <Monitor className="h-4 w-4" />;
       default:
         return <DevicePhone className="h-4 w-4" />;
     }
@@ -40,12 +48,13 @@ export const DeviceCard = ({ device, onClick }: DeviceCardProps) => {
 
   return (
     <Card 
-      className={`cursor-pointer hover:bg-accent/50 transition-colors duration-200 h-full relative ${
+      className={`cursor-pointer hover:bg-accent/50 transition-colors duration-200 relative flex flex-col w-full ${
         inComparison ? 'ring-2 ring-primary ring-offset-2' : ''
       }`}
+      style={{ height: '200px', minHeight: '200px', maxHeight: '200px' }} // Fixed height for virtual scrolling consistency
       onClick={onClick}
     >
-      <CardHeader className="pb-3">
+      <CardHeader className="pb-3 flex-shrink-0">
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1 min-w-0">
             <h3 className="font-semibold text-sm leading-tight line-clamp-2 mb-1">
@@ -78,7 +87,7 @@ export const DeviceCard = ({ device, onClick }: DeviceCardProps) => {
         </div>
       </CardHeader>
       
-      <CardContent className="space-y-3">
+      <CardContent className="space-y-3 flex-1 overflow-hidden">
         <div className="grid grid-cols-2 gap-2 text-xs">
           <div>
             <span className="text-muted-foreground">RAM:</span>

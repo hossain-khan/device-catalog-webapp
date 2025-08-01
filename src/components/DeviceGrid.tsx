@@ -21,14 +21,16 @@ interface DeviceGridProps {
 }
 
 // Constants for virtual scrolling
-const CARD_HEIGHT = 180; // Height of each device card
+const CARD_HEIGHT = 200; // Height of each device card (matches DeviceCard fixed height)
 const CARDS_PER_ROW = {
   default: 1,
+  sm: 1,
   md: 2,
   lg: 3,
   xl: 4
 };
-const ROW_GAP = 16; // Gap between rows
+const ROW_GAP = 24; // Gap between rows
+const GRID_GAP = 24; // Gap between cards
 const ROW_HEIGHT = CARD_HEIGHT + ROW_GAP;
 const VIRTUAL_LIST_HEIGHT = 600;
 const VIRTUAL_THRESHOLD = 200; // Switch to virtual scrolling when more than this many devices
@@ -47,21 +49,38 @@ const VirtualRow = memo(({
   const startIndex = index * cardsPerRow;
   const rowDevices = devices.slice(startIndex, startIndex + cardsPerRow);
 
+  // Create a custom style that ensures proper spacing and no overlap
+  const rowStyle = {
+    ...style,
+    paddingLeft: '16px',
+    paddingRight: '16px',
+    paddingBottom: `${ROW_GAP}px`,
+    display: 'flex',
+    alignItems: 'flex-start'
+  };
+
   return (
-    <div style={style} className="px-1">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 pb-4">
+    <div style={rowStyle}>
+      <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {rowDevices.map((device, cardIndex) => (
-          <DeviceCard
+          <div 
             key={`${device.device}-${device.modelName}-${startIndex + cardIndex}`}
-            device={device}
-            onClick={() => onDeviceClick(device)}
-          />
+            style={{ height: `${CARD_HEIGHT}px` }}
+            className="flex"
+          >
+            <DeviceCard
+              device={device}
+              onClick={() => onDeviceClick(device)}
+            />
+          </div>
         ))}
         {/* Fill empty slots to maintain grid alignment */}
         {Array.from({ length: cardsPerRow - rowDevices.length }, (_, i) => (
-          <div key={`empty-${i}`} className="invisible">
-            <div style={{ height: CARD_HEIGHT }} />
-          </div>
+          <div 
+            key={`empty-${i}`} 
+            style={{ height: `${CARD_HEIGHT}px` }} 
+            className="invisible flex"
+          />
         ))}
       </div>
     </div>
@@ -174,14 +193,15 @@ export const DeviceGrid = memo(({
             Showing all {virtualDevices.length.toLocaleString()} devices with virtual scrolling
           </div>
           
-          <div className="border rounded-lg overflow-hidden bg-card">
+          <div className="border rounded-lg overflow-hidden bg-card shadow-sm">
             <List
               height={VIRTUAL_LIST_HEIGHT}
               itemCount={totalRows}
               itemSize={ROW_HEIGHT}
               itemData={virtualListData}
-              overscanCount={3}
-              className="scrollbar-thin scrollbar-thumb-border/30 scrollbar-track-transparent"
+              overscanCount={2}
+              className="scrollbar-thin"
+              style={{ outline: 'none' }}
             >
               {VirtualRow}
             </List>
