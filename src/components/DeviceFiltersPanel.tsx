@@ -83,7 +83,7 @@ export const DeviceFiltersPanel = ({
           <span className="text-sm text-muted-foreground">Filters:</span>
         </div>
         <Select value={filters.formFactor} onValueChange={(value) => updateFilter('formFactor', value)}>
-          <SelectTrigger className="w-[150px]">
+          <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Form Factor" />
           </SelectTrigger>
           <SelectContent>
