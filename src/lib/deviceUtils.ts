@@ -32,7 +32,7 @@ export const filterDevices = (devices: AndroidDevice[], filters: DeviceFilters):
       }
     }
 
-    // RAM filter
+    // Legacy RAM filter (for backward compatibility)
     if (filters.minRam && filters.minRam !== 'all') {
       const deviceRamMB = parseRamValue(device.ram);
       const minRamMB = parseInt(filters.minRam);
@@ -41,10 +41,28 @@ export const filterDevices = (devices: AndroidDevice[], filters: DeviceFilters):
       }
     }
 
-    // SDK version filter
+    // Advanced RAM range filter
+    if (filters.ramRange) {
+      const deviceRamMB = parseRamValue(device.ram);
+      const [minRam, maxRam] = filters.ramRange;
+      if (deviceRamMB < minRam || deviceRamMB > maxRam) {
+        return false;
+      }
+    }
+
+    // Legacy SDK version filter (for backward compatibility)
     if (filters.sdkVersion && filters.sdkVersion !== 'all') {
       const targetSdk = parseInt(filters.sdkVersion);
       if (!device.sdkVersions.includes(targetSdk)) {
+        return false;
+      }
+    }
+
+    // Advanced SDK version range filter
+    if (filters.sdkVersionRange) {
+      const [minSdk, maxSdk] = filters.sdkVersionRange;
+      const hasMatchingSdk = device.sdkVersions.some(sdk => sdk >= minSdk && sdk <= maxSdk);
+      if (!hasMatchingSdk) {
         return false;
       }
     }
@@ -128,4 +146,18 @@ export const getUniqueFormFactors = (devices: AndroidDevice[]): string[] => {
 export const getUniqueSdkVersions = (devices: AndroidDevice[]): number[] => {
   const sdkVersions = [...new Set(devices.flatMap(d => d.sdkVersions))];
   return sdkVersions.sort((a, b) => b - a);
+};
+
+export const getRamRange = (devices: AndroidDevice[]): [number, number] => {
+  const ramValues = devices.map(device => parseRamValue(device.ram));
+  const minRam = Math.min(...ramValues);
+  const maxRam = Math.max(...ramValues);
+  return [minRam, maxRam];
+};
+
+export const getSdkVersionRange = (devices: AndroidDevice[]): [number, number] => {
+  const allSdkVersions = devices.flatMap(device => device.sdkVersions);
+  const minSdk = Math.min(...allSdkVersions);
+  const maxSdk = Math.max(...allSdkVersions);
+  return [minSdk, maxSdk];
 };

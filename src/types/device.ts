@@ -20,6 +20,9 @@ export interface DeviceFilters {
   manufacturer: string;
   minRam: string;
   sdkVersion: string;
+  // New advanced filters
+  ramRange: [number, number]; // [min, max] in MB
+  sdkVersionRange: [number, number]; // [min, max] SDK version
 }
 
 export interface DeviceStats {

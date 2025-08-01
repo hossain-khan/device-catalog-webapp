@@ -1,9 +1,15 @@
+import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Search, X, Filter } from "@phosphor-icons/react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Slider } from "@/components/ui/slider";
+import { Label } from "@/components/ui/label";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Search, X, Filter, SlidersHorizontal, CaretDown } from "@phosphor-icons/react";
 import { DeviceFilters } from "@/types/device";
+import { formatRam } from "@/lib/deviceUtils";
 
 interface DeviceFiltersProps {
   filters: DeviceFilters;
@@ -13,6 +19,8 @@ interface DeviceFiltersProps {
   sdkVersions: number[];
   deviceCount: number;
   totalDevices: number;
+  ramRange: [number, number];
+  sdkVersionRange: [number, number];
 }
 
 export const DeviceFiltersPanel = ({
@@ -22,9 +30,11 @@ export const DeviceFiltersPanel = ({
   formFactors,
   sdkVersions,
   deviceCount,
-  totalDevices
+  totalDevices,
+  ramRange,
+  sdkVersionRange
 }: DeviceFiltersProps) => {
-  const updateFilter = (key: keyof DeviceFilters, value: string) => {
+  const updateFilter = (key: keyof DeviceFilters, value: any) => {
     onFiltersChange({ ...filters, [key]: value });
   };
 
@@ -34,11 +44,22 @@ export const DeviceFiltersPanel = ({
       formFactor: 'all',
       manufacturer: 'all',
       minRam: 'all',
-      sdkVersion: 'all'
+      sdkVersion: 'all',
+      ramRange: ramRange,
+      sdkVersionRange: sdkVersionRange
     });
   };
 
-  const hasActiveFilters = Object.values(filters).some(value => value !== '' && value !== 'all');
+  const hasActiveFilters = 
+    filters.search !== '' ||
+    filters.formFactor !== 'all' ||
+    filters.manufacturer !== 'all' ||
+    filters.minRam !== 'all' ||
+    filters.sdkVersion !== 'all' ||
+    (filters.ramRange && (filters.ramRange[0] !== ramRange[0] || filters.ramRange[1] !== ramRange[1])) ||
+    (filters.sdkVersionRange && (filters.sdkVersionRange[0] !== sdkVersionRange[0] || filters.sdkVersionRange[1] !== sdkVersionRange[1]));
+
+  const [advancedOpen, setAdvancedOpen] = useState(false);
 
   return (
     <div className="space-y-4">
@@ -122,6 +143,63 @@ export const DeviceFiltersPanel = ({
         )}
       </div>
 
+      {/* Advanced Filters */}
+      <Collapsible open={advancedOpen} onOpenChange={setAdvancedOpen}>
+        <CollapsibleTrigger asChild>
+          <Button variant="outline" size="sm" className="flex items-center gap-2">
+            <SlidersHorizontal className="h-4 w-4" />
+            Advanced Filters
+            <CaretDown className={`h-4 w-4 transition-transform ${advancedOpen ? 'rotate-180' : ''}`} />
+          </Button>
+        </CollapsibleTrigger>
+        <CollapsibleContent className="mt-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">Advanced Range Filters</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* RAM Range Slider */}
+              <div className="space-y-3">
+                <Label className="text-sm font-medium">RAM Range</Label>
+                <div className="px-3">
+                  <Slider
+                    value={filters.ramRange || ramRange}
+                    onValueChange={(value) => updateFilter('ramRange', value as [number, number])}
+                    min={ramRange[0]}
+                    max={ramRange[1]}
+                    step={Math.max(1, Math.floor((ramRange[1] - ramRange[0]) / 100))}
+                    className="w-full"
+                  />
+                </div>
+                <div className="flex justify-between text-sm text-muted-foreground">
+                  <span>{formatRam(`${filters.ramRange?.[0] || ramRange[0]}MB`)}</span>
+                  <span>{formatRam(`${filters.ramRange?.[1] || ramRange[1]}MB`)}</span>
+                </div>
+              </div>
+
+              {/* SDK Version Range Slider */}
+              <div className="space-y-3">
+                <Label className="text-sm font-medium">SDK Version Range</Label>
+                <div className="px-3">
+                  <Slider
+                    value={filters.sdkVersionRange || sdkVersionRange}
+                    onValueChange={(value) => updateFilter('sdkVersionRange', value as [number, number])}
+                    min={sdkVersionRange[0]}
+                    max={sdkVersionRange[1]}
+                    step={1}
+                    className="w-full"
+                  />
+                </div>
+                <div className="flex justify-between text-sm text-muted-foreground">
+                  <span>API {filters.sdkVersionRange?.[0] || sdkVersionRange[0]}</span>
+                  <span>API {filters.sdkVersionRange?.[1] || sdkVersionRange[1]}</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </CollapsibleContent>
+      </Collapsible>
+
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Badge variant="outline" className="text-sm">
@@ -153,6 +231,16 @@ export const DeviceFiltersPanel = ({
               {filters.sdkVersion !== 'all' && (
                 <Badge variant="secondary" className="text-xs">
                   API {filters.sdkVersion}
+                </Badge>
+              )}
+              {filters.ramRange && (filters.ramRange[0] !== ramRange[0] || filters.ramRange[1] !== ramRange[1]) && (
+                <Badge variant="secondary" className="text-xs">
+                  RAM: {formatRam(`${filters.ramRange[0]}MB`)} - {formatRam(`${filters.ramRange[1]}MB`)}
+                </Badge>
+              )}
+              {filters.sdkVersionRange && (filters.sdkVersionRange[0] !== sdkVersionRange[0] || filters.sdkVersionRange[1] !== sdkVersionRange[1]) && (
+                <Badge variant="secondary" className="text-xs">
+                  SDK: API {filters.sdkVersionRange[0]} - {filters.sdkVersionRange[1]}
                 </Badge>
               )}
             </div>

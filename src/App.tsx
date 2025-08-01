@@ -16,26 +16,47 @@ import {
   calculateDeviceStats, 
   getUniqueManufacturers, 
   getUniqueFormFactors, 
-  getUniqueSdkVersions 
+  getUniqueSdkVersions,
+  getRamRange,
+  getSdkVersionRange
 } from '@/lib/deviceUtils';
 import { sanitizeDeviceData } from '@/lib/deviceValidation';
 
 function App() {
+  // Use uploaded devices if available, otherwise fall back to sample data
+  const [uploadedDevices, setUploadedDevices] = useKV<AndroidDevice[]>('uploaded-devices', []);
+  const devices = uploadedDevices.length > 0 ? uploadedDevices : sampleDevices;
+  
+  // Calculate ranges from available devices
+  const ramRange = useMemo(() => getRamRange(devices), [devices]);
+  const sdkVersionRange = useMemo(() => getSdkVersionRange(devices), [devices]);
+  
   const [filters, setFilters] = useKV<DeviceFilters>('device-filters', {
     search: '',
     formFactor: 'all',
     manufacturer: 'all',
     minRam: 'all',
-    sdkVersion: 'all'
+    sdkVersion: 'all',
+    ramRange: [0, 16384], // Default fallback range
+    sdkVersionRange: [23, 35] // Default fallback range
   });
-
-  const [uploadedDevices, setUploadedDevices] = useKV<AndroidDevice[]>('uploaded-devices', []);
+  
+  // Update ranges in filters when devices change
+  useMemo(() => {
+    if (!filters.ramRange || !filters.sdkVersionRange || 
+        (filters.ramRange[0] === 0 && filters.ramRange[1] === 16384) ||
+        (filters.sdkVersionRange[0] === 23 && filters.sdkVersionRange[1] === 35)) {
+      setFilters(current => ({
+        ...current,
+        ramRange: ramRange,
+        sdkVersionRange: sdkVersionRange
+      }));
+    }
+  }, [ramRange, sdkVersionRange, filters.ramRange, filters.sdkVersionRange, setFilters]);
+  
   const [selectedDevice, setSelectedDevice] = useState<AndroidDevice | null>(null);
   const [detailModalOpen, setDetailModalOpen] = useState(false);
   const [comparisonModalOpen, setComparisonModalOpen] = useState(false);
-
-  // Use uploaded devices if available, otherwise fall back to sample data
-  const devices = uploadedDevices.length > 0 ? uploadedDevices : sampleDevices;
 
   const filteredDevices = useMemo(() => 
     filterDevices(devices, filters), 
@@ -89,25 +110,36 @@ function App() {
     const sanitizedDevices = sanitizeDeviceData(newDevices);
     setUploadedDevices(sanitizedDevices);
     
+    // Calculate new ranges for the loaded devices
+    const newRamRange = getRamRange(sanitizedDevices);
+    const newSdkVersionRange = getSdkVersionRange(sanitizedDevices);
+    
     // Reset filters to default when new data is loaded
     setFilters({
       search: '',
       formFactor: 'all',
       manufacturer: 'all',
       minRam: 'all',
-      sdkVersion: 'all'
+      sdkVersion: 'all',
+      ramRange: newRamRange,
+      sdkVersionRange: newSdkVersionRange
     });
   };
 
   const handleClearDevices = () => {
     setUploadedDevices([]);
     // Reset filters when clearing data
+    const defaultRamRange = getRamRange(sampleDevices);
+    const defaultSdkVersionRange = getSdkVersionRange(sampleDevices);
+    
     setFilters({
       search: '',
       formFactor: 'all',
       manufacturer: 'all',
       minRam: 'all',
-      sdkVersion: 'all'
+      sdkVersion: 'all',
+      ramRange: defaultRamRange,
+      sdkVersionRange: defaultSdkVersionRange
     });
   };
 
@@ -148,6 +180,8 @@ function App() {
                 sdkVersions={uniqueSdkVersions}
                 deviceCount={filteredDevices.length}
                 totalDevices={devices.length}
+                ramRange={ramRange}
+                sdkVersionRange={sdkVersionRange}
               />
 
               <DeviceGrid
