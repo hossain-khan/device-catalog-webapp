@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect, useImperativeHandle, forwardRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -18,9 +18,15 @@ interface FileUploadPanelProps {
   onClearDevices: () => void;
   deviceCount: number;
   currentDevices?: AndroidDevice[]; // Add current devices for download
+  onActivateUrlTab?: () => void; // Callback to activate URL tab from external trigger
 }
 
-export function FileUploadPanel({ onDevicesLoaded, onClearDevices, deviceCount, currentDevices }: FileUploadPanelProps) {
+export interface FileUploadPanelRef {
+  activateUrlTab: () => void;
+}
+
+export const FileUploadPanel = forwardRef<FileUploadPanelRef, FileUploadPanelProps>(
+  ({ onDevicesLoaded, onClearDevices, deviceCount, currentDevices, onActivateUrlTab }, ref) => {
   const [uploadStatus, setUploadStatus] = useState<'idle' | 'loading' | 'success' | 'error' | 'warning'>('idle');
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
@@ -29,6 +35,26 @@ export function FileUploadPanel({ onDevicesLoaded, onClearDevices, deviceCount, 
   const [urlInput, setUrlInput] = useState<string>('https://raw.githubusercontent.com/hossain-khan/android-device-catalog-parser/refs/heads/main/sample/src/main/resources/android-devices-catalog.json');
   const [schemaModalOpen, setSchemaModalOpen] = useState(false);
   const [validationProgress, setValidationProgress] = useState<{ current: number; total: number } | null>(null);
+  const [activeTabInternal, setActiveTabInternal] = useState<string>('file');
+
+  const handleUseLatestDataset = useCallback(() => {
+    // Activate URL tab and set the URL
+    setActiveTabInternal('url');
+    setUrlInput('https://raw.githubusercontent.com/hossain-khan/android-device-catalog-parser/refs/heads/main/sample/src/main/resources/android-devices-catalog.json');
+    
+    // Trigger callback to parent if provided
+    if (onActivateUrlTab) {
+      onActivateUrlTab();
+    }
+  }, [onActivateUrlTab]);
+
+  // Expose methods to parent component via ref
+  useImperativeHandle(ref, () => ({
+    activateUrlTab: () => {
+      setActiveTabInternal('url');
+      setUrlInput('https://raw.githubusercontent.com/hossain-khan/android-device-catalog-parser/refs/heads/main/sample/src/main/resources/android-devices-catalog.json');
+    }
+  }), []);
 
   const loadFromUrl = useCallback(async () => {
     if (!urlInput.trim()) {
@@ -229,7 +255,7 @@ export function FileUploadPanel({ onDevicesLoaded, onClearDevices, deviceCount, 
   }, [currentDevices]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-upload-section>
       {/* Upload Card */}
       <Card>
         <CardHeader>
@@ -267,7 +293,7 @@ export function FileUploadPanel({ onDevicesLoaded, onClearDevices, deviceCount, 
           )}
         </div>
 
-        <Tabs defaultValue="file" className="w-full">
+        <Tabs value={activeTabInternal} onValueChange={setActiveTabInternal} className="w-full">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="file">Upload File</TabsTrigger>
             <TabsTrigger value="url">Load from URL</TabsTrigger>
@@ -560,7 +586,7 @@ export function FileUploadPanel({ onDevicesLoaded, onClearDevices, deviceCount, 
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setUrlInput('https://raw.githubusercontent.com/hossain-khan/android-device-catalog-parser/refs/heads/main/sample/src/main/resources/android-devices-catalog.json')}
+              onClick={handleUseLatestDataset}
               className="flex items-center gap-2"
             >
               <FileArrowDown className="w-4 h-4" />
@@ -578,4 +604,4 @@ export function FileUploadPanel({ onDevicesLoaded, onClearDevices, deviceCount, 
       </Card>
     </div>
   );
-}
+});

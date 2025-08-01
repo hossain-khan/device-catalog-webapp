@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useRef } from 'react';
 import { useKV } from '@github/spark/hooks';
 import { useDebounce } from '@/hooks/useDebounce';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -8,7 +8,7 @@ import { DeviceGrid } from '@/components/DeviceGrid';
 import { DeviceDetailModal } from '@/components/DeviceDetailModal';
 import { ComparisonBar } from '@/components/ComparisonBar';
 import { DeviceComparisonModal } from '@/components/DeviceComparisonModal';
-import { FileUploadPanel } from '@/components/FileUploadPanel';
+import { FileUploadPanel, FileUploadPanelRef } from '@/components/FileUploadPanel';
 import { PerformanceBanner } from '@/components/PerformanceBanner';
 import { BackToTopButton } from '@/components/BackToTopButton';
 import { ComparisonProvider } from '@/contexts/ComparisonContext';
@@ -32,6 +32,12 @@ function App() {
   // Use uploaded devices if available, otherwise fall back to sample data
   const [uploadedDevices, setUploadedDevices] = useKV<AndroidDevice[]>('uploaded-devices', []);
   const devices = uploadedDevices.length > 0 ? uploadedDevices : sampleDevices;
+  
+  // Tab state management
+  const [activeTab, setActiveTab] = useState('devices');
+  
+  // Ref for the file upload panel to trigger URL tab
+  const fileUploadRef = useRef<FileUploadPanelRef | null>(null);
   
   // Calculate ranges from available devices
   const ramRange = useMemo(() => getRamRange(devices), [devices]);
@@ -193,7 +199,26 @@ function App() {
     });
   };
 
-  const handleClearDevices = () => {
+  const handleUseLatestDataset = useCallback(() => {
+    // Switch to upload tab
+    setActiveTab('upload');
+    
+    // Wait for tab to render then trigger URL tab activation and scroll
+    setTimeout(() => {
+      if (fileUploadRef.current) {
+        fileUploadRef.current.activateUrlTab();
+      }
+      
+      // Scroll to the upload section
+      const uploadElement = document.querySelector('[data-upload-section]');
+      if (uploadElement) {
+        uploadElement.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
+    }, 150); // Small delay to ensure tab content is rendered
+  }, []);
     setUploadedDevices([]);
     // Reset filters when clearing data
     const defaultRamRange = getRamRange(sampleDevices);
@@ -239,7 +264,7 @@ function App() {
             </div>
           </div>
 
-          <Tabs defaultValue="devices" className="space-y-6">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
             <TabsList className="grid w-full max-w-lg grid-cols-3">
               <TabsTrigger value="upload">Upload Data</TabsTrigger>
               <TabsTrigger value="devices">Device Browser</TabsTrigger>
@@ -248,10 +273,12 @@ function App() {
 
             <TabsContent value="upload" className="space-y-6">
               <FileUploadPanel
+                ref={fileUploadRef}
                 onDevicesLoaded={handleDevicesLoaded}
                 onClearDevices={handleClearDevices}
                 deviceCount={devices.length}
                 currentDevices={devices}
+                onActivateUrlTab={handleUseLatestDataset}
               />
             </TabsContent>
 
