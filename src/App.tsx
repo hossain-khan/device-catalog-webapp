@@ -226,7 +226,7 @@ function App() {
               <img 
                 src={androidLogo} 
                 alt="Android Logo" 
-                className="w-12 h-12"
+                className="w-16 h-16"
               />
               <div>
                 <h1 className="text-3xl font-bold text-primary mb-2">
