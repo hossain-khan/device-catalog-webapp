@@ -14,6 +14,7 @@ import { BackToTopButton } from '@/components/BackToTopButton';
 import { ComparisonProvider } from '@/contexts/ComparisonContext';
 import { sampleDevices } from '@/data/devices';
 import { AndroidDevice, DeviceFilters, PaginationState } from '@/types/device';
+import { ColorMode } from '@/lib/deviceColors';
 import { 
   filterDevices, 
   calculateDeviceStats, 
@@ -72,6 +73,9 @@ function App() {
   const [selectedDevice, setSelectedDevice] = useState<AndroidDevice | null>(null);
   const [detailModalOpen, setDetailModalOpen] = useState(false);
   const [comparisonModalOpen, setComparisonModalOpen] = useState(false);
+  
+  // Color mode state
+  const [colorMode, setColorMode] = useKV<ColorMode>('device-color-mode', 'formFactor');
 
   // Filter devices with debounced search
   const filteredDevices = useMemo(() => {
@@ -272,6 +276,8 @@ function App() {
                 isLoading={isFiltering}
                 totalDevices={filteredDevices.length}
                 allFilteredDevices={filteredDevices}
+                colorMode={colorMode}
+                onColorModeChange={setColorMode}
               />
             </TabsContent>
 

@@ -16,10 +16,15 @@
 - **Purpose**: Allow users to work with their own device datasets or updated catalog information
 - **Success Criteria**: Validates JSON structure, clears old data before loading new, provides clear error messaging
 
+### Color-Coded Device Categories
+- **Functionality**: Visual distinction system using color coding to categorize devices by form factor, performance tier, manufacturer, or SDK era
+- **Purpose**: Improve visual scanning and quick identification of device categories across large datasets
+- **Success Criteria**: Users can instantly distinguish device types through consistent color schemes, with switchable modes (Form Factor, Performance Tier, Manufacturer, SDK Era) and clear visual legends
+
 ### Device Browser
-- **Functionality**: Grid-based display of Android devices with search and filtering capabilities, including advanced range-based filtering, pagination for large datasets (20k+ devices), and debounced search
-- **Purpose**: Allow users to quickly find and explore devices based on specific criteria with precise control over ranges while maintaining performance with large datasets
-- **Success Criteria**: Users can filter by manufacturer, form factor, RAM, and SDK version with real-time results, plus use advanced sliders for precise RAM and SDK version range selection. Pagination ensures smooth performance with any dataset size.
+- **Functionality**: Grid-based display of Android devices with search and filtering capabilities, including advanced range-based filtering, pagination for large datasets (20k+ devices), debounced search, and dynamic color coding
+- **Purpose**: Allow users to quickly find and explore devices based on specific criteria with precise control over ranges while maintaining performance with large datasets and clear visual distinction
+- **Success Criteria**: Users can filter by manufacturer, form factor, RAM, and SDK version with real-time results, plus use advanced sliders for precise RAM and SDK version range selection. Color coding provides immediate visual feedback for device categories. Pagination ensures smooth performance with any dataset size.
 
 ### Performance Optimizations
 - **Functionality**: Virtual scrolling, pagination, debounced search, loading states, performance indicators, and smooth scrolling
@@ -108,11 +113,40 @@
 - Efficient filtering and comparison utilities
 - Statistical calculation functions for analytics
 
+### Visual Design System
+
+#### Color Coding Framework
+- **Multi-Modal System**: Four distinct color coding modes - Form Factor, Performance Tier, Manufacturer, and SDK Era
+- **Accessibility-First**: Colors chosen for maximum contrast and colorblind accessibility using distinct hues across the spectrum
+- **Semantic Color Mapping**: Each category uses oklch color space for perceptually uniform brightness and natural color relationships
+
+#### Form Factor Colors
+- **Phone**: Blue spectrum (oklch 0.45 0.15 220) - most common device type
+- **Tablet**: Purple spectrum (oklch 0.45 0.15 280) - distinct from phones
+- **TV**: Red-orange spectrum (oklch 0.45 0.15 15) - warm, attention-grabbing
+- **Wearable**: Green spectrum (oklch 0.45 0.15 120) - natural, active feeling
+- **Android Automotive**: Yellow-orange (oklch 0.45 0.15 60) - automotive industry association
+- **Chromebook**: Cyan spectrum (oklch 0.45 0.15 180) - tech/productivity association
+- **Google Play Games on PC**: Magenta (oklch 0.45 0.15 340) - gaming/entertainment association
+
+#### Performance Tier Colors
+- **Budget** (< 2GB RAM): Neutral warm tones
+- **Mid-Range** (2-6GB RAM): Balanced color temperature
+- **Premium** (6-12GB RAM): Cool, professional tones
+- **Flagship** (> 12GB RAM): Rich, premium color saturation
+
+#### Visual Hierarchy
+- **Color Indicator Bar**: Top border of each device card shows primary category color
+- **Background Tinting**: Subtle background color variations maintain readability while providing visual grouping
+- **Interactive Elements**: Icons and badges use category-appropriate colors
+- **Legend System**: Dynamic color legend adapts to current view and filtering
+
 ### User Experience Flow
-1. Landing → Browse devices with filtering
-2. Device selection → Add to comparison or view details
-3. Comparison → Side-by-side analysis with removal options
-4. Analytics → Market insights and filtering triggers
+1. Landing → Browse devices with filtering and color mode selection
+2. Color mode switching → Immediate visual reorganization with consistent color coding
+3. Device selection → Add to comparison or view details with color context preserved
+4. Comparison → Side-by-side analysis with color-coded categories maintained
+5. Analytics → Market insights with color-coordinated charts and filtering triggers
 
 ## Edge Cases & Problem Scenarios
 - **Empty States**: Appropriate messaging when no devices match filters

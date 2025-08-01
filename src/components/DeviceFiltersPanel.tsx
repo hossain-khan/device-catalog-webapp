@@ -10,6 +10,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { Search, X, Filter, SlidersHorizontal, CaretDown } from "@phosphor-icons/react";
 import { DeviceFilters } from "@/types/device";
 import { formatRam } from "@/lib/deviceUtils";
+import { getFormFactorColors } from "@/lib/deviceColors";
 
 interface DeviceFiltersProps {
   filters: DeviceFilters;
@@ -83,14 +84,25 @@ export const DeviceFiltersPanel = ({
           <span className="text-sm text-muted-foreground">Filters:</span>
         </div>
         <Select value={filters.formFactor} onValueChange={(value) => updateFilter('formFactor', value)}>
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-[200px]">
             <SelectValue placeholder="Form Factor" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Form Factors</SelectItem>
-            {formFactors.map(factor => (
-              <SelectItem key={factor} value={factor}>{factor}</SelectItem>
-            ))}
+            {formFactors.map(factor => {
+              const colors = getFormFactorColors(factor);
+              return (
+                <SelectItem key={factor} value={factor}>
+                  <div className="flex items-center gap-2">
+                    <div 
+                      className="w-3 h-3 rounded border flex-shrink-0" 
+                      style={{ backgroundColor: colors.primary }}
+                    />
+                    {factor}
+                  </div>
+                </SelectItem>
+              );
+            })}
           </SelectContent>
         </Select>
 
@@ -222,7 +234,22 @@ export const DeviceFiltersPanel = ({
                 </Badge>
               )}
               {filters.formFactor !== 'all' && (
-                <Badge variant="secondary" className="text-xs">
+                <Badge 
+                  variant="secondary" 
+                  className="text-xs flex items-center gap-1"
+                  style={(() => {
+                    const colors = getFormFactorColors(filters.formFactor);
+                    return { 
+                      backgroundColor: colors.secondary, 
+                      color: colors.text,
+                      border: `1px solid ${colors.border}`
+                    };
+                  })()}
+                >
+                  <div 
+                    className="w-2 h-2 rounded" 
+                    style={{ backgroundColor: getFormFactorColors(filters.formFactor).primary }}
+                  />
                   {filters.formFactor}
                 </Badge>
               )}

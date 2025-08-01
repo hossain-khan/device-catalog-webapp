@@ -7,6 +7,7 @@ import { ManufacturersDialog } from "@/components/ManufacturersDialog";
 import { FormFactorsDialog } from "@/components/FormFactorsDialog";
 import { RamDistributionDialog } from "@/components/RamDistributionDialog";
 import { DeviceStats } from "@/types/device";
+import { getFormFactorColors, getManufacturerColors, getSdkEraColors, PERFORMANCE_TIERS } from "@/lib/deviceColors";
 import { ChartBar } from "@phosphor-icons/react";
 
 interface StatsCardProps {
@@ -88,19 +89,33 @@ export const DeviceStatsPanel = ({ stats, onFilterByManufacturer, onFilterByForm
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {topManufacturers.map(([manufacturer, count]) => (
-                <div key={manufacturer} className="flex items-center justify-between">
-                  <button
-                    onClick={() => onFilterByManufacturer(manufacturer)}
-                    className="text-sm font-medium hover:text-primary transition-colors cursor-pointer text-left"
-                  >
-                    {manufacturer}
-                  </button>
-                  <Badge variant="secondary" className="text-xs">
-                    {count} devices
-                  </Badge>
-                </div>
-              ))}
+              {topManufacturers.map(([manufacturer, count]) => {
+                const colors = getManufacturerColors(manufacturer);
+                return (
+                  <div key={manufacturer} className="flex items-center justify-between">
+                    <button
+                      onClick={() => onFilterByManufacturer(manufacturer)}
+                      className="text-sm font-medium hover:text-primary transition-colors cursor-pointer text-left flex items-center gap-2"
+                    >
+                      <div 
+                        className="w-3 h-3 rounded border" 
+                        style={{ backgroundColor: colors.primary }}
+                      />
+                      {manufacturer}
+                    </button>
+                    <Badge 
+                      variant="secondary" 
+                      className="text-xs"
+                      style={{ 
+                        backgroundColor: colors.secondary, 
+                        color: colors.text 
+                      }}
+                    >
+                      {count} devices
+                    </Badge>
+                  </div>
+                );
+              })}
             </div>
           </CardContent>
         </Card>
@@ -120,19 +135,33 @@ export const DeviceStatsPanel = ({ stats, onFilterByManufacturer, onFilterByForm
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {Object.entries(stats.formFactorCounts).map(([formFactor, count]) => (
-                <div key={formFactor} className="flex items-center justify-between">
-                  <button
-                    onClick={() => onFilterByFormFactor(formFactor)}
-                    className="text-sm font-medium hover:text-primary transition-colors cursor-pointer text-left"
-                  >
-                    {formFactor}
-                  </button>
-                  <Badge variant="secondary" className="text-xs">
-                    {count} devices
-                  </Badge>
-                </div>
-              ))}
+              {Object.entries(stats.formFactorCounts).map(([formFactor, count]) => {
+                const colors = getFormFactorColors(formFactor);
+                return (
+                  <div key={formFactor} className="flex items-center justify-between">
+                    <button
+                      onClick={() => onFilterByFormFactor(formFactor)}
+                      className="text-sm font-medium hover:text-primary transition-colors cursor-pointer text-left flex items-center gap-2"
+                    >
+                      <div 
+                        className="w-3 h-3 rounded border" 
+                        style={{ backgroundColor: colors.primary }}
+                      />
+                      {formFactor}
+                    </button>
+                    <Badge 
+                      variant="secondary" 
+                      className="text-xs"
+                      style={{ 
+                        backgroundColor: colors.secondary, 
+                        color: colors.text 
+                      }}
+                    >
+                      {count} devices
+                    </Badge>
+                  </div>
+                );
+              })}
             </div>
           </CardContent>
         </Card>
@@ -152,14 +181,35 @@ export const DeviceStatsPanel = ({ stats, onFilterByManufacturer, onFilterByForm
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {Object.entries(stats.ramRanges).map(([range, count]) => (
-                <div key={range} className="flex items-center justify-between">
-                  <span className="text-sm font-medium">{range}</span>
-                  <Badge variant="secondary" className="text-xs">
-                    {count} devices
-                  </Badge>
-                </div>
-              ))}
+              {Object.entries(stats.ramRanges).map(([range, count]) => {
+                // Get performance tier based on RAM range
+                const ramValue = range.includes('-') ? 
+                  parseInt(range.split('-')[0].replace(/[<>]/g, '').replace('MB', '')) : 
+                  parseInt(range.replace(/[<>]/g, '').replace('MB', ''));
+                const tier = PERFORMANCE_TIERS.find(t => ramValue < t.ramThreshold) || PERFORMANCE_TIERS[PERFORMANCE_TIERS.length - 1];
+                
+                return (
+                  <div key={range} className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div 
+                        className="w-3 h-3 rounded border" 
+                        style={{ backgroundColor: tier.colors.primary }}
+                      />
+                      <span className="text-sm font-medium">{range}</span>
+                    </div>
+                    <Badge 
+                      variant="secondary" 
+                      className="text-xs"
+                      style={{ 
+                        backgroundColor: tier.colors.secondary, 
+                        color: tier.colors.text 
+                      }}
+                    >
+                      {count} devices
+                    </Badge>
+                  </div>
+                );
+              })}
             </div>
           </CardContent>
         </Card>
@@ -179,14 +229,31 @@ export const DeviceStatsPanel = ({ stats, onFilterByManufacturer, onFilterByForm
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {topSdkVersions.map(([sdk, count]) => (
-                <div key={sdk} className="flex items-center justify-between">
-                  <span className="text-sm font-medium">API {sdk}</span>
-                  <Badge variant="secondary" className="text-xs">
-                    {count} devices
-                  </Badge>
-                </div>
-              ))}
+              {topSdkVersions.map(([sdk, count]) => {
+                const sdkNum = parseInt(sdk);
+                const colors = getSdkEraColors(sdkNum);
+                return (
+                  <div key={sdk} className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div 
+                        className="w-3 h-3 rounded border" 
+                        style={{ backgroundColor: colors.primary }}
+                      />
+                      <span className="text-sm font-medium">API {sdk}</span>
+                    </div>
+                    <Badge 
+                      variant="secondary" 
+                      className="text-xs"
+                      style={{ 
+                        backgroundColor: colors.secondary, 
+                        color: colors.text 
+                      }}
+                    >
+                      {count} devices
+                    </Badge>
+                  </div>
+                );
+              })}
             </div>
           </CardContent>
         </Card>

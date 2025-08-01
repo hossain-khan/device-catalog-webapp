@@ -3,7 +3,11 @@ import { FixedSizeList as List } from 'react-window';
 import { DeviceCard } from "./DeviceCard";
 import { DeviceCardSkeleton } from "./DeviceCardSkeleton";
 import { PaginationControls } from "./PaginationControls";
+import { ColorModeControls } from "./ColorModeControls";
+import { DeviceColorInfo } from "./DeviceColorInfo";
+import { CategoryDistribution } from "./CategoryDistribution";
 import { AndroidDevice } from "@/types/device";
+import { ColorMode } from "@/lib/deviceColors";
 import { PaginationInfo } from "@/lib/paginationUtils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -18,6 +22,8 @@ interface DeviceGridProps {
   isLoading?: boolean;
   totalDevices?: number;
   allFilteredDevices?: AndroidDevice[]; // For virtual scrolling mode
+  colorMode?: ColorMode;
+  onColorModeChange?: (mode: ColorMode) => void;
 }
 
 // Constants for virtual scrolling
@@ -42,9 +48,9 @@ const VirtualRow = memo(({
 }: { 
   index: number; 
   style: React.CSSProperties; 
-  data: { devices: AndroidDevice[]; onDeviceClick: (device: AndroidDevice) => void; cardsPerRow: number } 
+  data: { devices: AndroidDevice[]; onDeviceClick: (device: AndroidDevice) => void; cardsPerRow: number; colorMode: ColorMode } 
 }) => {
-  const { devices, onDeviceClick, cardsPerRow } = data;
+  const { devices, onDeviceClick, cardsPerRow, colorMode } = data;
   const startIndex = index * cardsPerRow;
   const rowDevices = devices.slice(startIndex, startIndex + cardsPerRow);
 
@@ -68,6 +74,7 @@ const VirtualRow = memo(({
             <DeviceCard
               device={device}
               onClick={() => onDeviceClick(device)}
+              colorMode={colorMode}
             />
           </div>
         ))}
@@ -93,7 +100,9 @@ export const DeviceGrid = memo(({
   onItemsPerPageChange,
   isLoading = false,
   totalDevices,
-  allFilteredDevices
+  allFilteredDevices,
+  colorMode = 'formFactor',
+  onColorModeChange
 }: DeviceGridProps) => {
   const [useVirtualScrolling, setUseVirtualScrolling] = useState(false);
   
@@ -114,8 +123,9 @@ export const DeviceGrid = memo(({
   const virtualListData = useMemo(() => ({
     devices: virtualDevices,
     onDeviceClick,
-    cardsPerRow
-  }), [virtualDevices, onDeviceClick, cardsPerRow]);
+    cardsPerRow,
+    colorMode
+  }), [virtualDevices, onDeviceClick, cardsPerRow, colorMode]);
 
   const handleToggleVirtualScrolling = useCallback(() => {
     setUseVirtualScrolling(prev => !prev);
@@ -157,6 +167,33 @@ export const DeviceGrid = memo(({
 
   return (
     <div className="space-y-6">
+      {/* Color mode controls */}
+      {onColorModeChange && (
+        <ColorModeControls 
+          colorMode={colorMode} 
+          onColorModeChange={onColorModeChange} 
+        />
+      )}
+
+      {/* Color coding information and distribution */}
+      {devices.length > 0 && (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div className="lg:col-span-2">
+            <DeviceColorInfo 
+              devices={allFilteredDevices || devices} 
+              colorMode={colorMode} 
+            />
+          </div>
+          <div>
+            <CategoryDistribution 
+              devices={allFilteredDevices || devices}
+              colorMode={colorMode}
+              totalDevices={totalDevices || (allFilteredDevices || devices).length}
+            />
+          </div>
+        </div>
+      )}
+
       {/* Performance mode toggle */}
       {shouldShowVirtualToggle && (
         <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg border">
@@ -220,6 +257,7 @@ export const DeviceGrid = memo(({
                 key={`${device.device}-${index}`}
                 device={device}
                 onClick={() => onDeviceClick(device)}
+                colorMode={colorMode}
               />
             ))}
           </div>
