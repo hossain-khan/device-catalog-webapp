@@ -11,6 +11,9 @@ import { DeviceComparisonModal } from '@/components/DeviceComparisonModal';
 import { FileUploadPanel, FileUploadPanelRef } from '@/components/FileUploadPanel';
 import { PerformanceBanner } from '@/components/PerformanceBanner';
 import { BackToTopButton } from '@/components/BackToTopButton';
+import { DeviceExportPanel } from '@/components/DeviceExportPanel';
+import { ExportStatsPanel } from '@/components/ExportStatsPanel';
+import { QuickExport } from '@/components/QuickExport';
 import { ComparisonProvider } from '@/contexts/ComparisonContext';
 import { sampleDevices } from '@/data/devices';
 import { AndroidDevice, DeviceFilters, PaginationState } from '@/types/device';
@@ -267,10 +270,11 @@ function App() {
           </div>
 
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-            <TabsList className="grid w-full max-w-lg grid-cols-3">
+            <TabsList className="grid w-full max-w-2xl grid-cols-4">
               <TabsTrigger value="upload">Upload Data</TabsTrigger>
               <TabsTrigger value="devices">Device Browser</TabsTrigger>
               <TabsTrigger value="analytics">Analytics</TabsTrigger>
+              <TabsTrigger value="export">Export Data</TabsTrigger>
             </TabsList>
 
             <TabsContent value="upload" className="space-y-6">
@@ -306,6 +310,20 @@ function App() {
                 isFiltering={isFiltering}
               />
 
+              <QuickExport
+                devices={devices}
+                filteredDevices={filteredDevices}
+                isFiltered={
+                  filters.search !== '' ||
+                  filters.formFactor !== 'all' ||
+                  filters.manufacturer !== 'all' ||
+                  filters.minRam !== 'all' ||
+                  filters.sdkVersion !== 'all' ||
+                  (filters.ramRange && (filters.ramRange[0] !== ramRange[0] || filters.ramRange[1] !== ramRange[1])) ||
+                  (filters.sdkVersionRange && (filters.sdkVersionRange[0] !== sdkVersionRange[0] || filters.sdkVersionRange[1] !== sdkVersionRange[1]))
+                }
+              />
+
               <DeviceGrid
                 devices={paginatedDevices}
                 onDeviceClick={handleDeviceClick}
@@ -321,10 +339,29 @@ function App() {
             </TabsContent>
 
             <TabsContent value="analytics" className="space-y-6">
-              <DeviceStatsPanel
-                stats={allStats}
-                onFilterByManufacturer={handleFilterByManufacturer}
-                onFilterByFormFactor={handleFilterByFormFactor}
+              <div className="grid gap-6 lg:grid-cols-2">
+                <DeviceStatsPanel
+                  stats={allStats}
+                  onFilterByManufacturer={handleFilterByManufacturer}
+                  onFilterByFormFactor={handleFilterByFormFactor}
+                />
+                <ExportStatsPanel devices={devices} />
+              </div>
+            </TabsContent>
+
+            <TabsContent value="export" className="space-y-6">
+              <DeviceExportPanel
+                devices={devices}
+                filteredDevices={filteredDevices}
+                isFiltered={
+                  filters.search !== '' ||
+                  filters.formFactor !== 'all' ||
+                  filters.manufacturer !== 'all' ||
+                  filters.minRam !== 'all' ||
+                  filters.sdkVersion !== 'all' ||
+                  (filters.ramRange && (filters.ramRange[0] !== ramRange[0] || filters.ramRange[1] !== ramRange[1])) ||
+                  (filters.sdkVersionRange && (filters.sdkVersionRange[0] !== sdkVersionRange[0] || filters.sdkVersionRange[1] !== sdkVersionRange[1]))
+                }
               />
             </TabsContent>
           </Tabs>
