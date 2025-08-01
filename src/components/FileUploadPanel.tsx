@@ -7,7 +7,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Upload, FileText, Check, AlertCircle, Trash2, TestTube, Download, Globe, FileCode, AlertTriangle } from '@phosphor-icons/react';
+import { Upload, FileText, Check, AlertCircle, Trash2, TestTube, Download, Globe, FileCode, AlertTriangle, GithubLogo, Code, Database, FileArrowDown } from '@phosphor-icons/react';
 import { AndroidDevice } from '@/types/device';
 import { validateDeviceData } from '@/lib/deviceValidation';
 import { generateTestDevices, downloadDevicesAsJson } from '@/lib/testDataGenerator';
@@ -229,14 +229,93 @@ export function FileUploadPanel({ onDevicesLoaded, onClearDevices, deviceCount, 
   }, [currentDevices]);
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <FileText className="w-5 h-5" />
-          Device Catalog Upload
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
+    <div className="space-y-6">
+      {/* Project Showcase Card */}
+      <Card className="border-primary/20 bg-gradient-to-r from-primary/5 to-accent/5">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <GithubLogo className="w-5 h-5" />
+            Android Device Catalog Parser Project
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <p className="text-sm text-muted-foreground">
+            This application uses data from the open-source Android Device Catalog Parser project, 
+            which provides comprehensive device specifications from Google's official Device Catalog.
+          </p>
+          
+          <div className="grid md:grid-cols-3 gap-4">
+            <div className="flex items-start gap-3 p-3 rounded-lg bg-background/50 border">
+              <Code className="w-5 h-5 text-primary mt-0.5" />
+              <div>
+                <h4 className="font-medium text-sm">Kotlin Parser</h4>
+                <p className="text-xs text-muted-foreground">
+                  Production-ready Kotlin library for parsing Google's Device Catalog
+                </p>
+              </div>
+            </div>
+            
+            <div className="flex items-start gap-3 p-3 rounded-lg bg-background/50 border">
+              <Database className="w-5 h-5 text-primary mt-0.5" />
+              <div>
+                <h4 className="font-medium text-sm">CSV & JSON Data</h4>
+                <p className="text-xs text-muted-foreground">
+                  Ready-to-use datasets with 20,000+ device specifications
+                </p>
+              </div>
+            </div>
+            
+            <div className="flex items-start gap-3 p-3 rounded-lg bg-background/50 border">
+              <FileArrowDown className="w-5 h-5 text-primary mt-0.5" />
+              <div>
+                <h4 className="font-medium text-sm">Always Updated</h4>
+                <p className="text-xs text-muted-foreground">
+                  Regular updates from Google Play Console Device Catalog
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => window.open('https://github.com/hossain-khan/android-device-catalog-parser', '_blank')}
+              className="flex items-center gap-2"
+            >
+              <GithubLogo className="w-4 h-4" />
+              View on GitHub
+            </Button>
+            
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setUrlInput('https://raw.githubusercontent.com/hossain-khan/android-device-catalog-parser/refs/heads/main/sample/src/main/resources/android-devices-catalog.json')}
+              className="flex items-center gap-2"
+            >
+              <FileArrowDown className="w-4 h-4" />
+              Use Latest Dataset
+            </Button>
+          </div>
+
+          <div className="flex flex-wrap gap-1">
+            <Badge variant="secondary" className="text-xs">Kotlin</Badge>
+            <Badge variant="secondary" className="text-xs">Android</Badge>
+            <Badge variant="secondary" className="text-xs">Device Catalog</Badge>
+            <Badge variant="secondary" className="text-xs">Open Source</Badge>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Upload Card */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <FileText className="w-5 h-5" />
+            Device Catalog Upload
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
         <div className="flex items-center justify-between">
           <p className="text-sm text-muted-foreground">
             Currently loaded: <span className="font-medium">{deviceCount}</span> devices
@@ -497,5 +576,6 @@ export function FileUploadPanel({ onDevicesLoaded, onClearDevices, deviceCount, 
         />
       </CardContent>
     </Card>
+    </div>
   );
 }
