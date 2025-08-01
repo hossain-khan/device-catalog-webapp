@@ -5,10 +5,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Upload, FileText, Check, AlertCircle, Trash2, TestTube, Download, Globe } from '@phosphor-icons/react';
+import { Upload, FileText, Check, AlertCircle, Trash2, TestTube, Download, Globe, FileCode } from '@phosphor-icons/react';
 import { AndroidDevice } from '@/types/device';
 import { validateDeviceData } from '@/lib/deviceValidation';
 import { generateTestDevices, downloadDevicesAsJson } from '@/lib/testDataGenerator';
+import { JsonSchemaModal } from '@/components/JsonSchemaModal';
 
 interface FileUploadPanelProps {
   onDevicesLoaded: (devices: AndroidDevice[]) => void;
@@ -23,6 +24,7 @@ export function FileUploadPanel({ onDevicesLoaded, onClearDevices, deviceCount, 
   const [isDragOver, setIsDragOver] = useState(false);
   const [testDataCount, setTestDataCount] = useState<number>(5000);
   const [urlInput, setUrlInput] = useState<string>('https://raw.githubusercontent.com/hossain-khan/android-device-catalog-parser/refs/heads/main/sample/src/main/resources/android-devices-catalog.json');
+  const [schemaModalOpen, setSchemaModalOpen] = useState(false);
 
   const loadFromUrl = useCallback(async () => {
     if (!urlInput.trim()) {
@@ -370,7 +372,18 @@ export function FileUploadPanel({ onDevicesLoaded, onClearDevices, deviceCount, 
         </div>
 
         <div className="text-xs text-muted-foreground">
-          <p className="font-medium mb-2">Expected JSON format:</p>
+          <div className="flex items-center justify-between mb-2">
+            <p className="font-medium">Expected JSON format:</p>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setSchemaModalOpen(true)}
+              className="flex items-center gap-2"
+            >
+              <FileCode className="w-4 h-4" />
+              Show JSON Schema
+            </Button>
+          </div>
           <code className="block bg-muted p-2 rounded text-xs">
             {`[
   {
@@ -391,6 +404,11 @@ export function FileUploadPanel({ onDevicesLoaded, onClearDevices, deviceCount, 
 ]`}
           </code>
         </div>
+
+        <JsonSchemaModal
+          open={schemaModalOpen}
+          onOpenChange={setSchemaModalOpen}
+        />
       </CardContent>
     </Card>
   );
