@@ -7,120 +7,16 @@ import {
 } from '@/components/ui/dialog';
 import { Copy, FileCode } from '@phosphor-icons/react';
 import { toast } from 'sonner';
+import { getAndroidDeviceJsonSchema } from '@/lib/deviceValidation';
 
 interface JsonSchemaModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
-const jsonSchema = `{
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "AndroidDeviceCatalog",
-  "description": "A list of Android device specifications as found in the Google Play Device Catalog.",
-  "type": "array",
-  "items": {
-    "type": "object",
-    "required": [
-      "brand",
-      "device",
-      "manufacturer",
-      "modelName",
-      "ram",
-      "formFactor",
-      "processorName",
-      "gpu",
-      "screenSizes",
-      "screenDensities",
-      "abis",
-      "sdkVersions",
-      "openGlEsVersions"
-    ],
-    "properties": {
-      "brand": {
-        "type": "string",
-        "description": "Device brand name (e.g., samsung, google, vivo)."
-      },
-      "device": {
-        "type": "string",
-        "description": "Device code name or identifier."
-      },
-      "manufacturer": {
-        "type": "string",
-        "description": "Device manufacturer (e.g., Samsung, Google, Vivo)."
-      },
-      "modelName": {
-        "type": "string",
-        "description": "Device model name as marketed."
-      },
-      "ram": {
-        "type": "string",
-        "description": "Amount of RAM in MB, may be a range (e.g., 3894-6003MB)."
-      },
-      "formFactor": {
-        "type": "string",
-        "description": "Device form factor (e.g., Phone, Tablet, TV, Wearable)."
-      },
-      "processorName": {
-        "type": "string",
-        "description": "System-on-chip (SoC) or processor name."
-      },
-      "gpu": {
-        "type": "string",
-        "description": "Graphics processor unit (GPU) details."
-      },
-      "screenSizes": {
-        "type": "array",
-        "items": {
-          "type": "string",
-          "pattern": "^[0-9]+x[0-9]+$",
-          "description": "Screen resolution in WIDTHxHEIGHT format (e.g., 1080x1920)."
-        },
-        "minItems": 1,
-        "description": "List of supported screen resolutions."
-      },
-      "screenDensities": {
-        "type": "array",
-        "items": {
-          "type": "integer",
-          "description": "Screen density in dpi (e.g., 320)."
-        },
-        "minItems": 1,
-        "description": "List of supported screen densities."
-      },
-      "abis": {
-        "type": "array",
-        "items": {
-          "type": "string",
-          "description": "Supported CPU ABIs (e.g., arm64-v8a, armeabi-v7a)."
-        },
-        "minItems": 1,
-        "description": "List of supported CPU ABIs."
-      },
-      "sdkVersions": {
-        "type": "array",
-        "items": {
-          "type": "integer",
-          "description": "Supported Android SDK versions (e.g., 30, 31)."
-        },
-        "minItems": 1,
-        "description": "List of supported Android SDK versions."
-      },
-      "openGlEsVersions": {
-        "type": "array",
-        "items": {
-          "type": "string",
-          "pattern": "^[0-9]+\\\\.[0-9]+$",
-          "description": "Supported OpenGL ES version (e.g., 3.2)."
-        },
-        "minItems": 1,
-        "description": "List of supported OpenGL ES versions."
-      }
-    },
-    "additionalProperties": false
-  }
-}`;
-
 export function JsonSchemaModal({ open, onOpenChange }: JsonSchemaModalProps) {
+  const jsonSchema = JSON.stringify(getAndroidDeviceJsonSchema(), null, 2);
+
   const handleCopySchema = () => {
     navigator.clipboard.writeText(jsonSchema).then(() => {
       toast.success('JSON schema copied to clipboard');
@@ -143,6 +39,7 @@ export function JsonSchemaModal({ open, onOpenChange }: JsonSchemaModalProps) {
           <div className="flex items-center justify-between">
             <p className="text-sm text-muted-foreground">
               This JSON Schema defines the structure and validation rules for Android device catalog data.
+              All uploaded files are validated against this schema.
             </p>
             <Button
               variant="outline"
@@ -156,7 +53,7 @@ export function JsonSchemaModal({ open, onOpenChange }: JsonSchemaModalProps) {
           </div>
           
           <div className="relative">
-            <pre className="json-code bg-muted p-4 rounded-md overflow-auto text-xs">
+            <pre className="json-code bg-muted p-4 rounded-md overflow-auto text-xs max-h-96">
               <code>{jsonSchema}</code>
             </pre>
           </div>

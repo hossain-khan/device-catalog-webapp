@@ -12,9 +12,16 @@
 ## Essential Features
 
 ### File Upload & Data Management
-- **Functionality**: Upload custom device catalog JSON files to replace default sample data
-- **Purpose**: Allow users to work with their own device datasets or updated catalog information
-- **Success Criteria**: Validates JSON structure, clears old data before loading new, provides clear error messaging
+- **Functionality**: Upload custom device catalog JSON files with comprehensive schema validation, URL loading, test data generation, and data export capabilities
+- **Purpose**: Allow users to work with their own device datasets or updated catalog information while ensuring data integrity and quality
+- **Success Criteria**: 
+  - Validates JSON structure against official Android Device Catalog schema using Zod validation
+  - Provides detailed error reporting with line-by-line validation feedback
+  - Supports multiple upload methods (file upload, URL loading, drag-and-drop)
+  - Clears old data before loading new data to prevent contamination
+  - Shows validation progress for large datasets
+  - Displays comprehensive schema documentation for data format reference
+  - Supports data export for backup and sharing
 
 ### Color-Coded Device Categories
 - **Functionality**: Visual distinction system using color coding to categorize devices by form factor, performance tier, manufacturer, or SDK era
@@ -50,6 +57,17 @@
 - **Functionality**: Statistical overview of device distribution and market insights
 - **Purpose**: Provide market intelligence for device targeting decisions
 - **Success Criteria**: Clear visualization of manufacturer distribution, form factor breakdown, and SDK version adoption
+
+### JSON Schema Validation
+- **Functionality**: Comprehensive data validation using Zod schema validation against official Android Device Catalog specification
+- **Purpose**: Ensure data integrity, provide helpful error feedback, and maintain application stability with user-provided data
+- **Success Criteria**: 
+  - Real-time validation during file upload with detailed error reporting
+  - Schema documentation accessible via modal dialog
+  - Validation progress indication for large datasets
+  - Clear differentiation between schema validation errors and other upload issues
+  - Support for all official Android Device Catalog form factors and data types
+  - Graceful handling of malformed JSON with specific error location reporting
 
 ### Device Details
 - **Functionality**: Comprehensive modal view of individual device specifications

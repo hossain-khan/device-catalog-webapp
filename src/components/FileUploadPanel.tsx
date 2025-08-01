@@ -5,7 +5,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Upload, FileText, Check, AlertCircle, Trash2, TestTube, Download, Globe, FileCode } from '@phosphor-icons/react';
+import { Badge } from '@/components/ui/badge';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Upload, FileText, Check, AlertCircle, Trash2, TestTube, Download, Globe, FileCode, AlertTriangle } from '@phosphor-icons/react';
 import { AndroidDevice } from '@/types/device';
 import { validateDeviceData } from '@/lib/deviceValidation';
 import { generateTestDevices, downloadDevicesAsJson } from '@/lib/testDataGenerator';
@@ -19,22 +21,27 @@ interface FileUploadPanelProps {
 }
 
 export function FileUploadPanel({ onDevicesLoaded, onClearDevices, deviceCount, currentDevices }: FileUploadPanelProps) {
-  const [uploadStatus, setUploadStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [uploadStatus, setUploadStatus] = useState<'idle' | 'loading' | 'success' | 'error' | 'warning'>('idle');
   const [errorMessage, setErrorMessage] = useState<string>('');
+  const [validationErrors, setValidationErrors] = useState<string[]>([]);
   const [isDragOver, setIsDragOver] = useState(false);
   const [testDataCount, setTestDataCount] = useState<number>(5000);
   const [urlInput, setUrlInput] = useState<string>('https://raw.githubusercontent.com/hossain-khan/android-device-catalog-parser/refs/heads/main/sample/src/main/resources/android-devices-catalog.json');
   const [schemaModalOpen, setSchemaModalOpen] = useState(false);
+  const [validationProgress, setValidationProgress] = useState<{ current: number; total: number } | null>(null);
 
   const loadFromUrl = useCallback(async () => {
     if (!urlInput.trim()) {
       setUploadStatus('error');
       setErrorMessage('Please enter a valid URL');
+      setValidationErrors([]);
       return;
     }
 
     setUploadStatus('loading');
     setErrorMessage('');
+    setValidationErrors([]);
+    setValidationProgress(null);
 
     try {
       const response = await fetch(urlInput.trim());
@@ -67,16 +74,28 @@ export function FileUploadPanel({ onDevicesLoaded, onClearDevices, deviceCount, 
         throw new Error('URL returned no device data.');
       }
 
-      // Validate device structure
+      // Set validation progress
+      setValidationProgress({ current: 0, total: data.length });
+
+      // Comprehensive JSON schema validation
       const validationResult = validateDeviceData(data);
+      
       if (!validationResult.isValid) {
-        throw new Error(`Invalid device data from URL: ${validationResult.errors.join(', ')}`);
+        setUploadStatus('error');
+        setErrorMessage(`Schema validation failed. Found ${validationResult.errors.length} validation errors.`);
+        setValidationErrors(validationResult.errors.slice(0, 50)); // Limit to first 50 errors for display
+        setValidationProgress(null);
+        return;
       }
 
       onDevicesLoaded(data);
       setUploadStatus('success');
+      setValidationProgress(null);
     } catch (error) {
       setUploadStatus('error');
+      setValidationErrors([]);
+      setValidationProgress(null);
+      
       if (error instanceof TypeError && error.message.includes('fetch')) {
         setErrorMessage('Network error: Please check your internet connection and try again.');
       } else {
@@ -88,16 +107,26 @@ export function FileUploadPanel({ onDevicesLoaded, onClearDevices, deviceCount, 
   const generateTestData = useCallback(async () => {
     setUploadStatus('loading');
     setErrorMessage('');
+    setValidationErrors([]);
+    setValidationProgress(null);
 
     try {
       // Use setTimeout to allow UI to update before heavy computation
       await new Promise(resolve => setTimeout(resolve, 100));
       
       const devices = generateTestDevices(testDataCount);
+      
+      // Validate the generated test data to ensure it meets schema requirements
+      const validationResult = validateDeviceData(devices);
+      if (!validationResult.isValid) {
+        throw new Error(`Generated test data failed validation: ${validationResult.errors.slice(0, 5).join(', ')}`);
+      }
+      
       onDevicesLoaded(devices);
       setUploadStatus('success');
     } catch (error) {
       setUploadStatus('error');
+      setValidationErrors([]);
       setErrorMessage(error instanceof Error ? error.message : 'Failed to generate test data');
     }
   }, [testDataCount, onDevicesLoaded]);
@@ -105,6 +134,8 @@ export function FileUploadPanel({ onDevicesLoaded, onClearDevices, deviceCount, 
   const processFile = useCallback(async (file: File) => {
     setUploadStatus('loading');
     setErrorMessage('');
+    setValidationErrors([]);
+    setValidationProgress(null);
 
     try {
       const text = await file.text();
@@ -125,16 +156,27 @@ export function FileUploadPanel({ onDevicesLoaded, onClearDevices, deviceCount, 
         throw new Error('File contains no device data.');
       }
 
-      // Validate device structure
+      // Set validation progress
+      setValidationProgress({ current: 0, total: data.length });
+
+      // Comprehensive JSON schema validation
       const validationResult = validateDeviceData(data);
+      
       if (!validationResult.isValid) {
-        throw new Error(`Invalid device data: ${validationResult.errors.join(', ')}`);
+        setUploadStatus('error');
+        setErrorMessage(`Schema validation failed. Found ${validationResult.errors.length} validation errors.`);
+        setValidationErrors(validationResult.errors.slice(0, 50)); // Limit to first 50 errors for display
+        setValidationProgress(null);
+        return;
       }
 
       onDevicesLoaded(data);
       setUploadStatus('success');
+      setValidationProgress(null);
     } catch (error) {
       setUploadStatus('error');
+      setValidationErrors([]);
+      setValidationProgress(null);
       setErrorMessage(error instanceof Error ? error.message : 'Failed to process file');
     }
   }, [onDevicesLoaded]);
@@ -173,6 +215,8 @@ export function FileUploadPanel({ onDevicesLoaded, onClearDevices, deviceCount, 
     onClearDevices();
     setUploadStatus('idle');
     setErrorMessage('');
+    setValidationErrors([]);
+    setValidationProgress(null);
     // Reset URL to default value when clearing
     setUrlInput('https://raw.githubusercontent.com/hossain-khan/android-device-catalog-parser/refs/heads/main/sample/src/main/resources/android-devices-catalog.json');
   }, [onClearDevices]);
@@ -253,7 +297,9 @@ export function FileUploadPanel({ onDevicesLoaded, onClearDevices, deviceCount, 
                 
                 <div>
                   <p className="font-medium">
-                    {uploadStatus === 'loading' ? 'Processing file...' :
+                    {uploadStatus === 'loading' && validationProgress ? 
+                      `Validating devices... (${validationProgress.current}/${validationProgress.total})` :
+                     uploadStatus === 'loading' ? 'Processing file...' :
                      uploadStatus === 'success' ? 'File uploaded successfully!' :
                      'Drop your JSON file here or click to browse'}
                   </p>
@@ -322,7 +368,41 @@ export function FileUploadPanel({ onDevicesLoaded, onClearDevices, deviceCount, 
         {uploadStatus === 'error' && errorMessage && (
           <Alert variant="destructive">
             <AlertCircle className="h-4 w-4" />
-            <AlertDescription>{errorMessage}</AlertDescription>
+            <AlertDescription>
+              <div className="space-y-2">
+                <p>{errorMessage}</p>
+                {validationErrors.length > 0 && (
+                  <div className="mt-3">
+                    <p className="font-medium text-sm mb-2">
+                      Validation Errors ({validationErrors.length > 50 ? '50+ errors' : `${validationErrors.length} errors`}):
+                    </p>
+                    <ScrollArea className="h-40 w-full rounded border p-2 bg-background/50">
+                      <div className="space-y-1">
+                        {validationErrors.map((error, index) => (
+                          <div key={index} className="text-xs font-mono bg-destructive/5 p-1 rounded">
+                            {error}
+                          </div>
+                        ))}
+                        {validationErrors.length === 50 && (
+                          <div className="text-xs text-muted-foreground italic p-1">
+                            ... and more errors. Please fix the above issues and try again.
+                          </div>
+                        )}
+                      </div>
+                    </ScrollArea>
+                    <div className="mt-2 flex flex-wrap gap-1">
+                      <Badge variant="outline" className="text-xs">
+                        <AlertTriangle className="w-3 h-3 mr-1" />
+                        JSON Schema Validation Failed
+                      </Badge>
+                      <Badge variant="outline" className="text-xs">
+                        Use "Show JSON Schema" for format reference
+                      </Badge>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </AlertDescription>
           </Alert>
         )}
 
@@ -330,7 +410,13 @@ export function FileUploadPanel({ onDevicesLoaded, onClearDevices, deviceCount, 
           <Alert>
             <Check className="h-4 w-4" />
             <AlertDescription>
-              Device catalog loaded successfully! You can now browse and filter the devices.
+              <div className="flex items-center justify-between">
+                <span>Device catalog loaded successfully! You can now browse and filter the devices.</span>
+                <Badge variant="outline" className="text-xs">
+                  <Check className="w-3 h-3 mr-1" />
+                  Schema Validated
+                </Badge>
+              </div>
             </AlertDescription>
           </Alert>
         )}
