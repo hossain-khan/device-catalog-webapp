@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { MagnifyingGlass, X, Funnel, SlidersHorizontal, CaretDown } from "@phosphor-icons/react";
+import { MagnifyingGlass, X, Funnel, SlidersHorizontal, CaretDown, Export } from "@phosphor-icons/react";
 import { DeviceFilters } from "@/types/device";
 import { formatRam } from "@/lib/deviceUtils";
 import { getFormFactorColors } from "@/lib/deviceColors";
@@ -23,6 +23,7 @@ interface DeviceFiltersProps {
   ramRange: [number, number];
   sdkVersionRange: [number, number];
   isFiltering?: boolean;
+  onExportClick?: () => void;
 }
 
 export const DeviceFiltersPanel = ({
@@ -35,7 +36,8 @@ export const DeviceFiltersPanel = ({
   totalDevices,
   ramRange,
   sdkVersionRange,
-  isFiltering = false
+  isFiltering = false,
+  onExportClick
 }: DeviceFiltersProps) => {
   const updateFilter = (key: keyof DeviceFilters, value: any) => {
     onFiltersChange({ ...filters, [key]: value });
@@ -143,6 +145,31 @@ export const DeviceFiltersPanel = ({
           </SelectContent>
         </Select>
 
+        {/* Advanced Filters - moved to same row */}
+        <Button 
+          variant="outline" 
+          size="sm" 
+          onClick={() => setAdvancedOpen(!advancedOpen)}
+          className="flex items-center gap-2"
+        >
+          <SlidersHorizontal className="h-4 w-4" />
+          Advanced Filters
+          <CaretDown className={`h-4 w-4 transition-transform ${advancedOpen ? 'rotate-180' : ''}`} />
+        </Button>
+
+        {/* Export button */}
+        {onExportClick && (
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={onExportClick}
+            className="flex items-center gap-2"
+          >
+            <Export className="h-4 w-4" />
+            Export
+          </Button>
+        )}
+
         {hasActiveFilters && (
           <Button
             variant="outline"
@@ -156,15 +183,8 @@ export const DeviceFiltersPanel = ({
         )}
       </div>
 
-      {/* Advanced Filters */}
+      {/* Advanced Filters Content */}
       <Collapsible open={advancedOpen} onOpenChange={setAdvancedOpen}>
-        <CollapsibleTrigger asChild>
-          <Button variant="outline" size="sm" className="flex items-center gap-2">
-            <SlidersHorizontal className="h-4 w-4" />
-            Advanced Filters
-            <CaretDown className={`h-4 w-4 transition-transform ${advancedOpen ? 'rotate-180' : ''}`} />
-          </Button>
-        </CollapsibleTrigger>
         <CollapsibleContent className="mt-4">
           <Card>
             <CardHeader>

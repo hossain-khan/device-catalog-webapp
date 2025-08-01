@@ -7,12 +7,13 @@ import { PaginationControls } from "./PaginationControls";
 import { ColorModeControls } from "./ColorModeControls";
 import { DeviceColorInfo } from "./DeviceColorInfo";
 import { CategoryDistribution } from "./CategoryDistribution";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Button } from "@/components/ui/button";
 import { AndroidDevice } from "@/types/device";
 import { ColorMode } from "@/lib/deviceColors";
 import { PaginationInfo } from "@/lib/paginationUtils";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Zap, List as ListIcon } from '@phosphor-icons/react';
+import { Zap, List as ListIcon, CaretDown } from '@phosphor-icons/react';
 
 interface DeviceGridProps {
   devices: AndroidDevice[];
@@ -115,6 +116,7 @@ export const DeviceGrid = memo(({
   const [useVirtualScrolling, setUseVirtualScrolling] = useState(false);
   const [jsonModalDevice, setJsonModalDevice] = useState<AndroidDevice | null>(null);
   const [jsonModalOpen, setJsonModalOpen] = useState(false);
+  const [colorInfoOpen, setColorInfoOpen] = useState(false);
   
   // Determine the actual device list to use
   const virtualDevices = allFilteredDevices || devices;
@@ -186,30 +188,49 @@ export const DeviceGrid = memo(({
 
   return (
     <div className="space-y-6">
-      {/* Color mode controls */}
+      {/* Color mode controls with collapsible color information */}
       {onColorModeChange && (
-        <ColorModeControls 
-          colorMode={colorMode} 
-          onColorModeChange={onColorModeChange} 
-        />
-      )}
-
-      {/* Color coding information and distribution */}
-      {devices.length > 0 && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <div className="lg:col-span-2">
-            <DeviceColorInfo 
-              devices={allFilteredDevices || devices} 
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <ColorModeControls 
               colorMode={colorMode} 
+              onColorModeChange={onColorModeChange} 
             />
+            
+            {devices.length > 0 && (
+              <Collapsible open={colorInfoOpen} onOpenChange={setColorInfoOpen}>
+                <CollapsibleTrigger asChild>
+                  <Button variant="outline" size="sm" className="flex items-center gap-2">
+                    Color Coding Information
+                    <CaretDown className={`h-4 w-4 transition-transform ${colorInfoOpen ? 'rotate-180' : ''}`} />
+                  </Button>
+                </CollapsibleTrigger>
+              </Collapsible>
+            )}
           </div>
-          <div>
-            <CategoryDistribution 
-              devices={allFilteredDevices || devices}
-              colorMode={colorMode}
-              totalDevices={totalDevices || (allFilteredDevices || devices).length}
-            />
-          </div>
+
+          {/* Collapsible color coding information and distribution */}
+          {devices.length > 0 && (
+            <Collapsible open={colorInfoOpen} onOpenChange={setColorInfoOpen}>
+              <CollapsibleContent>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-4">
+                  <div className="lg:col-span-2">
+                    <DeviceColorInfo 
+                      devices={allFilteredDevices || devices} 
+                      colorMode={colorMode} 
+                    />
+                  </div>
+                  <div>
+                    <CategoryDistribution 
+                      devices={allFilteredDevices || devices}
+                      colorMode={colorMode}
+                      totalDevices={totalDevices || (allFilteredDevices || devices).length}
+                    />
+                  </div>
+                </div>
+              </CollapsibleContent>
+            </Collapsible>
+          )}
         </div>
       )}
 

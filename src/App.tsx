@@ -13,7 +13,6 @@ import { PerformanceBanner } from '@/components/PerformanceBanner';
 import { BackToTopButton } from '@/components/BackToTopButton';
 import { DeviceExportPanel } from '@/components/DeviceExportPanel';
 import { ExportStatsPanel } from '@/components/ExportStatsPanel';
-import { QuickExport } from '@/components/QuickExport';
 import { ComparisonProvider } from '@/contexts/ComparisonContext';
 import { sampleDevices } from '@/data/devices';
 import { AndroidDevice, DeviceFilters, PaginationState } from '@/types/device';
@@ -152,6 +151,10 @@ function App() {
 
   const handleOpenComparison = () => {
     setComparisonModalOpen(true);
+  };
+
+  const handleExportClick = () => {
+    setActiveTab('export');
   };
 
   // Pagination handlers
@@ -308,20 +311,7 @@ function App() {
                 ramRange={ramRange}
                 sdkVersionRange={sdkVersionRange}
                 isFiltering={isFiltering}
-              />
-
-              <QuickExport
-                devices={devices}
-                filteredDevices={filteredDevices}
-                isFiltered={
-                  filters.search !== '' ||
-                  filters.formFactor !== 'all' ||
-                  filters.manufacturer !== 'all' ||
-                  filters.minRam !== 'all' ||
-                  filters.sdkVersion !== 'all' ||
-                  (filters.ramRange && (filters.ramRange[0] !== ramRange[0] || filters.ramRange[1] !== ramRange[1])) ||
-                  (filters.sdkVersionRange && (filters.sdkVersionRange[0] !== sdkVersionRange[0] || filters.sdkVersionRange[1] !== sdkVersionRange[1]))
-                }
+                onExportClick={handleExportClick}
               />
 
               <DeviceGrid
