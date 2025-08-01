@@ -270,6 +270,7 @@ function App() {
                 onItemsPerPageChange={handleItemsPerPageChange}
                 isLoading={isFiltering}
                 totalDevices={filteredDevices.length}
+                allFilteredDevices={filteredDevices}
               />
             </TabsContent>
 

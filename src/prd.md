@@ -22,9 +22,14 @@
 - **Success Criteria**: Users can filter by manufacturer, form factor, RAM, and SDK version with real-time results, plus use advanced sliders for precise RAM and SDK version range selection. Pagination ensures smooth performance with any dataset size.
 
 ### Performance Optimizations
-- **Functionality**: Pagination, debounced search, loading states, performance indicators, and smooth scrolling
-- **Purpose**: Ensure responsive user experience even with extremely large device catalogs (20,000+ devices)
-- **Success Criteria**: Sub-300ms search responsiveness, smooth pagination transitions, clear loading indicators, and intuitive navigation aids
+- **Functionality**: Virtual scrolling, pagination, debounced search, loading states, performance indicators, and smooth scrolling
+- **Purpose**: Ensure responsive user experience even with extremely large device catalogs (20,000+ devices) through intelligent rendering strategies
+- **Success Criteria**: Sub-300ms search responsiveness, virtual scrolling for datasets >200 devices, smart performance mode switching, and intuitive navigation aids
+
+### Virtual Scrolling Technology
+- **Functionality**: Dynamic rendering of only visible device cards using react-window, with automatic performance mode switching
+- **Purpose**: Handle massive datasets (20k+ devices) without DOM performance degradation
+- **Success Criteria**: Smooth scrolling through any dataset size, automatic mode switching at 200+ devices, seamless toggle between pagination and virtual scrolling
 
 ### Advanced Range Filtering
 - **Functionality**: Interactive slider controls for RAM size and SDK version ranges with real-time filtering
