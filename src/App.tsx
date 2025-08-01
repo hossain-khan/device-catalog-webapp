@@ -339,30 +339,30 @@ function App() {
             </TabsContent>
 
             <TabsContent value="analytics" className="space-y-6">
-              <div className="grid gap-6 lg:grid-cols-2">
-                <DeviceStatsPanel
-                  stats={allStats}
-                  onFilterByManufacturer={handleFilterByManufacturer}
-                  onFilterByFormFactor={handleFilterByFormFactor}
-                />
-                <ExportStatsPanel devices={devices} />
-              </div>
+              <DeviceStatsPanel
+                stats={allStats}
+                onFilterByManufacturer={handleFilterByManufacturer}
+                onFilterByFormFactor={handleFilterByFormFactor}
+              />
             </TabsContent>
 
             <TabsContent value="export" className="space-y-6">
-              <DeviceExportPanel
-                devices={devices}
-                filteredDevices={filteredDevices}
-                isFiltered={
-                  filters.search !== '' ||
-                  filters.formFactor !== 'all' ||
-                  filters.manufacturer !== 'all' ||
-                  filters.minRam !== 'all' ||
-                  filters.sdkVersion !== 'all' ||
-                  (filters.ramRange && (filters.ramRange[0] !== ramRange[0] || filters.ramRange[1] !== ramRange[1])) ||
-                  (filters.sdkVersionRange && (filters.sdkVersionRange[0] !== sdkVersionRange[0] || filters.sdkVersionRange[1] !== sdkVersionRange[1]))
-                }
-              />
+              <div className="grid gap-6 lg:grid-cols-2">
+                <DeviceExportPanel
+                  devices={devices}
+                  filteredDevices={filteredDevices}
+                  isFiltered={
+                    filters.search !== '' ||
+                    filters.formFactor !== 'all' ||
+                    filters.manufacturer !== 'all' ||
+                    filters.minRam !== 'all' ||
+                    filters.sdkVersion !== 'all' ||
+                    (filters.ramRange && (filters.ramRange[0] !== ramRange[0] || filters.ramRange[1] !== ramRange[1])) ||
+                    (filters.sdkVersionRange && (filters.sdkVersionRange[0] !== sdkVersionRange[0] || filters.sdkVersionRange[1] !== sdkVersionRange[1]))
+                  }
+                />
+                <ExportStatsPanel devices={devices} />
+              </div>
             </TabsContent>
           </Tabs>
 
