@@ -75,14 +75,13 @@ export const DeviceFiltersPanel = ({
             className="pl-10"
           />
         </div>
-        
+      </div>
+
+      <div className="flex flex-wrap items-center gap-4">
         <div className="flex items-center gap-2">
           <Filter className="h-4 w-4 text-muted-foreground" />
           <span className="text-sm text-muted-foreground">Filters:</span>
         </div>
-      </div>
-
-      <div className="flex flex-wrap gap-4">
         <Select value={filters.formFactor} onValueChange={(value) => updateFilter('formFactor', value)}>
           <SelectTrigger className="w-[150px]">
             <SelectValue placeholder="Form Factor" />
