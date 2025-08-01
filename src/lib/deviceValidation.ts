@@ -80,7 +80,7 @@ function validateDevice(device: any, index: number): string[] {
   }
 
   // Validate form factor
-  const validFormFactors = ['Phone', 'Tablet', 'TV', 'Watch', 'Auto'];
+  const validFormFactors = ['Phone', 'TV', 'Tablet', 'Android Automotive', 'Chromebook', 'Wearable', 'Google Play Games on PC'];
   if (device.formFactor && !validFormFactors.includes(device.formFactor)) {
     errors.push(`${prefix} Invalid form factor '${device.formFactor}', must be one of: ${validFormFactors.join(', ')}`);
   }
