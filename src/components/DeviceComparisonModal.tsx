@@ -79,7 +79,7 @@ export const DeviceComparisonModal = ({ open, onOpenChange }: DeviceComparisonMo
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-6xl h-[90vh] flex flex-col" hideCloseButton={true}>
+      <DialogContent className="max-w-[95vw] w-full h-[90vh] flex flex-col" hideCloseButton={true}>
         <ModalHeader
           title="Device Comparison"
           subtitle={`Compare specifications across ${comparedDevices.length} devices`}
@@ -94,34 +94,36 @@ export const DeviceComparisonModal = ({ open, onOpenChange }: DeviceComparisonMo
         <ScrollArea className="flex-1">
           <div className="space-y-6">
             {/* Device Headers */}
-            <div className="grid gap-4" style={{ gridTemplateColumns: `200px repeat(${comparedDevices.length}, 1fr)` }}>
+            <div className="grid gap-3" style={{ gridTemplateColumns: `200px repeat(${comparedDevices.length}, minmax(200px, 1fr))` }}>
               <div></div>
               {comparedDevices.map(device => {
                 const deviceId = `${device.brand}-${device.device}`;
                 return (
-                  <Card key={deviceId}>
-                    <CardHeader className="pb-3">
+                  <Card key={deviceId} className="min-w-0">
+                    <CardHeader className="pb-3 px-3">
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex-1 min-w-0">
-                          <CardTitle className="text-lg leading-tight line-clamp-2">
+                          <CardTitle className="text-base leading-tight line-clamp-2 break-words">
                             {device.modelName}
                           </CardTitle>
-                          <p className="text-sm text-muted-foreground mt-1">
+                          <p className="text-sm text-muted-foreground mt-1 truncate">
                             {device.manufacturer}
                           </p>
                         </div>
-                        <div className="flex flex-col items-end gap-2">
+                        <div className="flex flex-col items-end gap-2 flex-shrink-0">
                           <Button
                             variant="ghost"
                             size="sm"
                             onClick={() => removeFromComparison(deviceId)}
-                            className="h-8 w-8 p-0 hover:bg-destructive hover:text-destructive-foreground"
+                            className="h-7 w-7 p-0 hover:bg-destructive hover:text-destructive-foreground"
                           >
-                            <X className="h-4 w-4" />
+                            <X className="h-3 w-3" />
                           </Button>
                           <div className="flex items-center gap-1 text-muted-foreground">
                             {getFormFactorIcon(device.formFactor)}
-                            <span className="text-xs">{device.formFactor}</span>
+                            <span className="text-xs truncate max-w-[60px]" title={device.formFactor}>
+                              {device.formFactor}
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -136,8 +138,8 @@ export const DeviceComparisonModal = ({ open, onOpenChange }: DeviceComparisonMo
               {comparisonFields.map(field => (
                 <div 
                   key={field.key}
-                  className="grid gap-4 items-center py-3 border-b border-border last:border-b-0"
-                  style={{ gridTemplateColumns: `200px repeat(${comparedDevices.length}, 1fr)` }}
+                  className="grid gap-3 items-center py-3 border-b border-border last:border-b-0"
+                  style={{ gridTemplateColumns: `200px repeat(${comparedDevices.length}, minmax(200px, 1fr))` }}
                 >
                   <div className="font-medium text-sm text-muted-foreground">
                     {field.label}
@@ -147,7 +149,7 @@ export const DeviceComparisonModal = ({ open, onOpenChange }: DeviceComparisonMo
                     const value = getComparisonValue(device, field.key);
                     
                     return (
-                      <div key={deviceId} className="text-sm">
+                      <div key={deviceId} className="text-sm min-w-0">
                         {field.key === 'abis' || field.key === 'openGlEsVersions' ? (
                           <div className="flex flex-wrap gap-1">
                             {(device[field.key as keyof AndroidDevice] as string[]).map((item, index) => (
@@ -157,9 +159,9 @@ export const DeviceComparisonModal = ({ open, onOpenChange }: DeviceComparisonMo
                             ))}
                           </div>
                         ) : field.key === 'formFactor' ? (
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-2 min-w-0">
                             {getFormFactorIcon(device.formFactor)}
-                            <span>{device.formFactor}</span>
+                            <span className="truncate">{device.formFactor}</span>
                           </div>
                         ) : (
                           <span className="break-words">{value}</span>
