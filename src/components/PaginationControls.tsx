@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "@phosphor-icons/react";
+import { CaretLeft, CaretRight, CaretDoubleLeft, CaretDoubleRight } from "@phosphor-icons/react";
 import { PaginationInfo, ITEMS_PER_PAGE_OPTIONS } from "@/lib/paginationUtils";
 import { scrollToTop } from "@/lib/deviceUtils";
 
@@ -99,7 +99,7 @@ export const PaginationControls = ({
             disabled={currentPage === 1}
             className="h-8 w-8 p-0"
           >
-            <ChevronsLeft size={16} />
+            <CaretDoubleLeft size={16} />
           </Button>
           
           <Button
@@ -109,7 +109,7 @@ export const PaginationControls = ({
             disabled={!pagination.hasPreviousPage}
             className="h-8 w-8 p-0"
           >
-            <ChevronLeft size={16} />
+            <CaretLeft size={16} />
           </Button>
 
           <div className="flex items-center gap-1">
@@ -139,7 +139,7 @@ export const PaginationControls = ({
             disabled={!pagination.hasNextPage}
             className="h-8 w-8 p-0"
           >
-            <ChevronRight size={16} />
+            <CaretRight size={16} />
           </Button>
           
           <Button
@@ -149,7 +149,7 @@ export const PaginationControls = ({
             disabled={currentPage === totalPages}
             className="h-8 w-8 p-0"
           >
-            <ChevronsRight size={16} />
+            <CaretDoubleRight size={16} />
           </Button>
         </div>
       )}
