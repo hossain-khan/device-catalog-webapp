@@ -161,6 +161,7 @@ export const DeviceGrid = memo(({
             pagination={pagination}
             onPageChange={onPageChange}
             onItemsPerPageChange={onItemsPerPageChange}
+            scrollToTopOnPageChange={false}
           />
         )}
       </div>
@@ -308,6 +309,7 @@ export const DeviceGrid = memo(({
               pagination={pagination}
               onPageChange={onPageChange}
               onItemsPerPageChange={onItemsPerPageChange}
+              scrollToTopOnPageChange={false}
             />
           )}
         </>
