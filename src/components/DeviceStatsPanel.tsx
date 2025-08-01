@@ -1,6 +1,10 @@
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { SdkVersionsDialog } from "@/components/SdkVersionsDialog";
 import { DeviceStats } from "@/types/device";
+import { ChartBar } from "@phosphor-icons/react";
 
 interface StatsCardProps {
   title: string;
@@ -27,6 +31,8 @@ interface DeviceStatsProps {
 }
 
 export const DeviceStatsPanel = ({ stats, onFilterByManufacturer, onFilterByFormFactor }: DeviceStatsProps) => {
+  const [sdkDialogOpen, setSdkDialogOpen] = useState(false);
+  
   const topManufacturers = Object.entries(stats.manufacturerCounts)
     .sort(([,a], [,b]) => b - a)
     .slice(0, 5);
@@ -126,14 +132,23 @@ export const DeviceStatsPanel = ({ stats, onFilterByManufacturer, onFilterByForm
         </Card>
 
         <Card>
-          <CardHeader>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
             <CardTitle className="text-lg">Top SDK Versions</CardTitle>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setSdkDialogOpen(true)}
+              className="h-8 px-3"
+            >
+              <ChartBar size={16} className="mr-1" />
+              Show All
+            </Button>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
               {topSdkVersions.map(([sdk, count]) => (
                 <div key={sdk} className="flex items-center justify-between">
-                  <span className="text-sm font-medium">{sdk}</span>
+                  <span className="text-sm font-medium">API {sdk}</span>
                   <Badge variant="secondary" className="text-xs">
                     {count} devices
                   </Badge>
@@ -143,6 +158,12 @@ export const DeviceStatsPanel = ({ stats, onFilterByManufacturer, onFilterByForm
           </CardContent>
         </Card>
       </div>
+
+      <SdkVersionsDialog
+        open={sdkDialogOpen}
+        onOpenChange={setSdkDialogOpen}
+        stats={stats}
+      />
     </div>
   );
 };
