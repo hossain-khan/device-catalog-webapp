@@ -6,7 +6,6 @@ import { SdkVersionsDialog } from "@/components/SdkVersionsDialog";
 import { ManufacturersDialog } from "@/components/ManufacturersDialog";
 import { FormFactorsDialog } from "@/components/FormFactorsDialog";
 import { RamDistributionDialog } from "@/components/RamDistributionDialog";
-import { AnalyticsOverview } from "@/components/AnalyticsOverview";
 import { DeviceStats } from "@/types/device";
 import { ChartBar } from "@phosphor-icons/react";
 
@@ -50,12 +49,6 @@ export const DeviceStatsPanel = ({ stats, onFilterByManufacturer, onFilterByForm
 
   return (
     <div className="space-y-6">
-      <AnalyticsOverview 
-        stats={stats}
-        onFilterByManufacturer={onFilterByManufacturer}
-        onFilterByFormFactor={onFilterByFormFactor}
-      />
-      
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatsCard 
           title="Total Devices" 
