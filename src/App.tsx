@@ -9,7 +9,7 @@ import { DeviceDetailModal } from '@/components/DeviceDetailModal';
 import { ComparisonBar } from '@/components/ComparisonBar';
 import { DeviceComparisonModal } from '@/components/DeviceComparisonModal';
 import { FileUploadPanel, FileUploadPanelRef } from '@/components/FileUploadPanel';
-import { PerformanceBanner } from '@/components/PerformanceBanner';
+
 import { BackToTopButton } from '@/components/BackToTopButton';
 import { DeviceExportPanel } from '@/components/DeviceExportPanel';
 import { ExportStatsPanel } from '@/components/ExportStatsPanel';
@@ -292,14 +292,6 @@ function App() {
             </TabsContent>
 
             <TabsContent value="devices" className="space-y-6">
-              <PerformanceBanner
-                totalDevices={devices.length}
-                filteredDevices={filteredDevices.length}
-                isFiltering={isFiltering}
-                currentPage={pagination.currentPage}
-                itemsPerPage={pagination.itemsPerPage}
-              />
-
               <DeviceFiltersPanel
                 filters={filters}
                 onFiltersChange={handleFiltersChange}
