@@ -74,7 +74,7 @@ export const DeviceCard = ({ device, onClick, onShowJson, colorMode = 'formFacto
     >
       {/* Color indicator bar */}
       <div 
-        className="absolute top-0 left-0 right-0 h-1 rounded-t"
+        className="absolute top-0 left-0 right-0 h-1 rounded-t-xl"
         style={{ backgroundColor: colors.primary }}
       />
       
