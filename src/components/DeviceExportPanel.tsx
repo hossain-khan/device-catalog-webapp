@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
-import { Download, FileText, Database, FileCode } from '@phosphor-icons/react';
+import { Download, Database, Table, Code, FileText } from '@phosphor-icons/react';
 import { toast } from 'sonner';
 import { AndroidDevice } from '@/types/device';
 import { 
@@ -25,10 +25,10 @@ interface DeviceExportPanelProps {
 }
 
 const formatIcons = {
-  json: Database,
-  csv: FileText,
-  xml: FileCode,
-  yaml: FileCode
+  json: Database,      // Database icon for JSON (data storage)
+  csv: Table,          // Table icon for CSV (spreadsheet data)
+  xml: Code,           // Code icon for XML (markup language)
+  yaml: FileText       // FileText icon for YAML (configuration files)
 };
 
 const formatDescriptions = {
@@ -246,11 +246,11 @@ export function DeviceExportPanel({ devices, filteredDevices, isFiltered }: Devi
         <CardContent>
           <div className="grid gap-4">
             {Object.entries(formatDescriptions).map(([format, description]) => (
-              <div key={format} className="flex gap-3 p-3 rounded-lg border bg-card/50">
-                <div className="flex-shrink-0 mt-0.5">
+              <div key={format} className="flex items-start gap-3 p-3 rounded-lg border bg-card/50">
+                <div className="flex-shrink-0 mt-1">
                   {getFormatIcon(format as ExportFormat)}
                 </div>
-                <div className="space-y-1">
+                <div className="space-y-1 text-left">
                   <div className="font-medium">{format.toUpperCase()}</div>
                   <div className="text-sm text-muted-foreground">{description}</div>
                   <div className="text-xs text-muted-foreground">
