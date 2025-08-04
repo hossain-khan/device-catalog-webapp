@@ -68,10 +68,10 @@ export function ExportStatsPanel({ devices }: ExportStatsPanelProps) {
               const size = getExportSizeEstimate(devices, format);
               
               return (
-                <div key={format} className="flex items-center justify-between p-3 rounded-lg border bg-card/50">
-                  <div className="flex items-center gap-3">
-                    <IconComponent className="w-4 h-4 text-primary" />
-                    <div>
+                <div key={format} className="flex items-start justify-between p-3 rounded-lg border bg-card/50">
+                  <div className="flex items-start gap-3">
+                    <IconComponent className="w-4 h-4 text-primary mt-1" />
+                    <div className="text-left">
                       <div className="font-medium">{format.toUpperCase()}</div>
                       <div className="text-sm text-muted-foreground">
                         {formatDescriptions[format]}
