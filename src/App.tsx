@@ -13,7 +13,6 @@ import { FileUploadPanel, FileUploadPanelRef } from '@/components/FileUploadPane
 import { BackToTopButton } from '@/components/BackToTopButton';
 import { DeviceExportPanel } from '@/components/DeviceExportPanel';
 import { ExportStatsPanel } from '@/components/ExportStatsPanel';
-import { ThemeToggle } from '@/components/ThemeToggle';
 import { ComparisonProvider } from '@/contexts/ComparisonContext';
 import { sampleDevices } from '@/data/devices';
 import { AndroidDevice, DeviceFilters, PaginationState } from '@/types/device';
@@ -267,7 +266,6 @@ function App() {
                   </p>
                 </div>
               </div>
-              <ThemeToggle />
             </div>
           </div>
 
