@@ -27,7 +27,7 @@ export function FileUploadPanelEnhanced({
   onClearDevices,
   onFiltersReset
 }: FileUploadPanelEnhancedProps) {
-  const [uploadedDevices, setUploadedDevices] = useKV<AndroidDevice[]>('uploaded-devices', []);
+  const [, setUploadedDevices] = useKV<AndroidDevice[]>('uploaded-devices', []);
   
   const [uploadStatus, setUploadStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [catalogStatus, setCatalogStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
@@ -45,7 +45,7 @@ export function FileUploadPanelEnhanced({
       
       try {
         data = JSON.parse(text);
-      } catch (parseError) {
+      } catch {
         throw new Error('Invalid JSON format. Please check your file structure.');
       }
 

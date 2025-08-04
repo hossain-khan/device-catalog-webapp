@@ -1,15 +1,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { AndroidDevice } from "@/types/device";
 import { 
   ColorMode, 
   getDeviceColors, 
-  getDeviceCategoryLabel, 
   parseRamMB,
-  FORM_FACTOR_COLORS,
-  PERFORMANCE_TIERS,
-  SDK_ERA_COLORS
+  PERFORMANCE_TIERS
 } from "@/lib/deviceColors";
 import { Info } from "@phosphor-icons/react";
 

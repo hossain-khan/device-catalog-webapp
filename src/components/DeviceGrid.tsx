@@ -32,13 +32,6 @@ interface DeviceGridProps {
 
 // Constants for virtual scrolling
 const CARD_HEIGHT = 320; // Height of each device card (reduced after removing JSON section)
-const CARDS_PER_ROW = {
-  default: 1,
-  sm: 1,
-  md: 2,
-  lg: 3,
-  xl: 4
-};
 const ROW_GAP = 16; // Gap between rows (reduced to prevent overlap)
 const ROW_HEIGHT = CARD_HEIGHT + ROW_GAP;
 const VIRTUAL_LIST_HEIGHT = 600;

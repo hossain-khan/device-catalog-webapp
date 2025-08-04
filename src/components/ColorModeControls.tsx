@@ -46,21 +46,6 @@ export const ColorModeControls = ({ colorMode, onColorModeChange }: ColorModeCon
     }
   };
 
-  const getModeDescription = (mode: ColorMode) => {
-    switch (mode) {
-      case 'formFactor':
-        return 'Colors based on device type (Phone, Tablet, TV, etc.)';
-      case 'performance':
-        return 'Colors based on RAM and performance tier';
-      case 'manufacturer':
-        return 'Colors based on device manufacturer/brand';
-      case 'sdkEra':
-        return 'Colors based on Android SDK version era';
-      default:
-        return '';
-    }
-  };
-
   return (
     <div className="flex items-center gap-3">
       <div className="flex items-center gap-2">

@@ -2,11 +2,11 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { ModalHeader } from "@/components/ui/modal-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { AndroidDevice } from "@/types/device";
 import { formatRam } from "@/lib/deviceUtils";
-import { DeviceMobile, Monitor, DeviceTablet, Television, Car, Laptop, Watch, GameController, X } from "@phosphor-icons/react";
+import { DeviceMobile, DeviceTablet, Television, Car, Laptop, Watch, GameController, X } from "@phosphor-icons/react";
 import { useComparison } from "@/contexts/ComparisonContext";
 
 interface DeviceComparisonModalProps {
