@@ -130,6 +130,8 @@ export const DeviceFiltersPanel = ({
             <SelectItem value="2048">2GB+</SelectItem>
             <SelectItem value="4096">4GB+</SelectItem>
             <SelectItem value="8192">8GB+</SelectItem>
+            <SelectItem value="12288">12GB+</SelectItem>
+            <SelectItem value="16384">16GB+</SelectItem>
           </SelectContent>
         </Select>
 
