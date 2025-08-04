@@ -1,11 +1,39 @@
-# Render Deployment Guide
+# Render Depl**Build:** `Node.js + Vite` → **Output:** `Static Files` → **Runtime:** `Browser Only`
+
+## 🆚 **Static Site vs Web Service Comparison**
+
+| Aspect | Static Site (Our Choice) | Web Service |
+|--------|--------------------------|-------------|
+| **Build** | Node.js + Vite → Static files | Node.js + Express → Server app |
+| **Runtime** | No server needed | Node.js server running 24/7 |
+| **Files Served** | HTML, CSS, JS, assets | Dynamic server responses |
+| **Cost** | Cheaper (no server resources) | More expensive (server always running) |
+| **Use Case** | SPAs, React apps, Vue apps | APIs, server-rendered apps, databases |
+| **Examples** | React, Vue, Angular apps | Express.js, Next.js with SSR, APIs |
+
+**Your app = Client-side React SPA = Static Site deployment** ✅
+
+## 🚀 Quick Deployent Guide
 
 This document explains how to deploy the Device Catalog Web App to Render and resolve common memory issues.
+
+## ❓ **Why Static Site Deployment?**
+
+Even though this is a **Node.js React application**, we deploy it as a "Static Site" because:
+
+- **Build Process**: Uses Node.js (Vite + TypeScript) to compile the app
+- **Runtime**: Produces static HTML/CSS/JS files that run entirely in the browser
+- **No Server**: No Node.js server needed in production - just static file serving
+- **Client-Side Only**: All logic runs in the user's browser, not on the server
+
+**Build:** `Node.js + Vite` → **Output:** `Static Files` → **Runtime:** `Browser Only`
 
 ## 🚀 Quick Deploy
 
 1. **Connect Repository**: Link your GitHub repository to Render
-2. **Service Type**: Choose "Static Site" 
+2. **Service Type**: Choose **"Static Site"** (not Web Service)
+   - Even though it's a Node.js app, the output is static files
+   - Node.js is only used during build time, not runtime
 3. **Build Command**: `npm run build:memory-optimized`
 4. **Publish Directory**: `dist`
 

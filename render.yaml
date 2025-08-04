@@ -1,10 +1,14 @@
 services:
   - type: web
-    name: device-catalog-webapp
+    name: device-catalog
     runtime: static
+    repo: https://github.com/hossain-khan/device-catalog-webapp
     buildCommand: npm run build:memory-optimized
     staticPublishPath: ./dist
     pullRequestPreviewsEnabled: false
+    autoDeployTrigger: commit
+    domains:
+      - android-device.gohk.xyz
     envVars:
       - key: NODE_ENV
         value: production
@@ -18,3 +22,4 @@ services:
       - type: rewrite
         source: /*
         destination: /index.html
+version: "1"
