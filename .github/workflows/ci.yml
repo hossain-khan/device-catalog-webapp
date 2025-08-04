@@ -8,6 +8,8 @@ on:
 
 env:
   NODE_ENV: production
+  # Disable npm audit warnings in CI to focus on build/test results
+  npm_config_audit_level: moderate
 
 jobs:
   build:
@@ -27,22 +29,12 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
 
-    - name: Clean install (fix rollup optional dependencies bug)
+    - name: Install dependencies
       run: |
+        # Clean install to avoid npm optional dependencies issues
+        # See: https://github.com/npm/cli/issues/4828
         rm -rf node_modules package-lock.json
         npm install --include=dev
-
-    - name: Verify rollup installation
-      run: npx rollup --version
-
-    - name: Debug installed packages
-      run: |
-        echo "=== Checking devDependencies installation ==="
-        npm list @vitejs/plugin-react || echo "@vitejs/plugin-react not found"
-        npm list @tailwindcss/vite || echo "@tailwindcss/vite not found"
-        npm list eslint || echo "eslint not found"
-        echo "=== Package.json devDependencies ==="
-        cat package.json | grep -A 20 '"devDependencies"'
 
     - name: Run linter
       run: npm run lint || echo "Linting completed with warnings/errors"
@@ -50,10 +42,12 @@ jobs:
     - name: Build project
       run: npm run build
 
-    - name: Check build output
+    - name: Verify build output
       run: |
-        echo "Build completed successfully!"
+        echo "✅ Build completed successfully!"
+        echo "📦 Build artifacts:"
         ls -la dist/
+        echo "📊 Bundle size:"
         du -sh dist/
 
     - name: Upload build artifacts
@@ -78,8 +72,9 @@ jobs:
         node-version: 20.x
         cache: 'npm'
 
-    - name: Clean install dependencies
+    - name: Install dependencies
       run: |
+        # Clean install to avoid npm optional dependencies issues
         rm -rf node_modules package-lock.json
         npm install --include=dev
 
@@ -100,8 +95,9 @@ jobs:
         node-version: 20.x
         cache: 'npm'
 
-    - name: Clean install dependencies
+    - name: Install dependencies
       run: |
+        # Clean install to avoid npm optional dependencies issues
         rm -rf node_modules package-lock.json
         npm install --include=dev
 
