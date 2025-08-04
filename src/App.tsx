@@ -13,6 +13,7 @@ import { FileUploadPanel, FileUploadPanelRef } from '@/components/FileUploadPane
 import { BackToTopButton } from '@/components/BackToTopButton';
 import { DeviceExportPanel } from '@/components/DeviceExportPanel';
 import { ExportStatsPanel } from '@/components/ExportStatsPanel';
+import { ThemeToggle } from '@/components/ThemeToggle';
 import { ComparisonProvider } from '@/contexts/ComparisonContext';
 import { sampleDevices } from '@/data/devices';
 import { AndroidDevice, DeviceFilters, PaginationState } from '@/types/device';
@@ -250,20 +251,23 @@ function App() {
       <div className="min-h-screen bg-background pb-20">
         <div className="container mx-auto py-8 px-4">
           <div className="mb-8">
-            <div className="flex items-center gap-4 mb-4">
-              <img 
-                src={androidLogo} 
-                alt="Android Logo" 
-                className="w-16 h-16"
-              />
-              <div>
-                <h1 className="text-3xl font-bold text-primary mb-2">
-                  Android Device Catalog Browser
-                </h1>
-                <p className="text-muted-foreground">
-                  Explore and analyze Android devices from the official Device Catalog
-                </p>
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-4">
+                <img 
+                  src={androidLogo} 
+                  alt="Android Logo" 
+                  className="w-16 h-16"
+                />
+                <div>
+                  <h1 className="text-3xl font-bold text-primary mb-2">
+                    Android Device Catalog Browser
+                  </h1>
+                  <p className="text-muted-foreground">
+                    Explore and analyze Android devices from the official Device Catalog
+                  </p>
+                </div>
               </div>
+              <ThemeToggle />
             </div>
           </div>
 
