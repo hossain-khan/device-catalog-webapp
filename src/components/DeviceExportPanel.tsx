@@ -246,11 +246,11 @@ export function DeviceExportPanel({ devices, filteredDevices, isFiltered }: Devi
         <CardContent>
           <div className="grid gap-4">
             {Object.entries(formatDescriptions).map(([format, description]) => (
-              <div key={format} className="flex gap-3 p-3 rounded-lg border bg-card/50">
-                <div className="flex-shrink-0 mt-0.5">
+              <div key={format} className="flex items-start gap-3 p-3 rounded-lg border bg-card/50">
+                <div className="flex-shrink-0 mt-1">
                   {getFormatIcon(format as ExportFormat)}
                 </div>
-                <div className="space-y-1">
+                <div className="space-y-1 text-left">
                   <div className="font-medium">{format.toUpperCase()}</div>
                   <div className="text-sm text-muted-foreground">{description}</div>
                   <div className="text-xs text-muted-foreground">
