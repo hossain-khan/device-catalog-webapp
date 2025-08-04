@@ -328,17 +328,6 @@ export const FileUploadPanel = forwardRef<FileUploadPanelRef, FileUploadPanelPro
                   </AlertDescription>
                 </Alert>
                 
-                <div className="text-sm text-muted-foreground">
-                  <p><strong>Data includes:</strong></p>
-                  <ul className="list-disc list-inside mt-2 space-y-1">
-                    <li>Device specifications (RAM, CPU, GPU)</li>
-                    <li>Form factors (Phone, Tablet, TV, Watch, etc.)</li>
-                    <li>Screen sizes and densities</li>
-                    <li>Android SDK versions supported</li>
-                    <li>Manufacturer and brand information</li>
-                  </ul>
-                </div>
-                
                 {deviceCount > 0 && deviceCount !== 22751 && (
                   <Alert>
                     <Warning className="h-4 w-4" />
