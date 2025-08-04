@@ -1,6 +1,7 @@
-import { useState, useMemo, useCallback, useRef } from 'react';
+import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
 import { useKV } from '@/hooks/useKV';
 import { useDebounce } from '@/hooks/useDebounce';
+import { useDataPreload } from '@/hooks/useDataPreload';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DeviceStatsPanel } from '@/components/DeviceStatsPanel';
 import { DeviceFiltersPanel } from '@/components/DeviceFiltersPanel';
@@ -9,6 +10,7 @@ import { DeviceDetailModal } from '@/components/DeviceDetailModal';
 import { ComparisonBar } from '@/components/ComparisonBar';
 import { DeviceComparisonModal } from '@/components/DeviceComparisonModal';
 import { FileUploadPanel, FileUploadPanelRef } from '@/components/FileUploadPanel';
+import { DataPreloading } from '@/components/DataPreloading';
 
 import { BackToTopButton } from '@/components/BackToTopButton';
 import { DeviceExportPanel } from '@/components/DeviceExportPanel';
@@ -31,15 +33,21 @@ import { paginateArray, DEFAULT_ITEMS_PER_PAGE } from '@/lib/paginationUtils';
 import androidLogo from '@/assets/images/android.svg';
 
 function App() {
-  // Use uploaded devices if available, otherwise fall back to sample data
+  // All hooks must be called at the top level before any conditional returns
+  // Preload the full device catalog
+  const { isLoading: isPreloading, progress, error: preloadError, data: preloadedData, deviceCount } = useDataPreload();
+  
+  // Use uploaded devices if available, otherwise use preloaded data, then fall back to sample data
   const [uploadedDevices, setUploadedDevices] = useKV<AndroidDevice[]>('uploaded-devices', []);
-  const devices = uploadedDevices.length > 0 ? uploadedDevices : sampleDevices;
   
   // Tab state management
   const [activeTab, setActiveTab] = useState('devices');
   
   // Ref for the file upload panel to trigger URL tab
   const fileUploadRef = useRef<FileUploadPanelRef | null>(null);
+  
+  // Determine which devices to use
+  const devices = uploadedDevices.length > 0 ? uploadedDevices : (preloadedData || sampleDevices);
   
   // Calculate ranges from available devices
   const ramRange = useMemo(() => getRamRange(devices), [devices]);

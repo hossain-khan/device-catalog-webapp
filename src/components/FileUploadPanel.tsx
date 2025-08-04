@@ -35,7 +35,7 @@ export const FileUploadPanel = forwardRef<FileUploadPanelRef, FileUploadPanelPro
   const [urlInput, setUrlInput] = useState<string>('https://raw.githubusercontent.com/hossain-khan/android-device-catalog-parser/refs/heads/main/sample/src/main/resources/android-devices-catalog.json');
   const [schemaModalOpen, setSchemaModalOpen] = useState(false);
   const [validationProgress, setValidationProgress] = useState<{ current: number; total: number } | null>(null);
-  const [activeTabInternal, setActiveTabInternal] = useState<string>('file');
+  const [activeTabInternal, setActiveTabInternal] = useState<string>('preloaded');
 
   const handleUseLatestDataset = useCallback(() => {
     // Activate URL tab and set the URL
@@ -294,10 +294,52 @@ export const FileUploadPanel = forwardRef<FileUploadPanelRef, FileUploadPanelPro
         </div>
 
         <Tabs value={activeTabInternal} onValueChange={setActiveTabInternal} className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="preloaded">Preloaded Data</TabsTrigger>
             <TabsTrigger value="file">Upload File</TabsTrigger>
             <TabsTrigger value="url">Load from URL</TabsTrigger>
           </TabsList>
+
+          <TabsContent value="preloaded" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Database className="h-5 w-5" />
+                  Full Android Device Catalog
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="text-center p-4 bg-muted rounded-lg">
+                    <div className="text-2xl font-bold text-primary">22,751</div>
+                    <div className="text-sm text-muted-foreground">Total Devices</div>
+                  </div>
+                  <div className="text-center p-4 bg-muted rounded-lg">
+                    <div className="text-2xl font-bold text-primary">~7.6MB</div>
+                    <div className="text-sm text-muted-foreground">Data Size</div>
+                  </div>
+                </div>
+                
+                <Alert>
+                  <Database className="h-4 w-4" />
+                  <AlertDescription>
+                    The full Android Device Catalog has been preloaded automatically when the app started. 
+                    This contains the complete dataset of Android devices from Google's official catalog.
+                  </AlertDescription>
+                </Alert>
+                
+                {deviceCount > 0 && deviceCount !== 22751 && (
+                  <Alert>
+                    <Warning className="h-4 w-4" />
+                    <AlertDescription>
+                      You currently have {deviceCount.toLocaleString()} devices loaded from uploaded data. 
+                      Clear the data to use the full preloaded catalog.
+                    </AlertDescription>
+                  </Alert>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
 
           <TabsContent value="file" className="space-y-4">
             <div
