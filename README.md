@@ -1,23 +1,81 @@
-# ✨ Welcome to Your Spark Template!
-You've just launched your brand-new Spark Template Codespace — everything’s fired up and ready for you to explore, build, and create with Spark!
+# Device Catalog Web App
 
-This template is your blank canvas. It comes with a minimal setup to help you get started quickly with Spark development.
+[![CI](https://github.com/hossain-khan/device-catalog-webapp/workflows/CI/badge.svg)](https://github.com/hossain-khan/device-catalog-webapp/actions)
 
-🚀 What's Inside?
-- A clean, minimal Spark environment
-- Pre-configured for local development
-- Ready to scale with your ideas
-  
-🧠 What Can You Do?
+A modern, responsive device catalog application built with React, TypeScript, and Tailwind CSS. Browse, filter, and compare Android devices with an intuitive interface.
 
-Right now, this is just a starting point — the perfect place to begin building and testing your Spark applications.
+## 🚀 Features
 
-🧹 Just Exploring?
-No problem! If you were just checking things out and don’t need to keep this code:
+- **Device Browsing**: View comprehensive Android device specifications
+- **Advanced Filtering**: Filter by manufacturer, form factor, RAM, SDK version, and more
+- **Device Comparison**: Compare multiple devices side-by-side
+- **Data Management**: Upload custom device data via JSON files
+- **Export Functionality**: Export filtered results and statistics
+- **Responsive Design**: Works seamlessly on desktop and mobile
+- **Performance Optimized**: Virtual scrolling for large datasets
 
-- Simply delete your Spark.
-- Everything will be cleaned up — no traces left behind.
+## 🛠️ Development
 
-📄 License For Spark Template Resources 
+### Prerequisites
+- Node.js 20.x or 22.x (LTS versions)
+- npm
 
-The Spark Template files and resources from GitHub are licensed under the terms of the MIT license, Copyright GitHub, Inc.
+### Getting Started
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/hossain-khan/device-catalog-webapp.git
+   cd device-catalog-webapp
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Start development server**
+   ```bash
+   npm run dev
+   ```
+
+4. **Build for production**
+   ```bash
+   npm run build
+   ```
+
+### Available Scripts
+
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run lint` - Run ESLint
+- `npm run preview` - Preview production build
+
+## 🏗️ Architecture
+
+This project was originally built using GitHub Spark but has been refactored to use standard web technologies:
+
+- **Frontend**: React 19, TypeScript, Tailwind CSS
+- **Build Tool**: Vite
+- **UI Components**: Radix UI primitives with custom styling
+- **Charts**: Recharts for data visualization
+- **Icons**: Phosphor Icons
+- **Storage**: LocalStorage for persistence
+
+## 📦 Recent Changes
+
+- **Removed GitHub Spark Dependency**: Replaced with local implementations
+- **Added CI/CD**: Automated testing and builds via GitHub Actions
+- **Icon Fixes**: Updated to compatible Phosphor icon names
+- **Local Storage**: Custom `useKV` hook for data persistence
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

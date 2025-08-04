@@ -7,7 +7,7 @@ import {
   parseRamMB,
   PERFORMANCE_TIERS
 } from "@/lib/deviceColors";
-import { BarChart3 } from "@phosphor-icons/react";
+import { ChartBar } from "@phosphor-icons/react";
 
 interface CategoryDistributionProps {
   devices: AndroidDevice[];
@@ -89,7 +89,7 @@ export const CategoryDistribution = ({ devices, colorMode, totalDevices }: Categ
     <Card className="w-full">
       <CardHeader className="pb-3">
         <div className="flex items-center gap-2">
-          <BarChart3 className="h-4 w-4 text-primary" />
+          <ChartBar className="h-4 w-4 text-primary" />
           <CardTitle className="text-sm">{getModeTitle()}</CardTitle>
         </div>
       </CardHeader>
