@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AndroidDevice } from "@/types/device";
 import { formatRam } from "@/lib/deviceUtils";
-import { DeviceMobile, Monitor, DeviceTablet, Television, Car, Laptop, Watch, GameController, Cpu, VideoCard, Display, Code } from "@phosphor-icons/react";
+import { DeviceMobile, Monitor, DeviceTablet, Television, Car, Laptop, Watch, GameController, Cpu, Desktop, Code } from "@phosphor-icons/react";
 import { DeviceJsonModal } from "./DeviceJsonModal";
 import { useState } from "react";
 
@@ -104,7 +104,7 @@ export const DeviceDetailModal = ({ device, open, onOpenChange }: DeviceDetailMo
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-base">
-                <Display className="h-4 w-4" />
+                <Monitor className="h-4 w-4" />
                 Display & Graphics
               </CardTitle>
             </CardHeader>
@@ -147,7 +147,7 @@ export const DeviceDetailModal = ({ device, open, onOpenChange }: DeviceDetailMo
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-base">
-                <VideoCard className="h-4 w-4" />
+                <Desktop className="h-4 w-4" />
                 Architecture & APIs
               </CardTitle>
             </CardHeader>

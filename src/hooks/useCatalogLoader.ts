@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useKV } from '@github/spark/hooks';
+import { useKV } from '@/hooks/useKV';
 import { AndroidDevice } from '@/types/device';
 import { DeviceCatalogService, LoadingState } from '@/services/deviceCatalogService';
 import { sampleDevices } from '@/data/devices';

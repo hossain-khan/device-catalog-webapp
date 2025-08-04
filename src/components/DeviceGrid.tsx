@@ -13,7 +13,7 @@ import { AndroidDevice } from "@/types/device";
 import { ColorMode } from "@/lib/deviceColors";
 import { PaginationInfo } from "@/lib/paginationUtils";
 import { Badge } from "@/components/ui/badge";
-import { Zap, List as ListIcon, CaretDown } from '@phosphor-icons/react';
+import { Lightning, List as ListIcon, CaretDown } from '@phosphor-icons/react';
 
 interface DeviceGridProps {
   devices: AndroidDevice[];
@@ -240,7 +240,7 @@ export const DeviceGrid = memo(({
         <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg border">
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2">
-              <Zap size={18} className="text-primary" />
+              <Lightning size={18} className="text-primary" />
               <span className="font-medium">Performance Mode</span>
             </div>
             <Badge variant={useVirtualScrolling ? "default" : "secondary"}>

@@ -7,7 +7,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Upload, FileText, Check, AlertCircle, Trash2, TestTube, Download, Globe, FileCode, AlertTriangle, GithubLogo, Code, Database, FileArrowDown } from '@phosphor-icons/react';
+import { Upload, FileText, Check, Warning, Trash, Download, ArrowClockwise, Globe, TestTube, Code, Database, GithubLogo, FileArrowDown } from '@phosphor-icons/react';
 import { AndroidDevice } from '@/types/device';
 import { validateDeviceData } from '@/lib/deviceValidation';
 import { generateTestDevices, downloadDevicesAsJson } from '@/lib/testDataGenerator';
@@ -286,7 +286,7 @@ export const FileUploadPanel = forwardRef<FileUploadPanelRef, FileUploadPanelPro
                 onClick={handleClearData}
                 className="flex items-center gap-2"
               >
-                <Trash2 className="w-4 h-4" />
+                <Trash className="w-4 h-4" />
                 Clear
               </Button>
             </div>
@@ -317,7 +317,7 @@ export const FileUploadPanel = forwardRef<FileUploadPanelRef, FileUploadPanelPro
                   ) : uploadStatus === 'success' ? (
                     <Check className="w-6 h-6 text-green-600" />
                   ) : uploadStatus === 'error' ? (
-                    <AlertCircle className="w-6 h-6 text-destructive" />
+                    <Warning className="w-6 h-6 text-destructive" />
                   ) : (
                     <Upload className="w-6 h-6 text-muted-foreground" />
                   )}
@@ -395,7 +395,7 @@ export const FileUploadPanel = forwardRef<FileUploadPanelRef, FileUploadPanelPro
 
         {uploadStatus === 'error' && errorMessage && (
           <Alert variant="destructive">
-            <AlertCircle className="h-4 w-4" />
+            <Warning className="h-4 w-4" />
             <AlertDescription>
               <div className="space-y-2">
                 <p>{errorMessage}</p>
@@ -420,7 +420,7 @@ export const FileUploadPanel = forwardRef<FileUploadPanelRef, FileUploadPanelPro
                     </ScrollArea>
                     <div className="mt-2 flex flex-wrap gap-1">
                       <Badge variant="outline" className="text-xs">
-                        <AlertTriangle className="w-3 h-3 mr-1" />
+                        <Warning className="w-3 h-3 mr-1" />
                         JSON Schema Validation Failed
                       </Badge>
                       <Badge variant="outline" className="text-xs">
@@ -494,7 +494,7 @@ export const FileUploadPanel = forwardRef<FileUploadPanelRef, FileUploadPanelPro
               onClick={() => setSchemaModalOpen(true)}
               className="flex items-center gap-2"
             >
-              <FileCode className="w-4 h-4" />
+              <Code className="w-4 h-4" />
               Show JSON Schema
             </Button>
           </div>

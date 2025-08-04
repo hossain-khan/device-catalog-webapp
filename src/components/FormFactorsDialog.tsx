@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { DeviceStats } from "@/types/device";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
-import { ChartBar, Chart, List } from "@phosphor-icons/react";
+import { ChartBar, ChartPie, List } from "@phosphor-icons/react";
 
 interface FormFactorsDialogProps {
   open: boolean;
@@ -75,7 +75,7 @@ export const FormFactorsDialog = ({
                 size="sm"
                 onClick={() => setViewMode('pie')}
               >
-                <Chart size={16} className="mr-1" />
+                <ChartPie size={16} className="mr-1" />
                 Pie
               </Button>
               <Button

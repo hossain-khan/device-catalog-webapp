@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useComparison } from "@/contexts/ComparisonContext";
-import { Scale, X } from "@phosphor-icons/react";
+import { Scales, X } from "@phosphor-icons/react";
 
 interface ComparisonBarProps {
   onOpenComparison: () => void;
@@ -20,7 +20,7 @@ export const ComparisonBar = ({ onOpenComparison }: ComparisonBarProps) => {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2">
-              <Scale className="h-5 w-5 text-primary" />
+              <Scales className="h-5 w-5 text-primary" />
               <span className="font-medium">Compare Devices</span>
               <Badge variant="secondary">
                 {comparedDevices.length}/4
