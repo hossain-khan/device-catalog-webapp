@@ -13,6 +13,22 @@
     <meta name="author" content="Device Catalog Browser" />
     <meta name="robots" content="index, follow" />
     <meta name="language" content="English" />
+    <meta name="revisit-after" content="7 days" />
+    <meta name="rating" content="General" />
+    <meta name="distribution" content="Global" />
+    
+    <!-- Security Meta Tags -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta http-equiv="X-Frame-Options" content="DENY" />
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    
+    <!-- Additional SEO Meta Tags -->
+    <meta name="geo.region" content="US" />
+    <meta name="geo.placename" content="Global" />
+    <meta name="category" content="Technology, Software, Mobile Development" />
+    <meta name="coverage" content="Worldwide" />
+    <meta name="target" content="developers, analysts, mobile professionals" />
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
@@ -20,8 +36,14 @@
     <meta property="og:title" content="Android Device Catalog Browser | Explore & Analyze Android Devices" />
     <meta property="og:description" content="A comprehensive tool for browsing, analyzing, and searching Android devices from the official Device Catalog. Filter by manufacturer, specs, and form factor with detailed statistics." />
     <meta property="og:image" content="https://device-catalog-webapp.onrender.com/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Android Device Catalog Browser - Professional tool for exploring Android devices" />
     <meta property="og:site_name" content="Android Device Catalog Browser" />
     <meta property="og:locale" content="en_US" />
+    <meta property="article:author" content="Device Catalog Browser" />
+    <meta property="article:section" content="Technology" />
+    <meta property="article:tag" content="Android, Mobile Development, Device Specifications" />
     
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
@@ -37,8 +59,11 @@
     <link rel="manifest" href="/manifest.json" />
     
     <!-- Theme -->
-    <meta name="theme-color" content="#34A853" />
-    <meta name="msapplication-TileColor" content="#34A853" />
+    <meta name="theme-color" content="#1E40AF" />
+    <meta name="msapplication-TileColor" content="#1E40AF" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Device Catalog" />
     
     <!-- Canonical URL -->
     <link rel="canonical" href="https://device-catalog-webapp.onrender.com/" />
@@ -57,27 +82,84 @@
       "@context": "https://schema.org",
       "@type": "WebApplication",
       "name": "Android Device Catalog Browser",
+      "alternateName": "Device Catalog Browser",
       "description": "A comprehensive tool for browsing, analyzing, and searching Android devices from the official Device Catalog. Filter by manufacturer, specs, and form factor with detailed statistics.",
       "url": "https://device-catalog-webapp.onrender.com/",
+      "sameAs": [
+        "https://github.com/hossain-khan/device-catalog-webapp"
+      ],
       "applicationCategory": "DeveloperApplication",
-      "operatingSystem": "Web Browser",
+      "applicationSubCategory": "Mobile Development Tools",
+      "operatingSystem": ["Web Browser", "Cross-Platform"],
+      "browserRequirements": "HTML5, CSS3, JavaScript ES6+",
+      "softwareVersion": "1.0.0",
+      "releaseNotes": "Professional tool for Android device analysis and comparison",
+      "screenshot": "https://device-catalog-webapp.onrender.com/og-image.png",
+      "downloadUrl": "https://device-catalog-webapp.onrender.com/",
+      "installUrl": "https://device-catalog-webapp.onrender.com/",
+      "memoryRequirements": "512MB RAM minimum",
+      "storageRequirements": "5MB",
+      "permissions": "Internet access for data loading",
       "offers": {
         "@type": "Offer",
         "price": "0",
-        "priceCurrency": "USD"
+        "priceCurrency": "USD",
+        "availability": "https://schema.org/InStock",
+        "validFrom": "2024-08-04"
       },
       "author": {
         "@type": "Organization",
+        "name": "Device Catalog Browser",
+        "url": "https://device-catalog-webapp.onrender.com/"
+      },
+      "provider": {
+        "@type": "Organization", 
         "name": "Device Catalog Browser"
       },
+      "audience": {
+        "@type": "Audience",
+        "audienceType": ["Mobile Developers", "Data Analysts", "Technology Professionals"],
+        "name": "Mobile Development Community"
+      },
+      "genre": ["Productivity", "Developer Tools", "Data Analysis"],
+      "keywords": [
+        "Android devices", 
+        "device specifications", 
+        "mobile development",
+        "device comparison",
+        "Android specs",
+        "mobile analytics",
+        "device catalog",
+        "smartphone specs",
+        "tablet specifications"
+      ],
       "features": [
-        "Device Browsing",
-        "Advanced Filtering",
-        "Device Comparison",
-        "Statistics Dashboard",
-        "Data Export",
-        "Responsive Design"
-      ]
+        "Device Browsing and Search",
+        "Advanced Filtering by Specs",
+        "Device Comparison Tools", 
+        "Interactive Statistics Dashboard",
+        "Data Export Capabilities",
+        "Responsive Design",
+        "Real-time Data Analysis",
+        "Professional Interface"
+      ],
+      "featureList": [
+        "Browse comprehensive Android device catalog",
+        "Filter devices by manufacturer, form factor, RAM, SDK version",
+        "Compare multiple device specifications side-by-side",
+        "View detailed statistics and market insights",
+        "Export filtered device data in multiple formats",
+        "Responsive design for desktop and mobile usage"
+      ],
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://device-catalog-webapp.onrender.com/"
+      },
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://device-catalog-webapp.onrender.com/?search={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
     }
     </script>
 </head>
