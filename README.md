@@ -17,7 +17,7 @@ A modern, responsive device catalog application built with React, TypeScript, an
 ## 🛠️ Development
 
 ### Prerequisites
-- Node.js 18.x or 20.x
+- Node.js 20.x or 22.x (LTS versions)
 - npm
 
 ### Getting Started
