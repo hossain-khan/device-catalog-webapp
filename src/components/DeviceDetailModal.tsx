@@ -53,6 +53,7 @@ export const DeviceDetailModal = ({ device, open, onOpenChange }: DeviceDetailMo
               variant="outline"
               size="sm"
               onClick={() => setJsonModalOpen(true)}
+              className="hover:bg-muted hover:text-foreground"
             >
               <Code className="h-4 w-4 mr-2" />
               View JSON
