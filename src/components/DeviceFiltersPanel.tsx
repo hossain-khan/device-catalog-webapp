@@ -150,7 +150,7 @@ export const DeviceFiltersPanel = ({
           variant="outline" 
           size="sm" 
           onClick={() => setAdvancedOpen(!advancedOpen)}
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 hover:bg-muted hover:text-foreground"
         >
           <SlidersHorizontal className="h-4 w-4" />
           Advanced Filters
@@ -163,7 +163,7 @@ export const DeviceFiltersPanel = ({
             variant="outline" 
             size="sm" 
             onClick={onExportClick}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 hover:bg-muted hover:text-foreground"
           >
             <Export className="h-4 w-4" />
             Export

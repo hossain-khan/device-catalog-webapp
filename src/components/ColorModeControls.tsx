@@ -55,7 +55,7 @@ export const ColorModeControls = ({ colorMode, onColorModeChange }: ColorModeCon
       
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" className="gap-2">
+          <Button variant="outline" className="gap-2 hover:bg-muted hover:text-foreground">
             {getModeIcon(colorMode)}
             {getModeLabel(colorMode)}
           </Button>

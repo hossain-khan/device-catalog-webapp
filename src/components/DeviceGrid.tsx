@@ -196,7 +196,7 @@ export const DeviceGrid = memo(({
             {devices.length > 0 && (
               <Collapsible open={colorInfoOpen} onOpenChange={setColorInfoOpen}>
                 <CollapsibleTrigger asChild>
-                  <Button variant="outline" size="sm" className="flex items-center gap-2">
+                  <Button variant="outline" size="sm" className="flex items-center gap-2 hover:bg-muted hover:text-foreground">
                     Color Coding Information
                     <CaretDown className={`h-4 w-4 transition-transform ${colorInfoOpen ? 'rotate-180' : ''}`} />
                   </Button>
@@ -255,7 +255,7 @@ export const DeviceGrid = memo(({
               variant="outline"
               size="sm"
               onClick={handleToggleVirtualScrolling}
-              className="gap-2"
+              className="gap-2 hover:bg-muted hover:text-foreground"
             >
               <ListIcon size={16} />
               {useVirtualScrolling ? "Use Pagination" : "Use Virtual Scrolling"}

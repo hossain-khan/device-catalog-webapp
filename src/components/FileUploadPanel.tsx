@@ -275,7 +275,7 @@ export const FileUploadPanel = forwardRef<FileUploadPanelRef, FileUploadPanelPro
                 variant="outline" 
                 size="sm" 
                 onClick={handleDownloadData}
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 hover:bg-muted hover:text-foreground"
               >
                 <Download className="w-4 h-4" />
                 Download
@@ -284,7 +284,7 @@ export const FileUploadPanel = forwardRef<FileUploadPanelRef, FileUploadPanelPro
                 variant="outline" 
                 size="sm" 
                 onClick={handleClearData}
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 hover:bg-muted hover:text-foreground"
               >
                 <Trash className="w-4 h-4" />
                 Clear
@@ -388,7 +388,7 @@ export const FileUploadPanel = forwardRef<FileUploadPanelRef, FileUploadPanelPro
                   />
                   <Button 
                     variant="outline" 
-                    className="mt-2"
+                    className="mt-2 hover:bg-muted hover:text-foreground"
                     disabled={uploadStatus === 'loading'}
                   >
                     Browse Files
@@ -517,7 +517,7 @@ export const FileUploadPanel = forwardRef<FileUploadPanelRef, FileUploadPanelPro
               disabled={uploadStatus === 'loading'}
               variant="outline"
               size="sm"
-              className="mt-5"
+              className="mt-5 hover:bg-muted hover:text-foreground"
             >
               Generate Test Data
             </Button>
@@ -534,7 +534,7 @@ export const FileUploadPanel = forwardRef<FileUploadPanelRef, FileUploadPanelPro
               variant="outline"
               size="sm"
               onClick={() => setSchemaModalOpen(true)}
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 hover:bg-muted hover:text-foreground"
             >
               <Code className="w-4 h-4" />
               Show JSON Schema
@@ -619,7 +619,7 @@ export const FileUploadPanel = forwardRef<FileUploadPanelRef, FileUploadPanelPro
               variant="outline"
               size="sm"
               onClick={() => window.open('https://github.com/hossain-khan/android-device-catalog-parser', '_blank')}
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 hover:bg-muted hover:text-foreground"
             >
               <GithubLogo className="w-4 h-4" />
               View on GitHub
@@ -629,7 +629,7 @@ export const FileUploadPanel = forwardRef<FileUploadPanelRef, FileUploadPanelPro
               variant="outline"
               size="sm"
               onClick={handleUseLatestDataset}
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 hover:bg-muted hover:text-foreground"
             >
               <FileArrowDown className="w-4 h-4" />
               Use Latest Dataset
