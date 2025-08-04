@@ -43,6 +43,7 @@ export const DeviceJsonModal = ({ device, open, onOpenChange }: DeviceJsonModalP
               variant="outline"
               size="sm"
               onClick={handleCopyJson}
+              className="hover:bg-muted hover:text-foreground"
             >
               {copied ? (
                 <Check className="h-4 w-4 mr-2" />
