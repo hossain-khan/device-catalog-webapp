@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
-import { Download, FileText, Database, FileCode } from '@phosphor-icons/react';
+import { Download, Database, Table, Code, FileText } from '@phosphor-icons/react';
 import { toast } from 'sonner';
 import { AndroidDevice } from '@/types/device';
 import { 
@@ -25,10 +25,10 @@ interface DeviceExportPanelProps {
 }
 
 const formatIcons = {
-  json: Database,
-  csv: FileText,
-  xml: FileCode,
-  yaml: FileCode
+  json: Database,      // Database icon for JSON (data storage)
+  csv: Table,          // Table icon for CSV (spreadsheet data)
+  xml: Code,           // Code icon for XML (markup language)
+  yaml: FileText       // FileText icon for YAML (configuration files)
 };
 
 const formatDescriptions = {
