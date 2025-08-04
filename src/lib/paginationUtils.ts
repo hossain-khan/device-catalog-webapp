@@ -45,4 +45,4 @@ export function paginateArray<T>(
 }
 
 export const ITEMS_PER_PAGE_OPTIONS = [24, 48, 96, 200, 500, 1000] as const;
-export const DEFAULT_ITEMS_PER_PAGE = 48;
+export const DEFAULT_ITEMS_PER_PAGE = 24;
