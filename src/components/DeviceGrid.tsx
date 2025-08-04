@@ -60,7 +60,7 @@ const VirtualRow = memo(({
   // Apply the react-window style directly and ensure proper positioning
   const rowStyle: React.CSSProperties = {
     ...style,
-    padding: '0 16px',
+    padding: '16px', // Add padding all around
     boxSizing: 'border-box',
     display: 'block',
     overflow: 'visible'
