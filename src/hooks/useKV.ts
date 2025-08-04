@@ -10,8 +10,8 @@ export function useKV<T>(key: string, defaultValue: T): [T, (newValue: T) => voi
     try {
       const item = window.localStorage.getItem(key);
       return item ? JSON.parse(item) : defaultValue;
-    } catch (error) {
-      console.warn(`Error reading localStorage key "${key}":`, error);
+    } catch {
+      // console.warn(`Error reading localStorage key "${key}":`, error);
       return defaultValue;
     }
   });
@@ -21,8 +21,8 @@ export function useKV<T>(key: string, defaultValue: T): [T, (newValue: T) => voi
     try {
       setStoredValue(value);
       window.localStorage.setItem(key, JSON.stringify(value));
-    } catch (error) {
-      console.error(`Error setting localStorage key "${key}":`, error);
+    } catch {
+      // console.error(`Error setting localStorage key "${key}":`, error);
     }
   }, [key]);
 
@@ -32,8 +32,8 @@ export function useKV<T>(key: string, defaultValue: T): [T, (newValue: T) => voi
       if (e.key === key && e.newValue !== null) {
         try {
           setStoredValue(JSON.parse(e.newValue));
-        } catch (error) {
-          console.warn(`Error parsing localStorage value for key "${key}":`, error);
+        } catch {
+          // console.warn(`Error parsing localStorage value for key "${key}":`, error);
         }
       }
     };

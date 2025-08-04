@@ -45,7 +45,7 @@ export function QuickExport({ devices, filteredDevices, isFiltered }: QuickExpor
         `Successfully exported ${devicesToExport.length} devices as ${exportFormat.toUpperCase()}`
       );
     } catch (error) {
-      console.error('Export failed:', error);
+      // console.error('Export failed:', error);
       toast.error('Export failed', {
         description: error instanceof Error ? error.message : 'Unknown error occurred'
       });

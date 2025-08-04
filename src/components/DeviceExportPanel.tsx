@@ -73,7 +73,7 @@ export function DeviceExportPanel({ devices, filteredDevices, isFiltered }: Devi
         }
       );
     } catch (error) {
-      console.error('Export failed:', error);
+      // console.error('Export failed:', error);
       toast.error('Export failed', {
         description: error instanceof Error ? error.message : 'Unknown error occurred'
       });

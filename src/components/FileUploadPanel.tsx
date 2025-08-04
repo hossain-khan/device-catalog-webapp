@@ -79,7 +79,7 @@ export const FileUploadPanel = forwardRef<FileUploadPanelRef, FileUploadPanelPro
       const contentType = response.headers.get('content-type');
       if (!contentType || !contentType.includes('application/json')) {
         // Try to parse anyway, as some servers don't set proper content-type
-        console.warn('Content-Type is not application/json, but attempting to parse as JSON');
+        // console.warn('Content-Type is not application/json, but attempting to parse as JSON');
       }
 
       const text = await response.text();
