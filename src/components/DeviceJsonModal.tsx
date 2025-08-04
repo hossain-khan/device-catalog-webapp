@@ -6,7 +6,7 @@ import { Copy, Check, Code } from "@phosphor-icons/react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { tomorrow } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 interface DeviceJsonModalProps {
   device: AndroidDevice | null;
@@ -55,28 +55,17 @@ export const DeviceJsonModal = ({ device, open, onOpenChange }: DeviceJsonModalP
           onClose={() => onOpenChange(false)}
         />
 
+        {/* https://react-syntax-highlighter.github.io/react-syntax-highlighter/demo/ */}
         <div className="flex-1 overflow-hidden">
           <div className="h-full overflow-auto border rounded-lg">
             <SyntaxHighlighter
               language="json"
-              style={oneDark}
-              showLineNumbers={true}
+              style={tomorrow}
+              showLineNumbers={false}
               wrapLines={true}
               customStyle={{
-                margin: 0,
-                padding: '1rem',
                 fontSize: '0.75rem',
-                lineHeight: '1.2',
-                height: '100%',
-                background: 'transparent',
-                textShadow: 'none'
-              }}
-              codeTagProps={{
-                style: {
-                  fontFamily: 'var(--font-mono), ui-monospace, "Cascadia Code", "Segoe UI Mono", "Ubuntu Mono", "Roboto Mono", "Fira Code", monospace',
-                  textShadow: 'none',
-                  color: 'var(--foreground)'
-                }
+                margin: 0
               }}
             >
               {jsonString}
