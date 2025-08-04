@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: device-catalog-webapp
+    runtime: static
+    buildCommand: npm run build:memory-optimized
+    staticPublishPath: ./dist
+    pullRequestPreviewsEnabled: false
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NODE_OPTIONS
+        value: --max-old-space-size=2048
+    headers:
+      - path: /*
+        name: X-Robots-Tag
+        value: noindex
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
