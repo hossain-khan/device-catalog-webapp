@@ -123,7 +123,7 @@ function escapeXml(text: string): string {
 /**
  * Escape YAML values properly
  */
-function yamlEscapeValue(value: any): string {
+function yamlEscapeValue(value: unknown): string {
   const stringValue = String(value);
   
   // If contains special characters, quotes, or starts with special chars, quote it

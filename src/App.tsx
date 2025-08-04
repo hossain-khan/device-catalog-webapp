@@ -111,11 +111,6 @@ function App() {
     [filteredDevices, pagination.currentPage, pagination.itemsPerPage]
   );
 
-  const stats = useMemo(() => 
-    calculateDeviceStats(filteredDevices), 
-    [filteredDevices]
-  );
-
   const allStats = useMemo(() => 
     calculateDeviceStats(devices), 
     [devices]

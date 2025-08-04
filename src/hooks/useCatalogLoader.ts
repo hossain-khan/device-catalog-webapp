@@ -18,7 +18,7 @@ interface CatalogLoadingHook {
  */
 export function useCatalogLoader(): CatalogLoadingHook {
   const [catalogDevices, setCatalogDevices] = useKV<AndroidDevice[]>('catalog-devices', []);
-  const [uploadedDevices, setUploadedDevices] = useKV<AndroidDevice[]>('uploaded-devices', []);
+  const [uploadedDevices, ] = useKV<AndroidDevice[]>('uploaded-devices', []);
   const [hasAttemptedLoad, setHasAttemptedLoad] = useKV<boolean>('catalog-load-attempted', false);
   
   const [loadingState, setLoadingState] = useState<LoadingState>({
@@ -62,7 +62,7 @@ export function useCatalogLoader(): CatalogLoadingHook {
         setIsInitialLoad(false);
       }, 500);
 
-    } catch (error) {
+    } catch {
       // Error is already handled in the service and reflected in loadingState
       setHasAttemptedLoad(true);
       setTimeout(() => {

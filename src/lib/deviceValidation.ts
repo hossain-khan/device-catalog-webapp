@@ -53,7 +53,7 @@ const AndroidDeviceSchema = z.object({
 
 const AndroidDeviceCatalogSchema = z.array(AndroidDeviceSchema);
 
-export function validateDeviceData(data: any): ValidationResult {
+export function validateDeviceData(data: unknown): ValidationResult {
   try {
     // Validate the entire array against the schema
     AndroidDeviceCatalogSchema.parse(data);
@@ -75,91 +75,26 @@ export function validateDeviceData(data: any): ValidationResult {
   }
 }
 
-/**
- * Legacy validation function (kept for backward compatibility)
- * Use validateDeviceData for comprehensive JSON schema validation
- */
-function validateDevice(device: any, index: number): string[] {
-  const errors: string[] = [];
-  const prefix = `Device ${index + 1}:`;
 
-  // Required string fields
-  const requiredStringFields = [
-    'brand', 'device', 'manufacturer', 'modelName', 
-    'ram', 'formFactor', 'processorName', 'gpu'
-  ];
-
-  for (const field of requiredStringFields) {
-    if (!device[field] || typeof device[field] !== 'string') {
-      errors.push(`${prefix} Missing or invalid '${field}' field`);
-    }
-  }
-
-  // Required array fields
-  const requiredArrayFields = ['screenSizes', 'abis', 'openGlEsVersions'];
-  
-  for (const field of requiredArrayFields) {
-    if (!Array.isArray(device[field]) || device[field].length === 0) {
-      errors.push(`${prefix} Missing or empty '${field}' array`);
-    }
-  }
-
-  // screenSizes should be array of strings
-  if (Array.isArray(device.screenSizes)) {
-    device.screenSizes.forEach((size: any, i: number) => {
-      if (typeof size !== 'string' || !size.match(/^\d+x\d+$/)) {
-        errors.push(`${prefix} Invalid screen size format at index ${i}, expected 'WIDTHxHEIGHT'`);
-      }
-    });
-  }
-
-  // screenDensities should be array of numbers
-  if (!Array.isArray(device.screenDensities) || device.screenDensities.length === 0) {
-    errors.push(`${prefix} Missing or empty 'screenDensities' array`);
-  } else {
-    device.screenDensities.forEach((density: any, i: number) => {
-      if (typeof density !== 'number' || density <= 0) {
-        errors.push(`${prefix} Invalid screen density at index ${i}, must be a positive number`);
-      }
-    });
-  }
-
-  // sdkVersions should be array of numbers
-  if (!Array.isArray(device.sdkVersions) || device.sdkVersions.length === 0) {
-    errors.push(`${prefix} Missing or empty 'sdkVersions' array`);
-  } else {
-    device.sdkVersions.forEach((version: any, i: number) => {
-      if (typeof version !== 'number' || !Number.isInteger(version) || version < 1) {
-        errors.push(`${prefix} Invalid SDK version at index ${i}, must be a positive integer`);
-      }
-    });
-  }
-
-  // Validate form factor
-  const validFormFactors = ['Phone', 'TV', 'Tablet', 'Android Automotive', 'Chromebook', 'Wearable', 'Google Play Games on PC'];
-  if (device.formFactor && !validFormFactors.includes(device.formFactor)) {
-    errors.push(`${prefix} Invalid form factor '${device.formFactor}', must be one of: ${validFormFactors.join(', ')}`);
-  }
-
-  return errors;
-}
-
-export function sanitizeDeviceData(devices: any[]): AndroidDevice[] {
-  return devices.map(device => ({
-    brand: String(device.brand || '').trim(),
-    device: String(device.device || '').trim(),
-    manufacturer: String(device.manufacturer || '').trim(),
-    modelName: String(device.modelName || '').trim(),
-    ram: String(device.ram || '').trim(),
-    formFactor: String(device.formFactor || '').trim(),
-    processorName: String(device.processorName || '').trim(),
-    gpu: String(device.gpu || '').trim(),
-    screenSizes: Array.isArray(device.screenSizes) ? device.screenSizes.map((s: any) => String(s).trim()) : [],
-    screenDensities: Array.isArray(device.screenDensities) ? device.screenDensities.filter((d: any) => typeof d === 'number') : [],
-    abis: Array.isArray(device.abis) ? device.abis.map((a: any) => String(a).trim()) : [],
-    sdkVersions: Array.isArray(device.sdkVersions) ? device.sdkVersions.filter((v: any) => typeof v === 'number') : [],
-    openGlEsVersions: Array.isArray(device.openGlEsVersions) ? device.openGlEsVersions.map((v: any) => String(v).trim()) : []
-  }));
+export function sanitizeDeviceData(devices: unknown[]): AndroidDevice[] {
+  return devices.map((device: unknown) => {
+    const d = device as Record<string, unknown>;
+    return {
+      brand: String(d.brand || '').trim(),
+      device: String(d.device || '').trim(),
+      manufacturer: String(d.manufacturer || '').trim(),
+      modelName: String(d.modelName || '').trim(),
+      ram: String(d.ram || '').trim(),
+      formFactor: String(d.formFactor || '').trim(),
+      processorName: String(d.processorName || '').trim(),
+      gpu: String(d.gpu || '').trim(),
+      screenSizes: Array.isArray(d.screenSizes) ? d.screenSizes.map((s: unknown) => String(s).trim()) : [],
+      screenDensities: Array.isArray(d.screenDensities) ? d.screenDensities.filter((density: unknown) => typeof density === 'number') : [],
+      abis: Array.isArray(d.abis) ? d.abis.map((a: unknown) => String(a).trim()) : [],
+      sdkVersions: Array.isArray(d.sdkVersions) ? d.sdkVersions.filter((v: unknown) => typeof v === 'number') : [],
+      openGlEsVersions: Array.isArray(d.openGlEsVersions) ? d.openGlEsVersions.map((v: unknown) => String(v).trim()) : []
+    };
+  });
 }
 
 /**

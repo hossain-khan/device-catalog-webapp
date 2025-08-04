@@ -27,7 +27,7 @@ export const DeviceJsonModal = ({ device, open, onOpenChange }: DeviceJsonModalP
       setCopied(true);
       toast.success("JSON copied to clipboard");
       setTimeout(() => setCopied(false), 2000);
-    } catch (error) {
+    } catch {
       toast.error("Failed to copy JSON");
     }
   };

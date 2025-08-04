@@ -74,7 +74,7 @@ function generateDeviceId(manufacturer: string, index: number): string {
   return `${prefix}${suffix}${index}`;
 }
 
-function generateModelName(manufacturer: string, index: number): string {
+function generateModelName(): string {
   const phoneNames = [
     'Galaxy S', 'Galaxy Note', 'Galaxy A', 'Pixel', 'OnePlus', 'Mi', 'Redmi',
     'P Series', 'Mate', 'Nova', 'Xperia', 'V Series', 'G Series', 'Edge',
@@ -109,7 +109,7 @@ export function generateTestDevices(count: number): AndroidDevice[] {
       brand: brand,
       device: generateDeviceId(manufacturer, i),
       manufacturer: manufacturer,
-      modelName: generateModelName(manufacturer, i),
+      modelName: generateModelName(),
       ram: generateRam(),
       formFactor: getRandomItem(formFactors),
       processorName: getRandomItem(processors),

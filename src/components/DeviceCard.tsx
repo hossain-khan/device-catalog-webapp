@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { AndroidDevice } from "@/types/device";
 import { formatRam } from "@/lib/deviceUtils";
 import { getDeviceColors, getDeviceCategoryLabel, parseRamMB, ColorMode } from "@/lib/deviceColors";
-import { DeviceMobile, Monitor, DeviceTablet, Television, Car, Laptop, Watch, GameController, Plus, Minus, Code } from "@phosphor-icons/react";
+import { DeviceMobile, DeviceTablet, Television, Car, Laptop, Watch, GameController, Plus, Minus, Code } from "@phosphor-icons/react";
 import { useComparison } from "@/contexts/ComparisonContext";
 
 interface DeviceCardProps {

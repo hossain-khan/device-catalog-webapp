@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useImperativeHandle, forwardRef } from 'react';
+import { useState, useCallback, useImperativeHandle, forwardRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,7 +7,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Upload, FileText, Check, Warning, Trash, Download, ArrowClockwise, Globe, TestTube, Code, Database, GithubLogo, FileArrowDown } from '@phosphor-icons/react';
+import { Upload, FileText, Check, Warning, Trash, Download, Globe, TestTube, Code, Database, GithubLogo, FileArrowDown } from '@phosphor-icons/react';
 import { AndroidDevice } from '@/types/device';
 import { validateDeviceData } from '@/lib/deviceValidation';
 import { generateTestDevices, downloadDevicesAsJson } from '@/lib/testDataGenerator';
@@ -79,7 +79,7 @@ export const FileUploadPanel = forwardRef<FileUploadPanelRef, FileUploadPanelPro
       const contentType = response.headers.get('content-type');
       if (!contentType || !contentType.includes('application/json')) {
         // Try to parse anyway, as some servers don't set proper content-type
-        console.warn('Content-Type is not application/json, but attempting to parse as JSON');
+        // console.warn('Content-Type is not application/json, but attempting to parse as JSON');
       }
 
       const text = await response.text();
@@ -87,7 +87,7 @@ export const FileUploadPanel = forwardRef<FileUploadPanelRef, FileUploadPanelPro
       
       try {
         data = JSON.parse(text);
-      } catch (parseError) {
+      } catch {
         throw new Error('Invalid JSON format received from URL. Please check the URL and try again.');
       }
 
@@ -169,7 +169,7 @@ export const FileUploadPanel = forwardRef<FileUploadPanelRef, FileUploadPanelPro
       
       try {
         data = JSON.parse(text);
-      } catch (parseError) {
+      } catch {
         throw new Error('Invalid JSON format. Please check your file structure.');
       }
 

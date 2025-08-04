@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible";
 import { MagnifyingGlass, X, Funnel, SlidersHorizontal, CaretDown, Export } from "@phosphor-icons/react";
 import { DeviceFilters } from "@/types/device";
 import { formatRam } from "@/lib/deviceUtils";
@@ -39,7 +39,7 @@ export const DeviceFiltersPanel = ({
   isFiltering = false,
   onExportClick
 }: DeviceFiltersProps) => {
-  const updateFilter = (key: keyof DeviceFilters, value: any) => {
+  const updateFilter = (key: keyof DeviceFilters, value: DeviceFilters[keyof DeviceFilters]) => {
     onFiltersChange({ ...filters, [key]: value });
   };
 
