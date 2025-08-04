@@ -1,7 +1,7 @@
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
-import { resolve } from 'path'
+import { resolve } from "path";
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -11,7 +11,7 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      '@': resolve(process.cwd(), 'src')
+      '@': resolve(__dirname, 'src')
     }
   },
 });
