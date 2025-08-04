@@ -1,12 +1,9 @@
-import { memo, useCallback, useMemo, useState } from 'react';
+import { memo, useCallback, useMemo, useState, lazy, Suspense } from 'react';
 import { FixedSizeList as List } from 'react-window';
 import { DeviceCard } from "./DeviceCard";
 import { DeviceCardSkeleton } from "./DeviceCardSkeleton";
-import { DeviceJsonModal } from "./DeviceJsonModal";
 import { PaginationControls } from "./PaginationControls";
 import { ColorModeControls } from "./ColorModeControls";
-import { DeviceColorInfo } from "./DeviceColorInfo";
-import { CategoryDistribution } from "./CategoryDistribution";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
 import { AndroidDevice } from "@/types/device";
@@ -14,6 +11,11 @@ import { ColorMode } from "@/lib/deviceColors";
 import { PaginationInfo } from "@/lib/paginationUtils";
 import { Badge } from "@/components/ui/badge";
 import { Lightning, List as ListIcon, CaretDown } from '@phosphor-icons/react';
+
+// Lazy load heavy components
+const DeviceJsonModal = lazy(() => import("./DeviceJsonModal").then(module => ({ default: module.DeviceJsonModal })));
+const DeviceColorInfo = lazy(() => import("./DeviceColorInfo").then(module => ({ default: module.DeviceColorInfo })));
+const CategoryDistribution = lazy(() => import("./CategoryDistribution").then(module => ({ default: module.CategoryDistribution })));
 
 interface DeviceGridProps {
   devices: AndroidDevice[];
@@ -216,17 +218,21 @@ export const DeviceGrid = memo(({
               <CollapsibleContent>
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-4">
                   <div className="lg:col-span-2">
-                    <DeviceColorInfo 
-                      devices={allFilteredDevices || devices} 
-                      colorMode={colorMode} 
-                    />
+                    <Suspense fallback={<div className="h-32 bg-muted rounded animate-pulse" />}>
+                      <DeviceColorInfo 
+                        devices={allFilteredDevices || devices} 
+                        colorMode={colorMode} 
+                      />
+                    </Suspense>
                   </div>
                   <div>
-                    <CategoryDistribution 
-                      devices={allFilteredDevices || devices}
-                      colorMode={colorMode}
-                      totalDevices={totalDevices || (allFilteredDevices || devices).length}
-                    />
+                    <Suspense fallback={<div className="h-32 bg-muted rounded animate-pulse" />}>
+                      <CategoryDistribution 
+                        devices={allFilteredDevices || devices}
+                        colorMode={colorMode}
+                        totalDevices={totalDevices || (allFilteredDevices || devices).length}
+                      />
+                    </Suspense>
                   </div>
                 </div>
               </CollapsibleContent>
@@ -275,6 +281,7 @@ export const DeviceGrid = memo(({
           <div className="border rounded-lg overflow-hidden bg-card shadow-sm">
             <List
               height={VIRTUAL_LIST_HEIGHT}
+              width="100%"
               itemCount={totalRows}
               itemSize={ROW_HEIGHT}
               itemData={virtualListData}
@@ -316,11 +323,13 @@ export const DeviceGrid = memo(({
       )}
 
       {/* JSON Modal */}
-      <DeviceJsonModal
-        device={jsonModalDevice}
-        open={jsonModalOpen}
-        onOpenChange={setJsonModalOpen}
-      />
+      <Suspense fallback={null}>
+        <DeviceJsonModal
+          device={jsonModalDevice}
+          open={jsonModalOpen}
+          onOpenChange={setJsonModalOpen}
+        />
+      </Suspense>
     </div>
   );
 });
