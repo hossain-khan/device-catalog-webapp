@@ -27,8 +27,11 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
 
+    - name: Clear npm cache (troubleshooting)
+      run: npm cache clean --force
+
     - name: Install dependencies
-      run: npm ci
+      run: npm ci --no-optional
 
     - name: Run linter
       run: npm run lint || echo "Linting completed with warnings/errors"
