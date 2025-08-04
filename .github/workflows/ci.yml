@@ -35,10 +35,14 @@ jobs:
     - name: Verify rollup installation
       run: npx rollup --version
 
-    - name: Verify vite dependencies
+    - name: Debug installed packages
       run: |
-        npm list @vitejs/plugin-react
-        npm list @tailwindcss/vite
+        echo "=== Checking devDependencies installation ==="
+        npm list @vitejs/plugin-react || echo "@vitejs/plugin-react not found"
+        npm list @tailwindcss/vite || echo "@tailwindcss/vite not found"
+        npm list eslint || echo "eslint not found"
+        echo "=== Package.json devDependencies ==="
+        cat package.json | grep -A 20 '"devDependencies"'
 
     - name: Run linter
       run: npm run lint || echo "Linting completed with warnings/errors"
