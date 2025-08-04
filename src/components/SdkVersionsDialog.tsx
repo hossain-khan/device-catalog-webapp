@@ -31,7 +31,7 @@ export const SdkVersionsDialog = ({ open, onOpenChange, stats }: SdkVersionsDial
   // Calculate the maximum count for scaling the bars
   const maxCount = Math.max(...Object.values(stats.sdkVersionCounts));
 
-  const CustomTooltip = ({ active, payload }: any) => {
+  const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: Array<{ payload: { version: number; count: number; percentage: number } }> }) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (

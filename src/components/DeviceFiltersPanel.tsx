@@ -39,7 +39,7 @@ export const DeviceFiltersPanel = ({
   isFiltering = false,
   onExportClick
 }: DeviceFiltersProps) => {
-  const updateFilter = (key: keyof DeviceFilters, value: any) => {
+  const updateFilter = (key: keyof DeviceFilters, value: DeviceFilters[keyof DeviceFilters]) => {
     onFiltersChange({ ...filters, [key]: value });
   };
 

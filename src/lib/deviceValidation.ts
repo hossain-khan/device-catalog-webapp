@@ -53,7 +53,7 @@ const AndroidDeviceSchema = z.object({
 
 const AndroidDeviceCatalogSchema = z.array(AndroidDeviceSchema);
 
-export function validateDeviceData(data: any): ValidationResult {
+export function validateDeviceData(data: unknown): ValidationResult {
   try {
     // Validate the entire array against the schema
     AndroidDeviceCatalogSchema.parse(data);
@@ -76,22 +76,25 @@ export function validateDeviceData(data: any): ValidationResult {
 }
 
 
-export function sanitizeDeviceData(devices: any[]): AndroidDevice[] {
-  return devices.map(device => ({
-    brand: String(device.brand || '').trim(),
-    device: String(device.device || '').trim(),
-    manufacturer: String(device.manufacturer || '').trim(),
-    modelName: String(device.modelName || '').trim(),
-    ram: String(device.ram || '').trim(),
-    formFactor: String(device.formFactor || '').trim(),
-    processorName: String(device.processorName || '').trim(),
-    gpu: String(device.gpu || '').trim(),
-    screenSizes: Array.isArray(device.screenSizes) ? device.screenSizes.map((s: any) => String(s).trim()) : [],
-    screenDensities: Array.isArray(device.screenDensities) ? device.screenDensities.filter((d: any) => typeof d === 'number') : [],
-    abis: Array.isArray(device.abis) ? device.abis.map((a: any) => String(a).trim()) : [],
-    sdkVersions: Array.isArray(device.sdkVersions) ? device.sdkVersions.filter((v: any) => typeof v === 'number') : [],
-    openGlEsVersions: Array.isArray(device.openGlEsVersions) ? device.openGlEsVersions.map((v: any) => String(v).trim()) : []
-  }));
+export function sanitizeDeviceData(devices: unknown[]): AndroidDevice[] {
+  return devices.map((device: unknown) => {
+    const d = device as Record<string, unknown>;
+    return {
+      brand: String(d.brand || '').trim(),
+      device: String(d.device || '').trim(),
+      manufacturer: String(d.manufacturer || '').trim(),
+      modelName: String(d.modelName || '').trim(),
+      ram: String(d.ram || '').trim(),
+      formFactor: String(d.formFactor || '').trim(),
+      processorName: String(d.processorName || '').trim(),
+      gpu: String(d.gpu || '').trim(),
+      screenSizes: Array.isArray(d.screenSizes) ? d.screenSizes.map((s: unknown) => String(s).trim()) : [],
+      screenDensities: Array.isArray(d.screenDensities) ? d.screenDensities.filter((density: unknown) => typeof density === 'number') : [],
+      abis: Array.isArray(d.abis) ? d.abis.map((a: unknown) => String(a).trim()) : [],
+      sdkVersions: Array.isArray(d.sdkVersions) ? d.sdkVersions.filter((v: unknown) => typeof v === 'number') : [],
+      openGlEsVersions: Array.isArray(d.openGlEsVersions) ? d.openGlEsVersions.map((v: unknown) => String(v).trim()) : []
+    };
+  });
 }
 
 /**
