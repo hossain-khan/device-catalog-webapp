@@ -95,9 +95,9 @@ export const DeviceStatsPanel = ({ stats, onFilterByManufacturer, onFilterByForm
           subtitle={`${((stats.multiAbiDeviceCount / stats.totalDevices) * 100).toFixed(1)}% support multiple archs`}
         />
         <StatsCard 
-          title="Platform Compatibility" 
-          value={stats.averageSdkRange.toFixed(1)}
-          subtitle="Avg API versions per device"
+          title="OpenGL ES 3.2 Support" 
+          value={`${((stats.openGlEs32SupportCount / stats.totalDevices) * 100).toFixed(1)}%`}
+          subtitle="Devices with modern graphics support"
         />
         <StatsCard 
           title="Modern Platform" 

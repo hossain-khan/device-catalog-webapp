@@ -51,6 +51,7 @@ export interface DeviceStats {
   averageSdkRange: number;
   screenResolutionCounts: { [key: string]: number };
   openGlVersionCounts: { [key: string]: number };
+  openGlEs32SupportCount: number;
   performanceTierCounts: {
     budget: number;      // < 2GB RAM
     midRange: number;    // 2-6GB RAM

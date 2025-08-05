@@ -112,6 +112,7 @@ export const calculateDeviceStats = (devices: AndroidDevice[]): DeviceStats => {
     averageSdkRange: 0,
     screenResolutionCounts: {},
     openGlVersionCounts: {},
+    openGlEs32SupportCount: 0,
     performanceTierCounts: {
       budget: 0,
       midRange: 0,
@@ -227,6 +228,11 @@ export const calculateDeviceStats = (devices: AndroidDevice[]): DeviceStats => {
       stats.openGlVersionCounts[`OpenGL ES ${version}`] = 
         (stats.openGlVersionCounts[`OpenGL ES ${version}`] || 0) + 1;
     });
+    
+    // Check for OpenGL ES 3.2 support
+    if (device.openGlEsVersions.includes('3.2')) {
+      stats.openGlEs32SupportCount++;
+    }
   });
 
   // Calculate average SDK range
