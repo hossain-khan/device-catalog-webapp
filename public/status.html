@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Status - Android Device Catalog</title>
+    <style>
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+            margin: 40px; 
+            background: #f8fafc; 
+            color: #334155;
+        }
+        .status { 
+            background: white; 
+            padding: 20px; 
+            border-radius: 8px; 
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1); 
+            max-width: 500px;
+        }
+        .green { color: #059669; }
+        .code { 
+            background: #f1f5f9; 
+            padding: 2px 6px; 
+            border-radius: 4px; 
+            font-family: 'Courier New', monospace; 
+            font-size: 0.85em;
+        }
+        .build-info {
+            background: #f8fafc;
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 12px;
+            font-size: 0.9em;
+        }
+        .build-info strong {
+            color: #475569;
+        }
+    </style>
+</head>
+<body>
+    <div class="status">
+        <h1>🟢 System Status</h1>
+        <p><strong>Service:</strong> Android Device Catalog</p>
+        <p><strong>Status:</strong> <span class="green">✅ Online</span></p>
+        <p><strong>Uptime:</strong> Active</p>
+        <p><strong>Last Check:</strong> <span id="timestamp"></span></p>
+        
+        <div class="build-info">
+            <p><strong>Build Time:</strong> 2025-08-05T17:06:01.252Z</p>
+            <p><strong>Git Commit:</strong> <span class="code">dadfc83</span></p>
+            <p><strong>Branch:</strong> <span class="code">site-ping</span></p>
+            <p><strong>Full Hash:</strong> <span class="code" style="font-size: 0.75em;">dadfc83e88f49210bf34f1d81cad792163136a14</span></p>
+        </div>
+        
+        <hr>
+        <p><small>Use <span class="code">/health</span> or <span class="code">/ping.json</span> for automated monitoring</small></p>
+    </div>
+    <script>
+        document.getElementById('timestamp').textContent = new Date().toLocaleString();
+    </script>
+</body>
+</html>

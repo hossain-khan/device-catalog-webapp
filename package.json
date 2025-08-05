@@ -6,8 +6,9 @@
     "scripts": {
         "dev": "vite",
         "kill": "fuser -k 5000/tcp",
+        "prebuild": "node scripts/inject-build-info.js",
         "build": "NODE_OPTIONS='--max-old-space-size=4096' tsc -b --noCheck && NODE_OPTIONS='--max-old-space-size=4096' vite build",
-        "build:memory-optimized": "NODE_OPTIONS='--max-old-space-size=2048' tsc -b --noCheck && NODE_OPTIONS='--max-old-space-size=2048' vite build",
+        "build:memory-optimized": "node scripts/inject-build-info.js && NODE_OPTIONS='--max-old-space-size=2048' tsc -b --noCheck && NODE_OPTIONS='--max-old-space-size=2048' vite build",
         "lint": "eslint .",
         "optimize": "vite optimize",
         "preview": "vite preview"
