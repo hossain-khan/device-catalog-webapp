@@ -10,6 +10,9 @@ import { ArchitectureDialog } from "@/components/ArchitectureDialog";
 import { PlatformEvolutionDialog } from "@/components/PlatformEvolutionDialog";
 import { PerformanceTiersDialog } from "@/components/PerformanceTiersDialog";
 import { ScreenResolutionDialog } from "@/components/ScreenResolutionDialog";
+import { ProcessorDiversityDialog } from "@/components/ProcessorDiversityDialog";
+import { HighResolutionDialog } from "@/components/HighResolutionDialog";
+import { GpuManufacturerDialog } from "@/components/GpuManufacturerDialog";
 import { DeviceStats } from "@/types/device";
 import { getFormFactorColors, getManufacturerColors, getSdkEraColors, PERFORMANCE_TIERS } from "@/lib/deviceColors";
 import { ChartBar } from "@phosphor-icons/react";
@@ -47,6 +50,9 @@ export const DeviceStatsPanel = ({ stats, onFilterByManufacturer, onFilterByForm
   const [platformDialogOpen, setPlatformDialogOpen] = useState(false);
   const [performanceDialogOpen, setPerformanceDialogOpen] = useState(false);
   const [resolutionDialogOpen, setResolutionDialogOpen] = useState(false);
+  const [processorDiversityDialogOpen, setProcessorDiversityDialogOpen] = useState(false);
+  const [highResolutionDialogOpen, setHighResolutionDialogOpen] = useState(false);
+  const [gpuManufacturerDialogOpen, setGpuManufacturerDialogOpen] = useState(false);
   
   const topManufacturers = Object.entries(stats.manufacturerCounts)
     .sort(([,a], [,b]) => b - a)
@@ -104,6 +110,66 @@ export const DeviceStatsPanel = ({ stats, onFilterByManufacturer, onFilterByForm
           value={stats.platformCompatibility.recent + stats.platformCompatibility.latest}
           subtitle={`${(((stats.platformCompatibility.recent + stats.platformCompatibility.latest) / stats.totalDevices) * 100).toFixed(1)}% Android 12+ capable devices`}
         />
+      </div>
+
+      {/* New Processor & Display Analytics Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+            <CardTitle className="text-sm font-medium text-muted-foreground">Processor Diversity</CardTitle>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setProcessorDiversityDialogOpen(true)}
+              className="h-8 px-3"
+            >
+              <ChartBar size={16} className="mr-1" />
+              Show All
+            </Button>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-primary">{stats.processorDiversityCount}</div>
+            <p className="text-xs text-muted-foreground mt-1">Unique processor models</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+            <CardTitle className="text-sm font-medium text-muted-foreground">High-Resolution Support</CardTitle>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setHighResolutionDialogOpen(true)}
+              className="h-8 px-3"
+            >
+              <ChartBar size={16} className="mr-1" />
+              Show All
+            </Button>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-primary">{((stats.highResolutionSupportCount / stats.totalDevices) * 100).toFixed(1)}%</div>
+            <p className="text-xs text-muted-foreground mt-1">Devices with 1080p+ displays</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+            <CardTitle className="text-sm font-medium text-muted-foreground">GPU Ecosystem</CardTitle>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setGpuManufacturerDialogOpen(true)}
+              className="h-8 px-3"
+            >
+              <ChartBar size={16} className="mr-1" />
+              Show All
+            </Button>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-primary">{Object.keys(stats.gpuManufacturerCounts).length}</div>
+            <p className="text-xs text-muted-foreground mt-1">GPU manufacturer variety</p>
+          </CardContent>
+        </Card>
       </div>
 
       {/* New Analytics Panels */}
@@ -547,6 +613,24 @@ export const DeviceStatsPanel = ({ stats, onFilterByManufacturer, onFilterByForm
       <ScreenResolutionDialog
         open={resolutionDialogOpen}
         onOpenChange={setResolutionDialogOpen}
+        stats={stats}
+      />
+
+      <ProcessorDiversityDialog
+        open={processorDiversityDialogOpen}
+        onOpenChange={setProcessorDiversityDialogOpen}
+        stats={stats}
+      />
+
+      <HighResolutionDialog
+        open={highResolutionDialogOpen}
+        onOpenChange={setHighResolutionDialogOpen}
+        stats={stats}
+      />
+
+      <GpuManufacturerDialog
+        open={gpuManufacturerDialogOpen}
+        onOpenChange={setGpuManufacturerDialogOpen}
         stats={stats}
       />
     </div>

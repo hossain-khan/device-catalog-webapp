@@ -58,4 +58,9 @@ export interface DeviceStats {
     premium: number;     // 6-12GB RAM
     flagship: number;    // 12GB+ RAM
   };
+  // New analytics metrics
+  processorDiversityCount: number;
+  processorManufacturerCounts: { [key: string]: number };
+  highResolutionSupportCount: number; // 1080p+ displays
+  gpuManufacturerCounts: { [key: string]: number };
 }
