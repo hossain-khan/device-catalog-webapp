@@ -6,6 +6,10 @@ import { SdkVersionsDialog } from "@/components/SdkVersionsDialog";
 import { ManufacturersDialog } from "@/components/ManufacturersDialog";
 import { FormFactorsDialog } from "@/components/FormFactorsDialog";
 import { RamDistributionDialog } from "@/components/RamDistributionDialog";
+import { ArchitectureDialog } from "@/components/ArchitectureDialog";
+import { PlatformEvolutionDialog } from "@/components/PlatformEvolutionDialog";
+import { PerformanceTiersDialog } from "@/components/PerformanceTiersDialog";
+import { ScreenResolutionDialog } from "@/components/ScreenResolutionDialog";
 import { DeviceStats } from "@/types/device";
 import { getFormFactorColors, getManufacturerColors, getSdkEraColors, PERFORMANCE_TIERS } from "@/lib/deviceColors";
 import { ChartBar } from "@phosphor-icons/react";
@@ -39,6 +43,10 @@ export const DeviceStatsPanel = ({ stats, onFilterByManufacturer, onFilterByForm
   const [manufacturersDialogOpen, setManufacturersDialogOpen] = useState(false);
   const [formFactorsDialogOpen, setFormFactorsDialogOpen] = useState(false);
   const [ramDialogOpen, setRamDialogOpen] = useState(false);
+  const [architectureDialogOpen, setArchitectureDialogOpen] = useState(false);
+  const [platformDialogOpen, setPlatformDialogOpen] = useState(false);
+  const [performanceDialogOpen, setPerformanceDialogOpen] = useState(false);
+  const [resolutionDialogOpen, setResolutionDialogOpen] = useState(false);
   
   const topManufacturers = Object.entries(stats.manufacturerCounts)
     .sort(([,a], [,b]) => b - a)
@@ -103,12 +111,23 @@ export const DeviceStatsPanel = ({ stats, onFilterByManufacturer, onFilterByForm
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
             <CardTitle className="text-lg">CPU Architecture</CardTitle>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setArchitectureDialogOpen(true)}
+              className="h-8 px-3"
+            >
+              <ChartBar size={16} className="mr-1" />
+              Show All
+            </Button>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {Object.entries(stats.architectureCounts).map(([arch, count]) => {
+              {Object.entries(stats.architectureCounts)
+                .sort(([,a], [,b]) => b - a)
+                .slice(0, 5)
+                .map(([arch, count]) => {
                 const colors = PERFORMANCE_TIERS[0].colors;
-                const percentage = ((count / stats.totalDevices) * 100).toFixed(1);
                 return (
                   <div key={arch} className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
@@ -126,7 +145,7 @@ export const DeviceStatsPanel = ({ stats, onFilterByManufacturer, onFilterByForm
                         color: colors.text 
                       }}
                     >
-                      {count} devices ({percentage}%)
+                      {count} devices
                     </Badge>
                   </div>
                 );
@@ -138,6 +157,15 @@ export const DeviceStatsPanel = ({ stats, onFilterByManufacturer, onFilterByForm
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
             <CardTitle className="text-lg">Platform Evolution</CardTitle>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setPlatformDialogOpen(true)}
+              className="h-8 px-3"
+            >
+              <ChartBar size={16} className="mr-1" />
+              Show All
+            </Button>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
@@ -150,7 +178,7 @@ export const DeviceStatsPanel = ({ stats, onFilterByManufacturer, onFilterByForm
                   <span className="text-sm font-medium">Legacy (API ≤ 25)</span>
                 </div>
                 <Badge variant="secondary" className="text-xs bg-red-100 text-red-800">
-                  {stats.platformCompatibility.legacy} devices ({((stats.platformCompatibility.legacy / stats.totalDevices) * 100).toFixed(1)}%)
+                  {stats.platformCompatibility.legacy} devices
                 </Badge>
               </div>
               <div className="flex items-center justify-between">
@@ -162,7 +190,7 @@ export const DeviceStatsPanel = ({ stats, onFilterByManufacturer, onFilterByForm
                   <span className="text-sm font-medium">Modern (API 26-30)</span>
                 </div>
                 <Badge variant="secondary" className="text-xs bg-yellow-100 text-yellow-800">
-                  {stats.platformCompatibility.modern} devices ({((stats.platformCompatibility.modern / stats.totalDevices) * 100).toFixed(1)}%)
+                  {stats.platformCompatibility.modern} devices
                 </Badge>
               </div>
               <div className="flex items-center justify-between">
@@ -174,7 +202,7 @@ export const DeviceStatsPanel = ({ stats, onFilterByManufacturer, onFilterByForm
                   <span className="text-sm font-medium">Recent (API 31-33)</span>
                 </div>
                 <Badge variant="secondary" className="text-xs bg-blue-100 text-blue-800">
-                  {stats.platformCompatibility.recent} devices ({((stats.platformCompatibility.recent / stats.totalDevices) * 100).toFixed(1)}%)
+                  {stats.platformCompatibility.recent} devices
                 </Badge>
               </div>
               <div className="flex items-center justify-between">
@@ -186,7 +214,7 @@ export const DeviceStatsPanel = ({ stats, onFilterByManufacturer, onFilterByForm
                   <span className="text-sm font-medium">Latest (API ≥ 34)</span>
                 </div>
                 <Badge variant="secondary" className="text-xs bg-green-100 text-green-800">
-                  {stats.platformCompatibility.latest} devices ({((stats.platformCompatibility.latest / stats.totalDevices) * 100).toFixed(1)}%)
+                  {stats.platformCompatibility.latest} devices
                 </Badge>
               </div>
             </div>
@@ -196,12 +224,23 @@ export const DeviceStatsPanel = ({ stats, onFilterByManufacturer, onFilterByForm
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
             <CardTitle className="text-lg">Performance Tiers</CardTitle>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setPerformanceDialogOpen(true)}
+              className="h-8 px-3"
+            >
+              <ChartBar size={16} className="mr-1" />
+              Show All
+            </Button>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {Object.entries(stats.performanceTierCounts).map(([tier, count]) => {
+              {Object.entries(stats.performanceTierCounts)
+                .sort(([,a], [,b]) => b - a)
+                .slice(0, 4)
+                .map(([tier, count]) => {
                 const tierColors = PERFORMANCE_TIERS.find(t => t.name.toLowerCase() === tier.toLowerCase())?.colors || PERFORMANCE_TIERS[0].colors;
-                const percentage = ((count / stats.totalDevices) * 100).toFixed(1);
                 return (
                   <div key={tier} className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
@@ -219,7 +258,7 @@ export const DeviceStatsPanel = ({ stats, onFilterByManufacturer, onFilterByForm
                         color: tierColors.text 
                       }}
                     >
-                      {count} devices ({percentage}%)
+                      {count} devices
                     </Badge>
                   </div>
                 );
@@ -231,6 +270,15 @@ export const DeviceStatsPanel = ({ stats, onFilterByManufacturer, onFilterByForm
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
             <CardTitle className="text-lg">Screen Resolutions</CardTitle>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setResolutionDialogOpen(true)}
+              className="h-8 px-3"
+            >
+              <ChartBar size={16} className="mr-1" />
+              Show All
+            </Button>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
@@ -239,7 +287,6 @@ export const DeviceStatsPanel = ({ stats, onFilterByManufacturer, onFilterByForm
                 .slice(0, 5)
                 .map(([resolution, count]) => {
                 const colors = getSdkEraColors(30);
-                const percentage = ((count / stats.totalDevices) * 100).toFixed(1);
                 return (
                   <div key={resolution} className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
@@ -257,7 +304,7 @@ export const DeviceStatsPanel = ({ stats, onFilterByManufacturer, onFilterByForm
                         color: colors.text 
                       }}
                     >
-                      {count} devices ({percentage}%)
+                      {count} devices
                     </Badge>
                   </div>
                 );
@@ -476,6 +523,30 @@ export const DeviceStatsPanel = ({ stats, onFilterByManufacturer, onFilterByForm
       <RamDistributionDialog
         open={ramDialogOpen}
         onOpenChange={setRamDialogOpen}
+        stats={stats}
+      />
+
+      <ArchitectureDialog
+        open={architectureDialogOpen}
+        onOpenChange={setArchitectureDialogOpen}
+        stats={stats}
+      />
+
+      <PlatformEvolutionDialog
+        open={platformDialogOpen}
+        onOpenChange={setPlatformDialogOpen}
+        stats={stats}
+      />
+
+      <PerformanceTiersDialog
+        open={performanceDialogOpen}
+        onOpenChange={setPerformanceDialogOpen}
+        stats={stats}
+      />
+
+      <ScreenResolutionDialog
+        open={resolutionDialogOpen}
+        onOpenChange={setResolutionDialogOpen}
         stats={stats}
       />
     </div>
