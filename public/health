@@ -1,7 +1,12 @@
 {
   "status": "ok",
   "service": "android-device-catalog",
-  "timestamp": "2025-08-05T15:40:00Z",
   "uptime": true,
-  "version": "1.0.0"
+  "version": "1.0.0",
+  "build": {
+    "time": "2025-08-05T17:06:01.252Z",
+    "commit": "dadfc83e88f49210bf34f1d81cad792163136a14",
+    "shortCommit": "dadfc83",
+    "branch": "site-ping"
+  }
 }
