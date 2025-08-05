@@ -8,6 +8,7 @@ import { formatRam } from "@/lib/deviceUtils";
 import { DeviceMobile, Monitor, DeviceTablet, Television, Car, Laptop, Watch, GameController, Cpu, Desktop, Code } from "@phosphor-icons/react";
 import { DeviceJsonModal } from "./DeviceJsonModal";
 import { useState } from "react";
+import GoogleLogoSVG from "@/assets/images/google_G_logo.svg";
 
 interface DeviceDetailModalProps {
   device: AndroidDevice | null;
@@ -19,6 +20,13 @@ export const DeviceDetailModal = ({ device, open, onOpenChange }: DeviceDetailMo
   const [jsonModalOpen, setJsonModalOpen] = useState(false);
   
   if (!device) return null;
+
+  const handleGoogleSearch = () => {
+    // Format the search query as "Manufacturer Model Form Factor"
+    const searchQuery = `${device.manufacturer} ${device.modelName} ${device.formFactor}`;
+    const googleSearchUrl = `https://www.google.com/search?q=${encodeURIComponent(searchQuery)}`;
+    window.open(googleSearchUrl, '_blank');
+  };
 
   const getFormFactorIcon = (formFactor: string) => {
     switch (formFactor.toLowerCase()) {
@@ -49,15 +57,26 @@ export const DeviceDetailModal = ({ device, open, onOpenChange }: DeviceDetailMo
           subtitle={`${device.manufacturer} • ${device.brand}`}
           icon={getFormFactorIcon(device.formFactor)}
           actions={
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setJsonModalOpen(true)}
-              className="hover:bg-muted hover:text-foreground"
-            >
-              <Code className="h-4 w-4 mr-2" />
-              View JSON
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleGoogleSearch}
+                className="hover:bg-muted hover:text-foreground"
+              >
+                <img src={GoogleLogoSVG} alt="Google" className="h-4 w-4 mr-2" />
+                Search
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setJsonModalOpen(true)}
+                className="hover:bg-muted hover:text-foreground"
+              >
+                <Code className="h-4 w-4 mr-2" />
+                View JSON
+              </Button>
+            </div>
           }
           onClose={() => onOpenChange(false)}
         />
