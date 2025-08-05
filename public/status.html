@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Status - Android Device Catalog</title>
+    <style>
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+            margin: 40px; 
+            background: #f8fafc; 
+            color: #334155;
+        }
+        .status { 
+            background: white; 
+            padding: 20px; 
+            border-radius: 8px; 
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1); 
+            max-width: 400px;
+        }
+        .green { color: #059669; }
+        .code { 
+            background: #f1f5f9; 
+            padding: 2px 6px; 
+            border-radius: 4px; 
+            font-family: 'Courier New', monospace; 
+        }
+    </style>
+</head>
+<body>
+    <div class="status">
+        <h1>🟢 System Status</h1>
+        <p><strong>Service:</strong> Android Device Catalog</p>
+        <p><strong>Status:</strong> <span class="green">✅ Online</span></p>
+        <p><strong>Uptime:</strong> Active</p>
+        <p><strong>Last Check:</strong> <span id="timestamp"></span></p>
+        <hr>
+        <p><small>Use <span class="code">/health</span> or <span class="code">/ping.json</span> for automated monitoring</small></p>
+    </div>
+    <script>
+        document.getElementById('timestamp').textContent = new Date().toLocaleString();
+    </script>
+</body>
+</html>
