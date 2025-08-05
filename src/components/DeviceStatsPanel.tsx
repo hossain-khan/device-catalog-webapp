@@ -102,7 +102,7 @@ export const DeviceStatsPanel = ({ stats, onFilterByManufacturer, onFilterByForm
         <StatsCard 
           title="Modern Platform" 
           value={stats.platformCompatibility.recent + stats.platformCompatibility.latest}
-          subtitle="Android 12+ capable devices"
+          subtitle={`${(((stats.platformCompatibility.recent + stats.platformCompatibility.latest) / stats.totalDevices) * 100).toFixed(1)}% Android 12+ capable devices`}
         />
       </div>
 
