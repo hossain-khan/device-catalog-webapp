@@ -76,6 +76,63 @@ export const parseRamValue = (ram: string): number => {
   return match ? parseInt(match[1]) : 0;
 };
 
+// Helper function to extract processor manufacturer
+const getProcessorManufacturer = (processorName: string): string => {
+  const processor = processorName.toLowerCase();
+  if (processor.includes('mediatek') || processor.includes('mt')) return 'MediaTek';
+  if (processor.includes('qualcomm') || processor.includes('snapdragon') || processor.includes('msm') || processor.includes('apq') || processor.includes('sdm') || processor.includes('sm') || processor.includes('qti')) return 'Qualcomm';
+  if (processor.includes('samsung') || processor.includes('exynos') || processor.includes('s5e')) return 'Samsung';
+  if (processor.includes('hisilicon') || processor.includes('kirin')) return 'HiSilicon';
+  if (processor.includes('intel')) return 'Intel';
+  if (processor.includes('allwinner')) return 'Allwinner';
+  if (processor.includes('rockchip') || processor.includes('rk')) return 'Rockchip';
+  if (processor.includes('spreadtrum') || processor.includes('unisoc')) return 'Spreadtrum';
+  if (processor.includes('amlogic') || processor.includes('aml')) return 'Amlogic';
+  if (processor.includes('nvidia') || processor.includes('tegra')) return 'NVIDIA';
+  if (processor.includes('google') || processor.includes('tensor')) return 'Google';
+  if (processor.includes('amd')) return 'AMD';
+  if (processor.includes('broadcom')) return 'Broadcom';
+  if (processor.includes('realtek')) return 'Realtek';
+  return 'Other';
+};
+
+// Helper function to extract GPU manufacturer
+const getGpuManufacturer = (gpuName: string): string => {
+  const gpu = gpuName.toLowerCase();
+  if (gpu.includes('mali') || gpu.includes('arm')) return 'ARM Mali';
+  if (gpu.includes('adreno') || gpu.includes('qualcomm')) return 'Qualcomm Adreno';
+  if (gpu.includes('powervr') || gpu.includes('imagination')) return 'PowerVR';
+  if (gpu.includes('intel') || gpu.includes('hd graphics') || gpu.includes('uhd graphics')) return 'Intel Graphics';
+  if (gpu.includes('xclipse') || gpu.includes('samsung')) return 'Samsung Xclipse';
+  if (gpu.includes('amd') || gpu.includes('radeon')) return 'AMD Radeon';
+  if (gpu.includes('nvidia') || gpu.includes('geforce') || gpu.includes('kepler') || gpu.includes('maxwell')) return 'NVIDIA';
+  if (gpu.includes('vivante')) return 'Vivante';
+  return 'Other';
+};
+
+// Helper function to parse screen resolution
+const parseScreenResolution = (screenSize: string): { width: number; height: number } | null => {
+  // Handle different formats: "1080x1920", "1080×1920", "1080, 1920", "1080 1920"
+  const cleanedSize = screenSize.trim();
+  const patterns = [
+    /(\d+)\s*[x×]\s*(\d+)/i,  // 1080x1920 or 1080×1920
+    /(\d+)\s*,\s*(\d+)/,      // 1080, 1920
+    /(\d+)\s+(\d+)/           // 1080 1920
+  ];
+  
+  for (const pattern of patterns) {
+    const match = cleanedSize.match(pattern);
+    if (match) {
+      const width = parseInt(match[1]);
+      const height = parseInt(match[2]);
+      if (!isNaN(width) && !isNaN(height)) {
+        return { width, height };
+      }
+    }
+  }
+  return null;
+};
+
 export const formatRam = (ram: string): string => {
   const ramMB = parseRamValue(ram);
   if (ramMB >= 1024) {
@@ -94,10 +151,39 @@ export const calculateDeviceStats = (devices: AndroidDevice[]): DeviceStats => {
       '1-2GB': 0,
       '2-4GB': 0,
       '4-8GB': 0,
-      '8GB+': 0
+      '8-12GB': 0,
+      '12GB+': 0
     },
-    sdkVersionCounts: {}
+    sdkVersionCounts: {},
+    
+    // New analytics metrics
+    architectureCounts: {},
+    multiAbiDeviceCount: 0,
+    arm64SupportCount: 0,
+    platformCompatibility: {
+      legacy: 0,
+      modern: 0,
+      recent: 0,
+      latest: 0
+    },
+    averageSdkRange: 0,
+    screenResolutionCounts: {},
+    openGlVersionCounts: {},
+    openGlEs32SupportCount: 0,
+    performanceTierCounts: {
+      budget: 0,
+      midRange: 0,
+      premium: 0,
+      flagship: 0,
+    },
+    // New analytics metrics
+    processorDiversityCount: 0,
+    processorManufacturerCounts: {},
+    highResolutionSupportCount: 0,
+    gpuManufacturerCounts: {},
   };
+
+  let totalSdkRange = 0;
 
   devices.forEach(device => {
     // Manufacturer counts
@@ -108,27 +194,134 @@ export const calculateDeviceStats = (devices: AndroidDevice[]): DeviceStats => {
     stats.formFactorCounts[device.formFactor] = 
       (stats.formFactorCounts[device.formFactor] || 0) + 1;
 
-    // RAM ranges
+    // RAM ranges and performance tiers
     const ramMB = parseRamValue(device.ram);
     if (ramMB < 1024) {
       stats.ramRanges['< 1GB']++;
+      stats.performanceTierCounts.budget++;
     } else if (ramMB < 2048) {
       stats.ramRanges['1-2GB']++;
+      stats.performanceTierCounts.budget++;
     } else if (ramMB < 4096) {
       stats.ramRanges['2-4GB']++;
+      stats.performanceTierCounts.midRange++;
     } else if (ramMB < 8192) {
       stats.ramRanges['4-8GB']++;
+      stats.performanceTierCounts.midRange++;
+    } else if (ramMB < 12288) {
+      stats.ramRanges['8-12GB']++;
+      stats.performanceTierCounts.premium++;
     } else {
-      stats.ramRanges['8GB+']++;
+      stats.ramRanges['12GB+']++;
+      stats.performanceTierCounts.flagship++;
     }
 
-    // SDK version counts
+    // Architecture analysis
+    const hasArm64 = device.abis.includes('arm64-v8a');
+    const hasArm32 = device.abis.includes('armeabi-v7a') || device.abis.includes('armeabi');
+    const hasX86 = device.abis.some(abi => abi.includes('x86'));
+    
+    if (hasArm64) {
+      stats.arm64SupportCount++;
+    }
+    
+    if (device.abis.length > 1) {
+      stats.multiAbiDeviceCount++;
+    }
+
+    // Architecture categorization
+    if (hasArm64 && hasArm32) {
+      stats.architectureCounts['ARM64 + ARM32'] = (stats.architectureCounts['ARM64 + ARM32'] || 0) + 1;
+    } else if (hasArm64) {
+      stats.architectureCounts['ARM64 only'] = (stats.architectureCounts['ARM64 only'] || 0) + 1;
+    } else if (hasArm32) {
+      stats.architectureCounts['ARM32 only'] = (stats.architectureCounts['ARM32 only'] || 0) + 1;
+    } else if (hasX86) {
+      stats.architectureCounts['x86'] = (stats.architectureCounts['x86'] || 0) + 1;
+    } else {
+      stats.architectureCounts['Other'] = (stats.architectureCounts['Other'] || 0) + 1;
+    }
+
+    // SDK version analysis
+    const minSdk = Math.min(...device.sdkVersions);
+    const maxSdk = Math.max(...device.sdkVersions);
+    totalSdkRange += (maxSdk - minSdk + 1);
+    
+    // Platform compatibility
+    if (maxSdk <= 25) {
+      stats.platformCompatibility.legacy++;
+    } else if (maxSdk <= 30) {
+      stats.platformCompatibility.modern++;
+    } else if (maxSdk <= 33) {
+      stats.platformCompatibility.recent++;
+    } else {
+      stats.platformCompatibility.latest++;
+    }
+
+    // SDK version counts (individual)
     device.sdkVersions.forEach(sdk => {
-      const sdkKey = `API ${sdk}`;
+      const sdkKey = sdk.toString();
       stats.sdkVersionCounts[sdkKey] = 
         (stats.sdkVersionCounts[sdkKey] || 0) + 1;
     });
+
+    // Screen resolution analysis
+    device.screenSizes.forEach(size => {
+      const [width, height] = size.split('x').map(Number);
+      let category = 'Other';
+      
+      if (width >= 3840 || height >= 3840) {
+        category = '4K+';
+      } else if (width >= 2560 || height >= 2560) {
+        category = 'QHD+';
+      } else if (width >= 1920 || height >= 1920) {
+        category = 'FHD+';
+      } else if (width >= 1280 || height >= 1280) {
+        category = 'HD+';
+      } else {
+        category = 'SD';
+      }
+      
+      stats.screenResolutionCounts[category] = (stats.screenResolutionCounts[category] || 0) + 1;
+    });
+
+    // OpenGL ES version analysis
+    device.openGlEsVersions.forEach(version => {
+      stats.openGlVersionCounts[`OpenGL ES ${version}`] = 
+        (stats.openGlVersionCounts[`OpenGL ES ${version}`] || 0) + 1;
+    });
+    
+    // Check for OpenGL ES 3.2 support
+    if (device.openGlEsVersions.includes('3.2')) {
+      stats.openGlEs32SupportCount++;
+    }
+    
+    // Processor diversity analysis
+    const processorManufacturer = getProcessorManufacturer(device.processorName);
+    stats.processorManufacturerCounts[processorManufacturer] = 
+      (stats.processorManufacturerCounts[processorManufacturer] || 0) + 1;
+    
+    // High-resolution display support (1080p+)
+    const has1080pPlus = device.screenSizes.some(screenSize => {
+      const resolution = parseScreenResolution(screenSize);
+      return resolution && (resolution.width >= 1080 || resolution.height >= 1080);
+    });
+    if (has1080pPlus) {
+      stats.highResolutionSupportCount++;
+    }
+    
+    // GPU manufacturer analysis
+    const gpuManufacturer = getGpuManufacturer(device.gpu);
+    stats.gpuManufacturerCounts[gpuManufacturer] = 
+      (stats.gpuManufacturerCounts[gpuManufacturer] || 0) + 1;
   });
+
+  // Calculate processor diversity (unique processors count)
+  const uniqueProcessors = new Set(devices.map(device => device.processorName));
+  stats.processorDiversityCount = uniqueProcessors.size;
+
+  // Calculate average SDK range
+  stats.averageSdkRange = devices.length > 0 ? totalSdkRange / devices.length : 0;
 
   return stats;
 };
