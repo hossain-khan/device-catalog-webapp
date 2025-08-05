@@ -2,9 +2,9 @@ User-agent: *
 Allow: /
 
 # Sitemap location
-Sitemap: https://device-catalog-webapp.onrender.com/sitemap.xml
+Sitemap: https://android-device.gohk.xyz/sitemap.xml
 
-# Additional crawling guidelines
+# Additional crawling guidelines for bots
 Crawl-delay: 1
 
 # Allow all search engines to index the site
