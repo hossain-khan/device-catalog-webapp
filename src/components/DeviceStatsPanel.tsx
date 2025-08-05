@@ -108,6 +108,7 @@ export const DeviceStatsPanel = ({ stats, onFilterByManufacturer, onFilterByForm
             <div className="space-y-3">
               {Object.entries(stats.architectureCounts).map(([arch, count]) => {
                 const colors = PERFORMANCE_TIERS[0].colors;
+                const percentage = ((count / stats.totalDevices) * 100).toFixed(1);
                 return (
                   <div key={arch} className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
@@ -125,7 +126,7 @@ export const DeviceStatsPanel = ({ stats, onFilterByManufacturer, onFilterByForm
                         color: colors.text 
                       }}
                     >
-                      {count} devices
+                      {count} devices ({percentage}%)
                     </Badge>
                   </div>
                 );
@@ -149,7 +150,7 @@ export const DeviceStatsPanel = ({ stats, onFilterByManufacturer, onFilterByForm
                   <span className="text-sm font-medium">Legacy (API ≤ 25)</span>
                 </div>
                 <Badge variant="secondary" className="text-xs bg-red-100 text-red-800">
-                  {stats.platformCompatibility.legacy} devices
+                  {stats.platformCompatibility.legacy} devices ({((stats.platformCompatibility.legacy / stats.totalDevices) * 100).toFixed(1)}%)
                 </Badge>
               </div>
               <div className="flex items-center justify-between">
@@ -161,7 +162,7 @@ export const DeviceStatsPanel = ({ stats, onFilterByManufacturer, onFilterByForm
                   <span className="text-sm font-medium">Modern (API 26-30)</span>
                 </div>
                 <Badge variant="secondary" className="text-xs bg-yellow-100 text-yellow-800">
-                  {stats.platformCompatibility.modern} devices
+                  {stats.platformCompatibility.modern} devices ({((stats.platformCompatibility.modern / stats.totalDevices) * 100).toFixed(1)}%)
                 </Badge>
               </div>
               <div className="flex items-center justify-between">
@@ -173,7 +174,7 @@ export const DeviceStatsPanel = ({ stats, onFilterByManufacturer, onFilterByForm
                   <span className="text-sm font-medium">Recent (API 31-33)</span>
                 </div>
                 <Badge variant="secondary" className="text-xs bg-blue-100 text-blue-800">
-                  {stats.platformCompatibility.recent} devices
+                  {stats.platformCompatibility.recent} devices ({((stats.platformCompatibility.recent / stats.totalDevices) * 100).toFixed(1)}%)
                 </Badge>
               </div>
               <div className="flex items-center justify-between">
@@ -185,7 +186,7 @@ export const DeviceStatsPanel = ({ stats, onFilterByManufacturer, onFilterByForm
                   <span className="text-sm font-medium">Latest (API ≥ 34)</span>
                 </div>
                 <Badge variant="secondary" className="text-xs bg-green-100 text-green-800">
-                  {stats.platformCompatibility.latest} devices
+                  {stats.platformCompatibility.latest} devices ({((stats.platformCompatibility.latest / stats.totalDevices) * 100).toFixed(1)}%)
                 </Badge>
               </div>
             </div>
@@ -200,6 +201,7 @@ export const DeviceStatsPanel = ({ stats, onFilterByManufacturer, onFilterByForm
             <div className="space-y-3">
               {Object.entries(stats.performanceTierCounts).map(([tier, count]) => {
                 const tierColors = PERFORMANCE_TIERS.find(t => t.name.toLowerCase() === tier.toLowerCase())?.colors || PERFORMANCE_TIERS[0].colors;
+                const percentage = ((count / stats.totalDevices) * 100).toFixed(1);
                 return (
                   <div key={tier} className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
@@ -217,7 +219,7 @@ export const DeviceStatsPanel = ({ stats, onFilterByManufacturer, onFilterByForm
                         color: tierColors.text 
                       }}
                     >
-                      {count} devices
+                      {count} devices ({percentage}%)
                     </Badge>
                   </div>
                 );
@@ -237,6 +239,7 @@ export const DeviceStatsPanel = ({ stats, onFilterByManufacturer, onFilterByForm
                 .slice(0, 5)
                 .map(([resolution, count]) => {
                 const colors = getSdkEraColors(30);
+                const percentage = ((count / stats.totalDevices) * 100).toFixed(1);
                 return (
                   <div key={resolution} className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
@@ -254,7 +257,7 @@ export const DeviceStatsPanel = ({ stats, onFilterByManufacturer, onFilterByForm
                         color: colors.text 
                       }}
                     >
-                      {count} devices
+                      {count} devices ({percentage}%)
                     </Badge>
                   </div>
                 );
