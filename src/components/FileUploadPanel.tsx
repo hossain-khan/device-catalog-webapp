@@ -277,7 +277,7 @@ export const FileUploadPanel = forwardRef<FileUploadPanelRef, FileUploadPanelPro
                 size="sm" 
                 onClick={() => setShowPerformanceTesting(!showPerformanceTesting)}
                 className="flex items-center gap-2 hover:bg-muted hover:text-foreground"
-                title="Performance Testing"
+                title={showPerformanceTesting ? "Hide performance testing options" : "Show performance testing options"}
               >
                 <TestTube className="w-4 h-4" />
               </Button>
