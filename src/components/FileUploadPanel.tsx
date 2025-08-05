@@ -590,8 +590,8 @@ export const FileUploadPanel = forwardRef<FileUploadPanelRef, FileUploadPanelPro
         </CardHeader>
         <CardContent className="space-y-4">
           <p className="text-sm text-muted-foreground">
-            This application uses data from the open-source Android Device Catalog Parser project, 
-            which provides comprehensive device specifications from Google's official Device Catalog.
+            This application uses data parsed data generated using the open-source Android Device Catalog Parser project, 
+            which uses CSV data from Google's official Google Play Store device catalog.
           </p>
           
           <div className="grid md:grid-cols-3 gap-4">
