@@ -36,6 +36,7 @@ export const FileUploadPanel = forwardRef<FileUploadPanelRef, FileUploadPanelPro
   const [schemaModalOpen, setSchemaModalOpen] = useState(false);
   const [validationProgress, setValidationProgress] = useState<{ current: number; total: number } | null>(null);
   const [activeTabInternal, setActiveTabInternal] = useState<string>('preloaded');
+  const [showPerformanceTesting, setShowPerformanceTesting] = useState<boolean>(false);
 
   const handleUseLatestDataset = useCallback(() => {
     // Activate URL tab and set the URL
@@ -274,6 +275,15 @@ export const FileUploadPanel = forwardRef<FileUploadPanelRef, FileUploadPanelPro
               <Button 
                 variant="outline" 
                 size="sm" 
+                onClick={() => setShowPerformanceTesting(!showPerformanceTesting)}
+                className="flex items-center gap-2 hover:bg-muted hover:text-foreground"
+                title="Performance Testing"
+              >
+                <TestTube className="w-4 h-4" />
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm" 
                 onClick={handleDownloadData}
                 className="flex items-center gap-2 hover:bg-muted hover:text-foreground"
               >
@@ -491,41 +501,43 @@ export const FileUploadPanel = forwardRef<FileUploadPanelRef, FileUploadPanelPro
           </Alert>
         )}
 
-        {/* Test data generation section */}
-        <div className="border-t pt-4">
-          <h4 className="text-sm font-medium mb-3 flex items-center gap-2">
-            <TestTube className="w-4 h-4" />
-            Performance Testing
-          </h4>
-          <div className="flex items-center gap-3">
-            <div className="flex-1">
-              <Label htmlFor="test-count" className="text-xs">Device Count</Label>
-              <Input
-                id="test-count"
-                type="number"
-                min="1000"
-                max="50000"
-                step="1000"
-                value={testDataCount}
-                onChange={(e) => setTestDataCount(parseInt(e.target.value) || 5000)}
-                className="mt-1"
-                placeholder="5000"
-              />
+        {/* Test data generation section - conditionally rendered */}
+        {showPerformanceTesting && (
+          <div className="border-t pt-4">
+            <h4 className="text-sm font-medium mb-3 flex items-center gap-2">
+              <TestTube className="w-4 h-4" />
+              Performance Testing
+            </h4>
+            <div className="flex items-center gap-3">
+              <div className="flex-1">
+                <Label htmlFor="test-count" className="text-xs">Device Count</Label>
+                <Input
+                  id="test-count"
+                  type="number"
+                  min="1000"
+                  max="50000"
+                  step="1000"
+                  value={testDataCount}
+                  onChange={(e) => setTestDataCount(parseInt(e.target.value) || 5000)}
+                  className="mt-1"
+                  placeholder="5000"
+                />
+              </div>
+              <Button 
+                onClick={generateTestData}
+                disabled={uploadStatus === 'loading'}
+                variant="outline"
+                size="sm"
+                className="mt-5 hover:bg-muted hover:text-foreground"
+              >
+                Generate Test Data
+              </Button>
             </div>
-            <Button 
-              onClick={generateTestData}
-              disabled={uploadStatus === 'loading'}
-              variant="outline"
-              size="sm"
-              className="mt-5 hover:bg-muted hover:text-foreground"
-            >
-              Generate Test Data
-            </Button>
+            <p className="text-xs text-muted-foreground mt-2">
+              Generate synthetic device data for performance testing (recommended: 20,000+ devices)
+            </p>
           </div>
-          <p className="text-xs text-muted-foreground mt-2">
-            Generate synthetic device data for performance testing (recommended: 20,000+ devices)
-          </p>
-        </div>
+        )}
 
         <div className="text-xs text-muted-foreground">
           <div className="flex items-center justify-between mb-2">
