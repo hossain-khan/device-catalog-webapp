@@ -50,6 +50,7 @@ export const DeviceStatsPanel = ({ stats, onFilterByManufacturer, onFilterByForm
 
   return (
     <div className="space-y-6">
+      {/* Main Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatsCard 
           title="Total Devices" 
@@ -73,6 +74,197 @@ export const DeviceStatsPanel = ({ stats, onFilterByManufacturer, onFilterByForm
         />
       </div>
 
+      {/* New Analytics Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatsCard 
+          title="64-bit Ready" 
+          value={stats.arm64SupportCount}
+          subtitle={`${((stats.arm64SupportCount / stats.totalDevices) * 100).toFixed(1)}% ARM64 support`}
+        />
+        <StatsCard 
+          title="Multi-ABI Support" 
+          value={stats.multiAbiDeviceCount}
+          subtitle={`${((stats.multiAbiDeviceCount / stats.totalDevices) * 100).toFixed(1)}% support multiple archs`}
+        />
+        <StatsCard 
+          title="Platform Compatibility" 
+          value={stats.averageSdkRange.toFixed(1)}
+          subtitle="Avg API versions per device"
+        />
+        <StatsCard 
+          title="Modern Platform" 
+          value={stats.platformCompatibility.recent + stats.platformCompatibility.latest}
+          subtitle="Android 12+ capable devices"
+        />
+      </div>
+
+      {/* New Analytics Panels */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+            <CardTitle className="text-lg">CPU Architecture</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {Object.entries(stats.architectureCounts).map(([arch, count]) => {
+                const colors = PERFORMANCE_TIERS[0].colors;
+                return (
+                  <div key={arch} className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div 
+                        className="w-3 h-3 rounded border" 
+                        style={{ backgroundColor: colors.primary }}
+                      />
+                      <span className="text-sm font-medium">{arch}</span>
+                    </div>
+                    <Badge 
+                      variant="secondary" 
+                      className="text-xs"
+                      style={{ 
+                        backgroundColor: colors.secondary, 
+                        color: colors.text 
+                      }}
+                    >
+                      {count} devices
+                    </Badge>
+                  </div>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+            <CardTitle className="text-lg">Platform Evolution</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div 
+                    className="w-3 h-3 rounded border" 
+                    style={{ backgroundColor: '#ef4444' }}
+                  />
+                  <span className="text-sm font-medium">Legacy (API ≤ 25)</span>
+                </div>
+                <Badge variant="secondary" className="text-xs bg-red-100 text-red-800">
+                  {stats.platformCompatibility.legacy} devices
+                </Badge>
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div 
+                    className="w-3 h-3 rounded border" 
+                    style={{ backgroundColor: '#f59e0b' }}
+                  />
+                  <span className="text-sm font-medium">Modern (API 26-30)</span>
+                </div>
+                <Badge variant="secondary" className="text-xs bg-yellow-100 text-yellow-800">
+                  {stats.platformCompatibility.modern} devices
+                </Badge>
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div 
+                    className="w-3 h-3 rounded border" 
+                    style={{ backgroundColor: '#3b82f6' }}
+                  />
+                  <span className="text-sm font-medium">Recent (API 31-33)</span>
+                </div>
+                <Badge variant="secondary" className="text-xs bg-blue-100 text-blue-800">
+                  {stats.platformCompatibility.recent} devices
+                </Badge>
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div 
+                    className="w-3 h-3 rounded border" 
+                    style={{ backgroundColor: '#10b981' }}
+                  />
+                  <span className="text-sm font-medium">Latest (API ≥ 34)</span>
+                </div>
+                <Badge variant="secondary" className="text-xs bg-green-100 text-green-800">
+                  {stats.platformCompatibility.latest} devices
+                </Badge>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+            <CardTitle className="text-lg">Performance Tiers</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {Object.entries(stats.performanceTierCounts).map(([tier, count]) => {
+                const tierColors = PERFORMANCE_TIERS.find(t => t.name.toLowerCase() === tier.toLowerCase())?.colors || PERFORMANCE_TIERS[0].colors;
+                return (
+                  <div key={tier} className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div 
+                        className="w-3 h-3 rounded border" 
+                        style={{ backgroundColor: tierColors.primary }}
+                      />
+                      <span className="text-sm font-medium capitalize">{tier}</span>
+                    </div>
+                    <Badge 
+                      variant="secondary" 
+                      className="text-xs"
+                      style={{ 
+                        backgroundColor: tierColors.secondary, 
+                        color: tierColors.text 
+                      }}
+                    >
+                      {count} devices
+                    </Badge>
+                  </div>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+            <CardTitle className="text-lg">Screen Resolutions</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {Object.entries(stats.screenResolutionCounts)
+                .sort(([,a], [,b]) => b - a)
+                .slice(0, 5)
+                .map(([resolution, count]) => {
+                const colors = getSdkEraColors(30);
+                return (
+                  <div key={resolution} className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div 
+                        className="w-3 h-3 rounded border" 
+                        style={{ backgroundColor: colors.primary }}
+                      />
+                      <span className="text-sm font-medium">{resolution}</span>
+                    </div>
+                    <Badge 
+                      variant="secondary" 
+                      className="text-xs"
+                      style={{ 
+                        backgroundColor: colors.secondary, 
+                        color: colors.text 
+                      }}
+                    >
+                      {count} devices
+                    </Badge>
+                  </div>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Original Analytics Panels */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
@@ -182,7 +374,6 @@ export const DeviceStatsPanel = ({ stats, onFilterByManufacturer, onFilterByForm
           <CardContent>
             <div className="space-y-3">
               {Object.entries(stats.ramRanges).map(([range, count]) => {
-                // Get performance tier based on RAM range
                 const ramValue = range.includes('-') ? 
                   parseInt(range.split('-')[0].replace(/[<>]/g, '').replace('MB', '')) : 
                   parseInt(range.replace(/[<>]/g, '').replace('MB', ''));

@@ -37,4 +37,24 @@ export interface DeviceStats {
   formFactorCounts: { [key: string]: number };
   ramRanges: { [key: string]: number };
   sdkVersionCounts: { [key: string]: number };
+  
+  // New analytics metrics
+  architectureCounts: { [key: string]: number };
+  multiAbiDeviceCount: number;
+  arm64SupportCount: number;
+  platformCompatibility: {
+    legacy: number;      // API ≤ 25
+    modern: number;      // API 26-30
+    recent: number;      // API 31-33
+    latest: number;      // API ≥ 34
+  };
+  averageSdkRange: number;
+  screenResolutionCounts: { [key: string]: number };
+  openGlVersionCounts: { [key: string]: number };
+  performanceTierCounts: {
+    budget: number;      // < 2GB RAM
+    midRange: number;    // 2-6GB RAM
+    premium: number;     // 6-12GB RAM
+    flagship: number;    // 12GB+ RAM
+  };
 }
