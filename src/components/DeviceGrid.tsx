@@ -17,6 +17,7 @@ const CategoryDistribution = lazy(() => import("./CategoryDistribution").then(mo
 
 interface DeviceGridProps {
   devices: AndroidDevice[];
+  allFilteredDevices?: AndroidDevice[];
   onDeviceClick: (device: AndroidDevice) => void;
   pagination?: PaginationInfo;
   onPageChange?: (page: number) => void;
@@ -29,6 +30,7 @@ interface DeviceGridProps {
 
 export const DeviceGrid = memo(({ 
   devices, 
+  allFilteredDevices,
   onDeviceClick, 
   pagination,
   onPageChange,
@@ -113,7 +115,7 @@ export const DeviceGrid = memo(({
                   <div className="lg:col-span-2">
                     <Suspense fallback={<div className="h-32 bg-muted rounded animate-pulse" />}>
                       <DeviceColorInfo 
-                        devices={devices} 
+                        devices={allFilteredDevices || devices} 
                         colorMode={colorMode} 
                       />
                     </Suspense>
@@ -121,9 +123,9 @@ export const DeviceGrid = memo(({
                   <div>
                     <Suspense fallback={<div className="h-32 bg-muted rounded animate-pulse" />}>
                       <CategoryDistribution 
-                        devices={devices}
+                        devices={allFilteredDevices || devices}
                         colorMode={colorMode}
-                        totalDevices={totalDevices || devices.length}
+                        totalDevices={totalDevices || (allFilteredDevices || devices).length}
                       />
                     </Suspense>
                   </div>
