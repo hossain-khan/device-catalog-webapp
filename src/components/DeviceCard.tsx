@@ -142,10 +142,10 @@ export const DeviceCard = ({ device, onClick, onShowJson, colorMode = 'formFacto
       
       <CardHeader className="pb-3 flex-shrink-0">
         <div className="text-center">
-          <h3 className="font-semibold text-sm leading-tight line-clamp-2 mb-1">
+          <h3 className="font-bold text-lg leading-tight line-clamp-2 mb-1 tracking-tight">
             {device.modelName}
           </h3>
-          <p className="text-xs opacity-75">
+          <p className="font-semibold text-xs opacity-75 tracking-wide">
             {device.manufacturer}
           </p>
         </div>
