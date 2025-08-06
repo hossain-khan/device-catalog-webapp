@@ -13,6 +13,9 @@ import { validateDeviceData } from '@/lib/deviceValidation';
 import { generateTestDevices, downloadDevicesAsJson } from '@/lib/testDataGenerator';
 import { JsonSchemaModal } from '@/components/JsonSchemaModal';
 
+// Import Google Play logo
+import GooglePlayLogo from '@/assets/images/google-play-logo-thin.svg';
+
 interface FileUploadPanelProps {
   onDevicesLoaded: (devices: AndroidDevice[]) => void;
   onClearDevices: () => void;
@@ -32,7 +35,7 @@ export const FileUploadPanel = forwardRef<FileUploadPanelRef, FileUploadPanelPro
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
   const [isDragOver, setIsDragOver] = useState(false);
   const [testDataCount, setTestDataCount] = useState<number>(5000);
-  const [urlInput, setUrlInput] = useState<string>('https://raw.githubusercontent.com/hossain-khan/android-device-catalog-parser/refs/heads/main/sample/src/main/resources/android-devices-catalog.json');
+  const [urlInput, setUrlInput] = useState<string>('');
   const [schemaModalOpen, setSchemaModalOpen] = useState(false);
   const [validationProgress, setValidationProgress] = useState<{ current: number; total: number } | null>(null);
   const [activeTabInternal, setActiveTabInternal] = useState<string>('preloaded');
@@ -244,8 +247,7 @@ export const FileUploadPanel = forwardRef<FileUploadPanelRef, FileUploadPanelPro
     setErrorMessage('');
     setValidationErrors([]);
     setValidationProgress(null);
-    // Reset URL to default value when clearing
-    setUrlInput('https://raw.githubusercontent.com/hossain-khan/android-device-catalog-parser/refs/heads/main/sample/src/main/resources/android-devices-catalog.json');
+    // Keep URL input as is - don't reset it
   }, [onClearDevices]);
 
   const handleDownloadData = useCallback(() => {
@@ -590,17 +592,28 @@ export const FileUploadPanel = forwardRef<FileUploadPanelRef, FileUploadPanelPro
         </CardHeader>
         <CardContent className="space-y-4">
           <p className="text-sm text-muted-foreground">
-            This application uses data parsed data generated using the open-source Android Device Catalog Parser project, 
-            which uses CSV data from Google's official Google Play Store device catalog.
+            This application uses parsed data from the open-source Android Device Catalog Parser project, 
+            which processes CSV data from Google's official Google Play Console Device Catalog. You can 
+            download the original CSV data directly from Google Play Console.
           </p>
           
-          <div className="grid md:grid-cols-3 gap-4">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="flex items-start gap-3 p-3 rounded-lg bg-background/50 border">
+              <img src={GooglePlayLogo} alt="Google Play" className="w-5 h-5 mt-0.5" />
+              <div>
+                <h4 className="font-medium text-sm">Source CSV Data</h4>
+                <p className="text-xs text-muted-foreground">
+                  Download original CSV data from Google Play Console
+                </p>
+              </div>
+            </div>
+            
             <div className="flex items-start gap-3 p-3 rounded-lg bg-background/50 border">
               <Code className="w-5 h-5 text-primary mt-0.5" />
               <div>
                 <h4 className="font-medium text-sm">Kotlin Parser</h4>
                 <p className="text-xs text-muted-foreground">
-                  Production-ready Kotlin library for parsing Google's Device Catalog
+                  Production-ready Kotlin library for parsing Device Catalog
                 </p>
               </div>
             </div>
@@ -627,6 +640,16 @@ export const FileUploadPanel = forwardRef<FileUploadPanelRef, FileUploadPanelPro
           </div>
 
           <div className="flex flex-wrap gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => window.open('https://play.google.com/console/about/devicecatalog/', '_blank')}
+              className="flex items-center gap-2 hover:bg-muted hover:text-foreground"
+            >
+              <img src={GooglePlayLogo} alt="Google Play" className="w-4 h-4" />
+              Download CSV from Google Play
+            </Button>
+            
             <Button
               variant="outline"
               size="sm"
