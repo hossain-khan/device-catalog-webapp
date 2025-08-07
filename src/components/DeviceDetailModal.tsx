@@ -44,6 +44,8 @@ export const DeviceDetailModal = ({ device, open, onOpenChange }: DeviceDetailMo
         return <Watch className="h-5 w-5" />;
       case 'google play games on pc':
         return <GameController className="h-5 w-5" />;
+      case 'unknown':
+        return <span className="h-5 w-5 flex items-center justify-center font-bold text-lg">?</span>;
       default:
         return <DeviceMobile className="h-5 w-5" />;
     }

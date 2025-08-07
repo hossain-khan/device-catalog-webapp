@@ -33,6 +33,8 @@ export const DeviceComparisonModal = ({ open, onOpenChange }: DeviceComparisonMo
         return <Watch className="h-4 w-4" />;
       case 'google play games on pc':
         return <GameController className="h-4 w-4" />;
+      case 'unknown':
+        return <span className="h-4 w-4 flex items-center justify-center font-bold text-sm">?</span>;
       default:
         return <DeviceMobile className="h-4 w-4" />;
     }

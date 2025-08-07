@@ -43,6 +43,8 @@ export const DeviceCard = ({ device, onClick, onShowJson, colorMode = 'formFacto
         return <Watch className={iconClass} style={iconStyle} />;
       case 'google play games on pc':
         return <GameController className={iconClass} style={iconStyle} />;
+      case 'unknown':
+        return <span className={iconClass} style={{ ...iconStyle, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: size === 'lg' ? '1.5rem' : '0.875rem' }}>?</span>;
       default:
         return <DeviceMobile className={iconClass} style={iconStyle} />;
     }
