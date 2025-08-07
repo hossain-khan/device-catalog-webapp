@@ -20,10 +20,11 @@ const AndroidDeviceSchema = z.object({
     'Android Automotive', 
     'Chromebook', 
     'Wearable', 
-    'Google Play Games on PC'
+    'Google Play Games on PC',
+    'Unknown'
   ], {
     errorMap: () => ({ 
-      message: 'Form factor must be one of: Phone, TV, Tablet, Android Automotive, Chromebook, Wearable, Google Play Games on PC' 
+      message: 'Form factor must be one of: Phone, TV, Tablet, Android Automotive, Chromebook, Wearable, Google Play Games on PC, Unknown' 
     })
   }),
   processorName: z.string().min(1, 'Processor name is required'),
