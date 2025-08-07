@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { AndroidDevice } from "@/types/device";
 import { formatRam } from "@/lib/deviceUtils";
 import { getDeviceColors, getDeviceCategoryLabel, parseRamMB, ColorMode } from "@/lib/deviceColors";
-import { DeviceMobile, DeviceTablet, Television, Car, Laptop, Watch, GameController, Plus, Minus, Code } from "@phosphor-icons/react";
+import { DeviceMobile, DeviceTablet, Television, Car, Laptop, Watch, GameController, Plus, Minus, Code, Question } from "@phosphor-icons/react";
 import { useComparison } from "@/contexts/ComparisonContext";
 
 interface DeviceCardProps {
@@ -44,7 +44,7 @@ export const DeviceCard = ({ device, onClick, onShowJson, colorMode = 'formFacto
       case 'google play games on pc':
         return <GameController className={iconClass} style={iconStyle} />;
       case 'unknown':
-        return <span className={iconClass} style={{ ...iconStyle, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: size === 'lg' ? '1.5rem' : '0.875rem' }}>?</span>;
+        return <Question className={iconClass} style={iconStyle} />;
       default:
         return <DeviceMobile className={iconClass} style={iconStyle} />;
     }

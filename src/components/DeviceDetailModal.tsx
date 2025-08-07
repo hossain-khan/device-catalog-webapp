@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AndroidDevice } from "@/types/device";
 import { formatRam } from "@/lib/deviceUtils";
-import { DeviceMobile, Monitor, DeviceTablet, Television, Car, Laptop, Watch, GameController, Cpu, Desktop, Code } from "@phosphor-icons/react";
+import { DeviceMobile, Monitor, DeviceTablet, Television, Car, Laptop, Watch, GameController, Cpu, Desktop, Code, Question } from "@phosphor-icons/react";
 import { DeviceJsonModal } from "./DeviceJsonModal";
 import { useState } from "react";
 import GoogleLogoSVG from "@/assets/images/google_G_logo.svg";
@@ -45,7 +45,7 @@ export const DeviceDetailModal = ({ device, open, onOpenChange }: DeviceDetailMo
       case 'google play games on pc':
         return <GameController className="h-5 w-5" />;
       case 'unknown':
-        return <span className="h-5 w-5 flex items-center justify-center font-bold text-lg">?</span>;
+        return <Question className="h-5 w-5" />;
       default:
         return <DeviceMobile className="h-5 w-5" />;
     }
