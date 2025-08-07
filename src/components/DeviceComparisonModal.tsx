@@ -6,7 +6,7 @@ import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { AndroidDevice } from "@/types/device";
 import { formatRam } from "@/lib/deviceUtils";
-import { DeviceMobile, DeviceTablet, Television, Car, Laptop, Watch, GameController, X } from "@phosphor-icons/react";
+import { DeviceMobile, DeviceTablet, Television, Car, Laptop, Watch, GameController, X, Question } from "@phosphor-icons/react";
 import { useComparison } from "@/contexts/ComparisonContext";
 
 interface DeviceComparisonModalProps {
@@ -33,6 +33,8 @@ export const DeviceComparisonModal = ({ open, onOpenChange }: DeviceComparisonMo
         return <Watch className="h-4 w-4" />;
       case 'google play games on pc':
         return <GameController className="h-4 w-4" />;
+      case 'unknown':
+        return <Question className="h-4 w-4" />;
       default:
         return <DeviceMobile className="h-4 w-4" />;
     }

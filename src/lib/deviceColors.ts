@@ -75,6 +75,14 @@ export const FORM_FACTOR_COLORS: Record<string, DeviceColorScheme> = {
     border: 'oklch(0.85 0.06 340)',
     text: 'oklch(0.25 0.18 340)',
     icon: 'oklch(0.35 0.20 340)'
+  },
+  'Unknown': {
+    primary: 'oklch(0.65 0.08 0)', // Grey - lighter and less saturated
+    secondary: 'oklch(0.92 0.04 0)',
+    background: 'oklch(0.98 0.01 0)',
+    border: 'oklch(0.85 0.06 0)',
+    text: 'oklch(0.25 0.18 0)',
+    icon: 'oklch(0.35 0.20 0)'
   }
 };
 
