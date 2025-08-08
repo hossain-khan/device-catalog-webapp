@@ -186,32 +186,6 @@
   }
 }
 
-/* D3 Chart Styles for better mobile experience */
-.d3-tooltip, .d3-donut-tooltip {
-  position: absolute;
-  visibility: hidden;
-  background: rgba(0, 0, 0, 0.9);
-  color: white;
-  padding: 8px 12px;
-  border-radius: 6px;
-  font-size: 12px;
-  pointer-events: none;
-  z-index: 1000;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  backdrop-filter: blur(8px);
-  max-width: 200px;
-  word-wrap: break-word;
-}
-
-/* Mobile responsive adjustments for charts */
-@media (max-width: 768px) {
-  .d3-tooltip, .d3-donut-tooltip {
-    font-size: 11px;
-    padding: 6px 10px;
-    max-width: 160px;
-  }
-}
-
 /* Ensure charts are touch-friendly on mobile */
 @media (hover: none) and (pointer: coarse) {
   svg .bar, svg path {

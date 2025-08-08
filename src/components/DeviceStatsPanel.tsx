@@ -14,11 +14,11 @@ import { ProcessorDiversityDialog } from "@/components/ProcessorDiversityDialog"
 import { HighResolutionDialog } from "@/components/HighResolutionDialog";
 import { GpuManufacturerDialog } from "@/components/GpuManufacturerDialog";
 import { FormFactorManufacturersDialog } from "@/components/FormFactorManufacturersDialog";
-import { D3HorizontalBarChart } from "@/components/D3HorizontalBarChart";
-import { D3DonutChart } from "@/components/D3DonutChart";
+import { RechartsBarChart } from "@/components/RechartsBarChart";
+import { RechartsPieChart } from "@/components/RechartsPieChart";
 import { DeviceStats, AndroidDevice } from "@/types/device";
 import { getFormFactorColors, getManufacturerColors, getSdkEraColors, PERFORMANCE_TIERS } from "@/lib/deviceColors";
-import { ChartBar, DeviceMobile, DeviceTablet, Television } from "@phosphor-icons/react";
+import { ChartBar, DeviceMobile, DeviceTablet, Television, ChartPie, List } from "@phosphor-icons/react";
 
 interface StatsCardProps {
   title: string;
@@ -63,6 +63,14 @@ export const DeviceStatsPanel = ({ stats, devices, onFilterByManufacturer, onFil
   const [tabletManufacturersDialogOpen, setTabletManufacturersDialogOpen] = useState(false);
   const [tvManufacturersDialogOpen, setTvManufacturersDialogOpen] = useState(false);
   
+  // Chart view modes for categories that need charts
+  const [processorViewMode, setProcessorViewMode] = useState<'bar' | 'pie' | 'list'>('list');
+  const [gpuViewMode, setGpuViewMode] = useState<'bar' | 'pie' | 'list'>('list');
+  const [architectureViewMode, setArchitectureViewMode] = useState<'bar' | 'pie' | 'list'>('list');
+  const [platformViewMode, setPlatformViewMode] = useState<'bar' | 'pie' | 'list'>('list');
+  const [performanceViewMode, setPerformanceViewMode] = useState<'bar' | 'pie' | 'list'>('list');
+  const [resolutionViewMode, setResolutionViewMode] = useState<'bar' | 'pie' | 'list'>('list');
+  
   const topManufacturers = Object.entries(stats.manufacturerCounts)
     .sort(([,a], [,b]) => b - a)
     .slice(0, 5);
@@ -96,6 +104,72 @@ export const DeviceStatsPanel = ({ stats, devices, onFilterByManufacturer, onFil
   const phoneCount = stats.formFactorCounts['Phone'] || 0;
   const tabletCount = stats.formFactorCounts['Tablet'] || 0;
   const tvCount = stats.formFactorCounts['TV'] || 0;
+
+  // Prepare chart data for categories that need charts
+  const processorChartData = useMemo(() => {
+    return Object.entries(stats.processorManufacturerCounts || {})
+      .sort(([,a], [,b]) => b - a)
+      .slice(0, 10)
+      .map(([processor, count], index) => ({
+        label: processor.length > 20 ? `${processor.substring(0, 20)}...` : processor,
+        value: count,
+        color: `hsl(${(index * 137.5) % 360}, 65%, 50%)`
+      }));
+  }, [stats.processorManufacturerCounts]);
+
+  const gpuChartData = useMemo(() => {
+    return Object.entries(stats.gpuManufacturerCounts)
+      .sort(([,a], [,b]) => b - a)
+      .map(([gpu, count], index) => ({
+        label: gpu,
+        value: count,
+        color: `hsl(${(index * 95) % 360}, 70%, 55%)`
+      }));
+  }, [stats.gpuManufacturerCounts]);
+
+  const architectureChartData = useMemo(() => {
+    return Object.entries(stats.architectureCounts)
+      .sort(([,a], [,b]) => b - a)
+      .map(([arch, count], index) => ({
+        label: arch,
+        value: count,
+        color: `hsl(${(index * 120) % 360}, 60%, 50%)`
+      }));
+  }, [stats.architectureCounts]);
+
+  const platformChartData = useMemo(() => {
+    const platformData = [
+      { label: 'Legacy (API ≤ 25)', value: stats.platformCompatibility.legacy, color: '#ef4444' },
+      { label: 'Modern (API 26-30)', value: stats.platformCompatibility.modern, color: '#f59e0b' },
+      { label: 'Recent (API 31-33)', value: stats.platformCompatibility.recent, color: '#3b82f6' },
+      { label: 'Latest (API ≥ 34)', value: stats.platformCompatibility.latest, color: '#10b981' }
+    ];
+    return platformData.filter(item => item.value > 0);
+  }, [stats.platformCompatibility]);
+
+  const performanceChartData = useMemo(() => {
+    return Object.entries(stats.performanceTierCounts)
+      .sort(([,a], [,b]) => b - a)
+      .map(([tier, count], index) => {
+        const tierColors = PERFORMANCE_TIERS.find(t => t.name.toLowerCase() === tier.toLowerCase())?.colors || PERFORMANCE_TIERS[0].colors;
+        return {
+          label: tier.charAt(0).toUpperCase() + tier.slice(1),
+          value: count,
+          color: tierColors.primary
+        };
+      });
+  }, [stats.performanceTierCounts]);
+
+  const resolutionChartData = useMemo(() => {
+    return Object.entries(stats.screenResolutionCounts)
+      .sort(([,a], [,b]) => b - a)
+      .slice(0, 12)
+      .map(([resolution, count], index) => ({
+        label: resolution,
+        value: count,
+        color: `hsl(${(index * 85) % 360}, 65%, 55%)`
+      }));
+  }, [stats.screenResolutionCounts]);
 
   return (
     <div className="space-y-6">
@@ -152,19 +226,61 @@ export const DeviceStatsPanel = ({ stats, devices, onFilterByManufacturer, onFil
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
             <CardTitle className="text-sm font-medium text-muted-foreground">Processor Diversity</CardTitle>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setProcessorDiversityDialogOpen(true)}
-              className="h-8 px-3"
-            >
-              <ChartBar size={16} className="mr-1" />
-              Show All
-            </Button>
+            <div className="flex gap-1">
+              <Button
+                variant={processorViewMode === 'bar' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setProcessorViewMode('bar')}
+                className="h-7 px-2 text-xs"
+              >
+                <ChartBar size={12} />
+              </Button>
+              <Button
+                variant={processorViewMode === 'pie' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setProcessorViewMode('pie')}
+                className="h-7 px-2 text-xs"
+              >
+                <ChartPie size={12} />
+              </Button>
+              <Button
+                variant={processorViewMode === 'list' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setProcessorViewMode('list')}
+                className="h-7 px-2 text-xs"
+              >
+                <List size={12} />
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setProcessorDiversityDialogOpen(true)}
+                className="h-7 px-2 text-xs"
+              >
+                Show All
+              </Button>
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-primary">{stats.processorDiversityCount}</div>
-            <p className="text-xs text-muted-foreground mt-1">Unique processor models</p>
+            {processorViewMode === 'list' ? (
+              <>
+                <div className="text-2xl font-bold text-primary">{stats.processorDiversityCount}</div>
+                <p className="text-xs text-muted-foreground mt-1">Unique processor models</p>
+              </>
+            ) : processorViewMode === 'bar' ? (
+              <RechartsBarChart
+                data={processorChartData}
+                height={200}
+                className="w-full"
+              />
+            ) : (
+              <RechartsPieChart
+                data={processorChartData}
+                height={200}
+                showLegend={false}
+                className="w-full"
+              />
+            )}
           </CardContent>
         </Card>
 
@@ -190,19 +306,61 @@ export const DeviceStatsPanel = ({ stats, devices, onFilterByManufacturer, onFil
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
             <CardTitle className="text-sm font-medium text-muted-foreground">GPU Ecosystem</CardTitle>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setGpuManufacturerDialogOpen(true)}
-              className="h-8 px-3"
-            >
-              <ChartBar size={16} className="mr-1" />
-              Show All
-            </Button>
+            <div className="flex gap-1">
+              <Button
+                variant={gpuViewMode === 'bar' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setGpuViewMode('bar')}
+                className="h-7 px-2 text-xs"
+              >
+                <ChartBar size={12} />
+              </Button>
+              <Button
+                variant={gpuViewMode === 'pie' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setGpuViewMode('pie')}
+                className="h-7 px-2 text-xs"
+              >
+                <ChartPie size={12} />
+              </Button>
+              <Button
+                variant={gpuViewMode === 'list' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setGpuViewMode('list')}
+                className="h-7 px-2 text-xs"
+              >
+                <List size={12} />
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setGpuManufacturerDialogOpen(true)}
+                className="h-7 px-2 text-xs"
+              >
+                Show All
+              </Button>
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-primary">{Object.keys(stats.gpuManufacturerCounts).length}</div>
-            <p className="text-xs text-muted-foreground mt-1">GPU manufacturer variety</p>
+            {gpuViewMode === 'list' ? (
+              <>
+                <div className="text-2xl font-bold text-primary">{Object.keys(stats.gpuManufacturerCounts).length}</div>
+                <p className="text-xs text-muted-foreground mt-1">GPU manufacturer variety</p>
+              </>
+            ) : gpuViewMode === 'bar' ? (
+              <RechartsBarChart
+                data={gpuChartData}
+                height={200}
+                className="w-full"
+              />
+            ) : (
+              <RechartsPieChart
+                data={gpuChartData}
+                height={200}
+                showLegend={false}
+                className="w-full"
+              />
+            )}
           </CardContent>
         </Card>
       </div>
@@ -212,205 +370,365 @@ export const DeviceStatsPanel = ({ stats, devices, onFilterByManufacturer, onFil
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
             <CardTitle className="text-lg">CPU Architecture</CardTitle>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setArchitectureDialogOpen(true)}
-              className="h-8 px-3"
-            >
-              <ChartBar size={16} className="mr-1" />
-              Show All
-            </Button>
+            <div className="flex gap-1">
+              <Button
+                variant={architectureViewMode === 'bar' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setArchitectureViewMode('bar')}
+                className="h-8 px-2"
+              >
+                <ChartBar size={14} />
+              </Button>
+              <Button
+                variant={architectureViewMode === 'pie' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setArchitectureViewMode('pie')}
+                className="h-8 px-2"
+              >
+                <ChartPie size={14} />
+              </Button>
+              <Button
+                variant={architectureViewMode === 'list' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setArchitectureViewMode('list')}
+                className="h-8 px-2"
+              >
+                <List size={14} />
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setArchitectureDialogOpen(true)}
+                className="h-8 px-3"
+              >
+                Show All
+              </Button>
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="space-y-3">
-              {Object.entries(stats.architectureCounts)
-                .sort(([,a], [,b]) => b - a)
-                .slice(0, 5)
-                .map(([arch, count]) => {
-                const colors = PERFORMANCE_TIERS[0].colors;
-                return (
-                  <div key={arch} className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div 
-                        className="w-3 h-3 rounded border" 
-                        style={{ backgroundColor: colors.primary }}
-                      />
-                      <span className="text-sm font-medium">{arch}</span>
+            {architectureViewMode === 'list' ? (
+              <div className="space-y-3">
+                {Object.entries(stats.architectureCounts)
+                  .sort(([,a], [,b]) => b - a)
+                  .slice(0, 5)
+                  .map(([arch, count]) => {
+                  const colors = PERFORMANCE_TIERS[0].colors;
+                  return (
+                    <div key={arch} className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div 
+                          className="w-3 h-3 rounded border" 
+                          style={{ backgroundColor: colors.primary }}
+                        />
+                        <span className="text-sm font-medium">{arch}</span>
+                      </div>
+                      <Badge 
+                        variant="secondary" 
+                        className="text-xs"
+                        style={{ 
+                          backgroundColor: colors.secondary, 
+                          color: colors.text 
+                        }}
+                      >
+                        {count} devices
+                      </Badge>
                     </div>
-                    <Badge 
-                      variant="secondary" 
-                      className="text-xs"
-                      style={{ 
-                        backgroundColor: colors.secondary, 
-                        color: colors.text 
-                      }}
-                    >
-                      {count} devices
-                    </Badge>
-                  </div>
-                );
-              })}
-            </div>
+                  );
+                })}
+              </div>
+            ) : architectureViewMode === 'bar' ? (
+              <RechartsBarChart
+                data={architectureChartData}
+                height={250}
+                className="w-full"
+              />
+            ) : (
+              <RechartsPieChart
+                data={architectureChartData}
+                height={250}
+                showLegend={false}
+                className="w-full"
+              />
+            )}
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
             <CardTitle className="text-lg">Platform Evolution</CardTitle>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setPlatformDialogOpen(true)}
-              className="h-8 px-3"
-            >
-              <ChartBar size={16} className="mr-1" />
-              Show All
-            </Button>
+            <div className="flex gap-1">
+              <Button
+                variant={platformViewMode === 'bar' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setPlatformViewMode('bar')}
+                className="h-8 px-2"
+              >
+                <ChartBar size={14} />
+              </Button>
+              <Button
+                variant={platformViewMode === 'pie' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setPlatformViewMode('pie')}
+                className="h-8 px-2"
+              >
+                <ChartPie size={14} />
+              </Button>
+              <Button
+                variant={platformViewMode === 'list' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setPlatformViewMode('list')}
+                className="h-8 px-2"
+              >
+                <List size={14} />
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setPlatformDialogOpen(true)}
+                className="h-8 px-3"
+              >
+                Show All
+              </Button>
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div 
-                    className="w-3 h-3 rounded border" 
-                    style={{ backgroundColor: '#ef4444' }}
-                  />
-                  <span className="text-sm font-medium">Legacy (API ≤ 25)</span>
+            {platformViewMode === 'list' ? (
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div 
+                      className="w-3 h-3 rounded border" 
+                      style={{ backgroundColor: '#ef4444' }}
+                    />
+                    <span className="text-sm font-medium">Legacy (API ≤ 25)</span>
+                  </div>
+                  <Badge variant="secondary" className="text-xs bg-red-100 text-red-800">
+                    {stats.platformCompatibility.legacy} devices
+                  </Badge>
                 </div>
-                <Badge variant="secondary" className="text-xs bg-red-100 text-red-800">
-                  {stats.platformCompatibility.legacy} devices
-                </Badge>
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div 
-                    className="w-3 h-3 rounded border" 
-                    style={{ backgroundColor: '#f59e0b' }}
-                  />
-                  <span className="text-sm font-medium">Modern (API 26-30)</span>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div 
+                      className="w-3 h-3 rounded border" 
+                      style={{ backgroundColor: '#f59e0b' }}
+                    />
+                    <span className="text-sm font-medium">Modern (API 26-30)</span>
+                  </div>
+                  <Badge variant="secondary" className="text-xs bg-yellow-100 text-yellow-800">
+                    {stats.platformCompatibility.modern} devices
+                  </Badge>
                 </div>
-                <Badge variant="secondary" className="text-xs bg-yellow-100 text-yellow-800">
-                  {stats.platformCompatibility.modern} devices
-                </Badge>
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div 
-                    className="w-3 h-3 rounded border" 
-                    style={{ backgroundColor: '#3b82f6' }}
-                  />
-                  <span className="text-sm font-medium">Recent (API 31-33)</span>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div 
+                      className="w-3 h-3 rounded border" 
+                      style={{ backgroundColor: '#3b82f6' }}
+                    />
+                    <span className="text-sm font-medium">Recent (API 31-33)</span>
+                  </div>
+                  <Badge variant="secondary" className="text-xs bg-blue-100 text-blue-800">
+                    {stats.platformCompatibility.recent} devices
+                  </Badge>
                 </div>
-                <Badge variant="secondary" className="text-xs bg-blue-100 text-blue-800">
-                  {stats.platformCompatibility.recent} devices
-                </Badge>
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div 
-                    className="w-3 h-3 rounded border" 
-                    style={{ backgroundColor: '#10b981' }}
-                  />
-                  <span className="text-sm font-medium">Latest (API ≥ 34)</span>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div 
+                      className="w-3 h-3 rounded border" 
+                      style={{ backgroundColor: '#10b981' }}
+                    />
+                    <span className="text-sm font-medium">Latest (API ≥ 34)</span>
+                  </div>
+                  <Badge variant="secondary" className="text-xs bg-green-100 text-green-800">
+                    {stats.platformCompatibility.latest} devices
+                  </Badge>
                 </div>
-                <Badge variant="secondary" className="text-xs bg-green-100 text-green-800">
-                  {stats.platformCompatibility.latest} devices
-                </Badge>
               </div>
-            </div>
+            ) : platformViewMode === 'bar' ? (
+              <RechartsBarChart
+                data={platformChartData}
+                height={250}
+                className="w-full"
+              />
+            ) : (
+              <RechartsPieChart
+                data={platformChartData}
+                height={250}
+                showLegend={false}
+                className="w-full"
+              />
+            )}
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
             <CardTitle className="text-lg">Performance Tiers</CardTitle>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setPerformanceDialogOpen(true)}
-              className="h-8 px-3"
-            >
-              <ChartBar size={16} className="mr-1" />
-              Show All
-            </Button>
+            <div className="flex gap-1">
+              <Button
+                variant={performanceViewMode === 'bar' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setPerformanceViewMode('bar')}
+                className="h-8 px-2"
+              >
+                <ChartBar size={14} />
+              </Button>
+              <Button
+                variant={performanceViewMode === 'pie' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setPerformanceViewMode('pie')}
+                className="h-8 px-2"
+              >
+                <ChartPie size={14} />
+              </Button>
+              <Button
+                variant={performanceViewMode === 'list' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setPerformanceViewMode('list')}
+                className="h-8 px-2"
+              >
+                <List size={14} />
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setPerformanceDialogOpen(true)}
+                className="h-8 px-3"
+              >
+                Show All
+              </Button>
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="space-y-3">
-              {Object.entries(stats.performanceTierCounts)
-                .sort(([,a], [,b]) => b - a)
-                .slice(0, 4)
-                .map(([tier, count]) => {
-                const tierColors = PERFORMANCE_TIERS.find(t => t.name.toLowerCase() === tier.toLowerCase())?.colors || PERFORMANCE_TIERS[0].colors;
-                return (
-                  <div key={tier} className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div 
-                        className="w-3 h-3 rounded border" 
-                        style={{ backgroundColor: tierColors.primary }}
-                      />
-                      <span className="text-sm font-medium capitalize">{tier}</span>
+            {performanceViewMode === 'list' ? (
+              <div className="space-y-3">
+                {Object.entries(stats.performanceTierCounts)
+                  .sort(([,a], [,b]) => b - a)
+                  .slice(0, 4)
+                  .map(([tier, count]) => {
+                  const tierColors = PERFORMANCE_TIERS.find(t => t.name.toLowerCase() === tier.toLowerCase())?.colors || PERFORMANCE_TIERS[0].colors;
+                  return (
+                    <div key={tier} className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div 
+                          className="w-3 h-3 rounded border" 
+                          style={{ backgroundColor: tierColors.primary }}
+                        />
+                        <span className="text-sm font-medium capitalize">{tier}</span>
+                      </div>
+                      <Badge 
+                        variant="secondary" 
+                        className="text-xs"
+                        style={{ 
+                          backgroundColor: tierColors.secondary, 
+                          color: tierColors.text 
+                        }}
+                      >
+                        {count} devices
+                      </Badge>
                     </div>
-                    <Badge 
-                      variant="secondary" 
-                      className="text-xs"
-                      style={{ 
-                        backgroundColor: tierColors.secondary, 
-                        color: tierColors.text 
-                      }}
-                    >
-                      {count} devices
-                    </Badge>
-                  </div>
-                );
-              })}
-            </div>
+                  );
+                })}
+              </div>
+            ) : performanceViewMode === 'bar' ? (
+              <RechartsBarChart
+                data={performanceChartData}
+                height={250}
+                className="w-full"
+              />
+            ) : (
+              <RechartsPieChart
+                data={performanceChartData}
+                height={250}
+                showLegend={false}
+                className="w-full"
+              />
+            )}
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
             <CardTitle className="text-lg">Screen Resolutions</CardTitle>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setResolutionDialogOpen(true)}
-              className="h-8 px-3"
-            >
-              <ChartBar size={16} className="mr-1" />
-              Show All
-            </Button>
+            <div className="flex gap-1">
+              <Button
+                variant={resolutionViewMode === 'bar' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setResolutionViewMode('bar')}
+                className="h-8 px-2"
+              >
+                <ChartBar size={14} />
+              </Button>
+              <Button
+                variant={resolutionViewMode === 'pie' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setResolutionViewMode('pie')}
+                className="h-8 px-2"
+              >
+                <ChartPie size={14} />
+              </Button>
+              <Button
+                variant={resolutionViewMode === 'list' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setResolutionViewMode('list')}
+                className="h-8 px-2"
+              >
+                <List size={14} />
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setResolutionDialogOpen(true)}
+                className="h-8 px-3"
+              >
+                Show All
+              </Button>
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="space-y-3">
-              {Object.entries(stats.screenResolutionCounts)
-                .sort(([,a], [,b]) => b - a)
-                .slice(0, 5)
-                .map(([resolution, count]) => {
-                const colors = getSdkEraColors(30);
-                return (
-                  <div key={resolution} className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div 
-                        className="w-3 h-3 rounded border" 
-                        style={{ backgroundColor: colors.primary }}
-                      />
-                      <span className="text-sm font-medium">{resolution}</span>
+            {resolutionViewMode === 'list' ? (
+              <div className="space-y-3">
+                {Object.entries(stats.screenResolutionCounts)
+                  .sort(([,a], [,b]) => b - a)
+                  .slice(0, 5)
+                  .map(([resolution, count]) => {
+                  const colors = getSdkEraColors(30);
+                  return (
+                    <div key={resolution} className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div 
+                          className="w-3 h-3 rounded border" 
+                          style={{ backgroundColor: colors.primary }}
+                        />
+                        <span className="text-sm font-medium">{resolution}</span>
+                      </div>
+                      <Badge 
+                        variant="secondary" 
+                        className="text-xs"
+                        style={{ 
+                          backgroundColor: colors.secondary, 
+                          color: colors.text 
+                        }}
+                      >
+                        {count} devices
+                      </Badge>
                     </div>
-                    <Badge 
-                      variant="secondary" 
-                      className="text-xs"
-                      style={{ 
-                        backgroundColor: colors.secondary, 
-                        color: colors.text 
-                      }}
-                    >
-                      {count} devices
-                    </Badge>
-                  </div>
-                );
-              })}
-            </div>
+                  );
+                })}
+              </div>
+            ) : resolutionViewMode === 'bar' ? (
+              <RechartsBarChart
+                data={resolutionChartData}
+                height={250}
+                className="w-full"
+              />
+            ) : (
+              <RechartsPieChart
+                data={resolutionChartData}
+                height={250}
+                showLegend={false}
+                className="w-full"
+              />
+            )}
           </CardContent>
         </Card>
       </div>
@@ -601,11 +919,11 @@ export const DeviceStatsPanel = ({ stats, devices, onFilterByManufacturer, onFil
         </Card>
       </div>
 
-      {/* Enhanced Interactive Visualizations */}
+      {/* Form Factor Specific Manufacturer Analysis */}
       <div className="space-y-6">
         <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
           <ChartBar className="h-5 w-5" />
-          Enhanced Analytics & Visualizations
+          Top Manufacturers by Device Form Factor
         </h2>
 
         {/* Form Factor Specific Manufacturer Analysis */}
@@ -688,41 +1006,6 @@ export const DeviceStatsPanel = ({ stats, devices, onFilterByManufacturer, onFil
                   Click "View Chart" to see top TV manufacturers with interactive visualizations
                 </p>
               </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Enhanced Chart Visualizations */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Top Manufacturers - Interactive Chart</CardTitle>
-              <p className="text-sm text-muted-foreground">D3.js powered horizontal bar chart with hover interactions</p>
-            </CardHeader>
-            <CardContent>
-              <D3HorizontalBarChart
-                data={manufacturerChartData}
-                height={300}
-                onBarClick={(data) => onFilterByManufacturer(data.label)}
-                className="w-full"
-              />
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Form Factor Distribution - Donut Chart</CardTitle>
-              <p className="text-sm text-muted-foreground">Interactive donut chart showing device type distribution</p>
-            </CardHeader>
-            <CardContent>
-              <D3DonutChart
-                data={formFactorChartData}
-                width={350}
-                height={350}
-                onSegmentClick={(data) => onFilterByFormFactor(data.label)}
-                className="w-full"
-                showLegend={false}
-              />
             </CardContent>
           </Card>
         </div>
