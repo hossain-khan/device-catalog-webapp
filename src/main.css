@@ -185,3 +185,10 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Ensure charts are touch-friendly on mobile */
+@media (hover: none) and (pointer: coarse) {
+  svg .bar, svg path {
+    cursor: pointer;
+  }
+}

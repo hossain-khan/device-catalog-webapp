@@ -328,6 +328,7 @@ function App() {
             <TabsContent value="analytics" className="space-y-6">
               <DeviceStatsPanel
                 stats={allStats}
+                devices={devices}
                 onFilterByManufacturer={handleFilterByManufacturer}
                 onFilterByFormFactor={handleFilterByFormFactor}
               />
