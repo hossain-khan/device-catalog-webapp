@@ -19,6 +19,7 @@ import { RechartsPieChart } from "@/components/RechartsPieChart";
 import { DeviceStats, AndroidDevice } from "@/types/device";
 import { getFormFactorColors, getManufacturerColors, getSdkEraColors, PERFORMANCE_TIERS } from "@/lib/deviceColors";
 import { ChartBar, DeviceMobile, DeviceTablet, Television, ChartPie, List } from "@phosphor-icons/react";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 interface StatsCardProps {
   title: string;
@@ -70,6 +71,14 @@ export const DeviceStatsPanel = ({ stats, devices, onFilterByManufacturer, onFil
   const [platformViewMode, setPlatformViewMode] = useState<'bar' | 'pie' | 'list'>('list');
   const [performanceViewMode, setPerformanceViewMode] = useState<'bar' | 'pie' | 'list'>('list');
   const [resolutionViewMode, setResolutionViewMode] = useState<'bar' | 'pie' | 'list'>('list');
+
+  // Smooth height/position animations when switching modes
+  const [processorAnimateRef] = useAutoAnimate({ duration: 300, easing: 'ease-in-out' });
+  const [gpuAnimateRef] = useAutoAnimate({ duration: 300, easing: 'ease-in-out' });
+  const [architectureAnimateRef] = useAutoAnimate({ duration: 300, easing: 'ease-in-out' });
+  const [platformAnimateRef] = useAutoAnimate({ duration: 300, easing: 'ease-in-out' });
+  const [performanceAnimateRef] = useAutoAnimate({ duration: 300, easing: 'ease-in-out' });
+  const [resolutionAnimateRef] = useAutoAnimate({ duration: 300, easing: 'ease-in-out' });
   
   const topManufacturers = Object.entries(stats.manufacturerCounts)
     .sort(([,a], [,b]) => b - a)
@@ -78,27 +87,6 @@ export const DeviceStatsPanel = ({ stats, devices, onFilterByManufacturer, onFil
   const topSdkVersions = Object.entries(stats.sdkVersionCounts)
     .sort(([,a], [,b]) => b - a)
     .slice(0, 5);
-
-  // Prepare data for enhanced charts
-  const manufacturerChartData = useMemo(() => {
-    return Object.entries(stats.manufacturerCounts)
-      .sort(([,a], [,b]) => b - a)
-      .slice(0, 10)
-      .map(([manufacturer, count]) => ({
-        label: manufacturer,
-        value: count,
-        color: getManufacturerColors(manufacturer).primary
-      }));
-  }, [stats.manufacturerCounts]);
-
-  const formFactorChartData = useMemo(() => {
-    return Object.entries(stats.formFactorCounts)
-      .map(([formFactor, count]) => ({
-        label: formFactor,
-        value: count,
-        color: getFormFactorColors(formFactor).primary
-      }));
-  }, [stats.formFactorCounts]);
 
   // Form factor specific counts
   const phoneCount = stats.formFactorCounts['Phone'] || 0;
@@ -150,7 +138,7 @@ export const DeviceStatsPanel = ({ stats, devices, onFilterByManufacturer, onFil
   const performanceChartData = useMemo(() => {
     return Object.entries(stats.performanceTierCounts)
       .sort(([,a], [,b]) => b - a)
-      .map(([tier, count], index) => {
+      .map(([tier, count]) => {
         const tierColors = PERFORMANCE_TIERS.find(t => t.name.toLowerCase() === tier.toLowerCase())?.colors || PERFORMANCE_TIERS[0].colors;
         return {
           label: tier.charAt(0).toUpperCase() + tier.slice(1),
@@ -198,30 +186,6 @@ export const DeviceStatsPanel = ({ stats, devices, onFilterByManufacturer, onFil
       </div>
 
       {/* New Analytics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatsCard 
-          title="64-bit Ready" 
-          value={stats.arm64SupportCount}
-          subtitle={`${((stats.arm64SupportCount / stats.totalDevices) * 100).toFixed(1)}% ARM64 support`}
-        />
-        <StatsCard 
-          title="Multi-ABI Support" 
-          value={stats.multiAbiDeviceCount}
-          subtitle={`${((stats.multiAbiDeviceCount / stats.totalDevices) * 100).toFixed(1)}% support multiple archs`}
-        />
-        <StatsCard 
-          title="OpenGL ES 3.2 Support" 
-          value={`${((stats.openGlEs32SupportCount / stats.totalDevices) * 100).toFixed(1)}%`}
-          subtitle="Devices with modern graphics support"
-        />
-        <StatsCard 
-          title="Modern Platform" 
-          value={stats.platformCompatibility.recent + stats.platformCompatibility.latest}
-          subtitle={`${(((stats.platformCompatibility.recent + stats.platformCompatibility.latest) / stats.totalDevices) * 100).toFixed(1)}% Android 12+ capable devices`}
-        />
-      </div>
-
-      {/* New Processor & Display Analytics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
@@ -262,25 +226,27 @@ export const DeviceStatsPanel = ({ stats, devices, onFilterByManufacturer, onFil
             </div>
           </CardHeader>
           <CardContent>
-            {processorViewMode === 'list' ? (
-              <>
-                <div className="text-2xl font-bold text-primary">{stats.processorDiversityCount}</div>
-                <p className="text-xs text-muted-foreground mt-1">Unique processor models</p>
-              </>
-            ) : processorViewMode === 'bar' ? (
-              <RechartsBarChart
-                data={processorChartData}
-                height={200}
-                className="w-full"
-              />
-            ) : (
-              <RechartsPieChart
-                data={processorChartData}
-                height={200}
-                showLegend={false}
-                className="w-full"
-              />
-            )}
+            <div ref={processorAnimateRef}>
+              {processorViewMode === 'list' ? (
+                <>
+                  <div className="text-2xl font-bold text-primary">{stats.processorDiversityCount}</div>
+                  <p className="text-xs text-muted-foreground mt-1">Unique processor models</p>
+                </>
+              ) : processorViewMode === 'bar' ? (
+                <RechartsBarChart
+                  data={processorChartData}
+                  height={260}
+                  className="w-full"
+                />
+              ) : (
+                <RechartsPieChart
+                  data={processorChartData}
+                  height={260}
+                  showLegend={false}
+                  className="w-full"
+                />
+              )}
+            </div>
           </CardContent>
         </Card>
 
@@ -342,25 +308,27 @@ export const DeviceStatsPanel = ({ stats, devices, onFilterByManufacturer, onFil
             </div>
           </CardHeader>
           <CardContent>
-            {gpuViewMode === 'list' ? (
-              <>
-                <div className="text-2xl font-bold text-primary">{Object.keys(stats.gpuManufacturerCounts).length}</div>
-                <p className="text-xs text-muted-foreground mt-1">GPU manufacturer variety</p>
-              </>
-            ) : gpuViewMode === 'bar' ? (
-              <RechartsBarChart
-                data={gpuChartData}
-                height={200}
-                className="w-full"
-              />
-            ) : (
-              <RechartsPieChart
-                data={gpuChartData}
-                height={200}
-                showLegend={false}
-                className="w-full"
-              />
-            )}
+            <div ref={gpuAnimateRef}>
+              {gpuViewMode === 'list' ? (
+                <>
+                  <div className="text-2xl font-bold text-primary">{Object.keys(stats.gpuManufacturerCounts).length}</div>
+                  <p className="text-xs text-muted-foreground mt-1">GPU manufacturer variety</p>
+                </>
+              ) : gpuViewMode === 'bar' ? (
+                <RechartsBarChart
+                  data={gpuChartData}
+                  height={260}
+                  className="w-full"
+                />
+              ) : (
+                <RechartsPieChart
+                  data={gpuChartData}
+                  height={260}
+                  showLegend={false}
+                  className="w-full"
+                />
+              )}
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -406,50 +374,52 @@ export const DeviceStatsPanel = ({ stats, devices, onFilterByManufacturer, onFil
             </div>
           </CardHeader>
           <CardContent>
-            {architectureViewMode === 'list' ? (
-              <div className="space-y-3">
-                {Object.entries(stats.architectureCounts)
-                  .sort(([,a], [,b]) => b - a)
-                  .slice(0, 5)
-                  .map(([arch, count]) => {
-                  const colors = PERFORMANCE_TIERS[0].colors;
-                  return (
-                    <div key={arch} className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <div 
-                          className="w-3 h-3 rounded border" 
-                          style={{ backgroundColor: colors.primary }}
-                        />
-                        <span className="text-sm font-medium">{arch}</span>
+            <div ref={architectureAnimateRef}>
+              {architectureViewMode === 'list' ? (
+                <div className="space-y-3">
+                  {Object.entries(stats.architectureCounts)
+                    .sort(([,a], [,b]) => b - a)
+                    .slice(0, 5)
+                    .map(([arch, count]) => {
+                    const colors = PERFORMANCE_TIERS[0].colors;
+                    return (
+                      <div key={arch} className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div 
+                            className="w-3 h-3 rounded border" 
+                            style={{ backgroundColor: colors.primary }}
+                          />
+                          <span className="text-sm font-medium">{arch}</span>
+                        </div>
+                        <Badge 
+                          variant="secondary" 
+                          className="text-xs"
+                          style={{ 
+                            backgroundColor: colors.secondary, 
+                            color: colors.text 
+                          }}
+                        >
+                          {count} devices
+                        </Badge>
                       </div>
-                      <Badge 
-                        variant="secondary" 
-                        className="text-xs"
-                        style={{ 
-                          backgroundColor: colors.secondary, 
-                          color: colors.text 
-                        }}
-                      >
-                        {count} devices
-                      </Badge>
-                    </div>
-                  );
-                })}
-              </div>
-            ) : architectureViewMode === 'bar' ? (
-              <RechartsBarChart
-                data={architectureChartData}
-                height={250}
-                className="w-full"
-              />
-            ) : (
-              <RechartsPieChart
-                data={architectureChartData}
-                height={250}
-                showLegend={false}
-                className="w-full"
-              />
-            )}
+                    );
+                  })}
+                </div>
+              ) : architectureViewMode === 'bar' ? (
+                <RechartsBarChart
+                  data={architectureChartData}
+                  height={250}
+                  className="w-full"
+                />
+              ) : (
+                <RechartsPieChart
+                  data={architectureChartData}
+                  height={250}
+                  showLegend={false}
+                  className="w-full"
+                />
+              )}
+            </div>
           </CardContent>
         </Card>
 
@@ -492,71 +462,73 @@ export const DeviceStatsPanel = ({ stats, devices, onFilterByManufacturer, onFil
             </div>
           </CardHeader>
           <CardContent>
-            {platformViewMode === 'list' ? (
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div 
-                      className="w-3 h-3 rounded border" 
-                      style={{ backgroundColor: '#ef4444' }}
-                    />
-                    <span className="text-sm font-medium">Legacy (API ≤ 25)</span>
+            <div ref={platformAnimateRef}>
+              {platformViewMode === 'list' ? (
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div 
+                        className="w-3 h-3 rounded border" 
+                        style={{ backgroundColor: '#ef4444' }}
+                      />
+                      <span className="text-sm font-medium">Legacy (API ≤ 25)</span>
+                    </div>
+                    <Badge variant="secondary" className="text-xs bg-red-100 text-red-800">
+                      {stats.platformCompatibility.legacy} devices
+                    </Badge>
                   </div>
-                  <Badge variant="secondary" className="text-xs bg-red-100 text-red-800">
-                    {stats.platformCompatibility.legacy} devices
-                  </Badge>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div 
-                      className="w-3 h-3 rounded border" 
-                      style={{ backgroundColor: '#f59e0b' }}
-                    />
-                    <span className="text-sm font-medium">Modern (API 26-30)</span>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div 
+                        className="w-3 h-3 rounded border" 
+                        style={{ backgroundColor: '#f59e0b' }}
+                      />
+                      <span className="text-sm font-medium">Modern (API 26-30)</span>
+                    </div>
+                    <Badge variant="secondary" className="text-xs bg-yellow-100 text-yellow-800">
+                      {stats.platformCompatibility.modern} devices
+                    </Badge>
                   </div>
-                  <Badge variant="secondary" className="text-xs bg-yellow-100 text-yellow-800">
-                    {stats.platformCompatibility.modern} devices
-                  </Badge>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div 
-                      className="w-3 h-3 rounded border" 
-                      style={{ backgroundColor: '#3b82f6' }}
-                    />
-                    <span className="text-sm font-medium">Recent (API 31-33)</span>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div 
+                        className="w-3 h-3 rounded border" 
+                        style={{ backgroundColor: '#3b82f6' }}
+                      />
+                      <span className="text-sm font-medium">Recent (API 31-33)</span>
+                    </div>
+                    <Badge variant="secondary" className="text-xs bg-blue-100 text-blue-800">
+                      {stats.platformCompatibility.recent} devices
+                    </Badge>
                   </div>
-                  <Badge variant="secondary" className="text-xs bg-blue-100 text-blue-800">
-                    {stats.platformCompatibility.recent} devices
-                  </Badge>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div 
-                      className="w-3 h-3 rounded border" 
-                      style={{ backgroundColor: '#10b981' }}
-                    />
-                    <span className="text-sm font-medium">Latest (API ≥ 34)</span>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div 
+                        className="w-3 h-3 rounded border" 
+                        style={{ backgroundColor: '#10b981' }}
+                      />
+                      <span className="text-sm font-medium">Latest (API ≥ 34)</span>
+                    </div>
+                    <Badge variant="secondary" className="text-xs bg-green-100 text-green-800">
+                      {stats.platformCompatibility.latest} devices
+                    </Badge>
                   </div>
-                  <Badge variant="secondary" className="text-xs bg-green-100 text-green-800">
-                    {stats.platformCompatibility.latest} devices
-                  </Badge>
                 </div>
-              </div>
-            ) : platformViewMode === 'bar' ? (
-              <RechartsBarChart
-                data={platformChartData}
-                height={250}
-                className="w-full"
-              />
-            ) : (
-              <RechartsPieChart
-                data={platformChartData}
-                height={250}
-                showLegend={false}
-                className="w-full"
-              />
-            )}
+              ) : platformViewMode === 'bar' ? (
+                <RechartsBarChart
+                  data={platformChartData}
+                  height={250}
+                  className="w-full"
+                />
+              ) : (
+                <RechartsPieChart
+                  data={platformChartData}
+                  height={250}
+                  showLegend={false}
+                  className="w-full"
+                />
+              )}
+            </div>
           </CardContent>
         </Card>
 
@@ -599,50 +571,52 @@ export const DeviceStatsPanel = ({ stats, devices, onFilterByManufacturer, onFil
             </div>
           </CardHeader>
           <CardContent>
-            {performanceViewMode === 'list' ? (
-              <div className="space-y-3">
-                {Object.entries(stats.performanceTierCounts)
-                  .sort(([,a], [,b]) => b - a)
-                  .slice(0, 4)
-                  .map(([tier, count]) => {
-                  const tierColors = PERFORMANCE_TIERS.find(t => t.name.toLowerCase() === tier.toLowerCase())?.colors || PERFORMANCE_TIERS[0].colors;
-                  return (
-                    <div key={tier} className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <div 
-                          className="w-3 h-3 rounded border" 
-                          style={{ backgroundColor: tierColors.primary }}
-                        />
-                        <span className="text-sm font-medium capitalize">{tier}</span>
+            <div ref={performanceAnimateRef}>
+              {performanceViewMode === 'list' ? (
+                <div className="space-y-3">
+                  {Object.entries(stats.performanceTierCounts)
+                    .sort(([,a], [,b]) => b - a)
+                    .slice(0, 4)
+                    .map(([tier, count]) => {
+                    const tierColors = PERFORMANCE_TIERS.find(t => t.name.toLowerCase() === tier.toLowerCase())?.colors || PERFORMANCE_TIERS[0].colors;
+                    return (
+                      <div key={tier} className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div 
+                            className="w-3 h-3 rounded border" 
+                            style={{ backgroundColor: tierColors.primary }}
+                          />
+                          <span className="text-sm font-medium capitalize">{tier}</span>
+                        </div>
+                        <Badge 
+                          variant="secondary" 
+                          className="text-xs"
+                          style={{ 
+                            backgroundColor: tierColors.secondary, 
+                            color: tierColors.text 
+                          }}
+                        >
+                          {count} devices
+                        </Badge>
                       </div>
-                      <Badge 
-                        variant="secondary" 
-                        className="text-xs"
-                        style={{ 
-                          backgroundColor: tierColors.secondary, 
-                          color: tierColors.text 
-                        }}
-                      >
-                        {count} devices
-                      </Badge>
-                    </div>
-                  );
-                })}
-              </div>
-            ) : performanceViewMode === 'bar' ? (
-              <RechartsBarChart
-                data={performanceChartData}
-                height={250}
-                className="w-full"
-              />
-            ) : (
-              <RechartsPieChart
-                data={performanceChartData}
-                height={250}
-                showLegend={false}
-                className="w-full"
-              />
-            )}
+                    );
+                  })}
+                </div>
+              ) : performanceViewMode === 'bar' ? (
+                <RechartsBarChart
+                  data={performanceChartData}
+                  height={250}
+                  className="w-full"
+                />
+              ) : (
+                <RechartsPieChart
+                  data={performanceChartData}
+                  height={250}
+                  showLegend={false}
+                  className="w-full"
+                />
+              )}
+            </div>
           </CardContent>
         </Card>
 
@@ -685,50 +659,52 @@ export const DeviceStatsPanel = ({ stats, devices, onFilterByManufacturer, onFil
             </div>
           </CardHeader>
           <CardContent>
-            {resolutionViewMode === 'list' ? (
-              <div className="space-y-3">
-                {Object.entries(stats.screenResolutionCounts)
-                  .sort(([,a], [,b]) => b - a)
-                  .slice(0, 5)
-                  .map(([resolution, count]) => {
-                  const colors = getSdkEraColors(30);
-                  return (
-                    <div key={resolution} className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <div 
-                          className="w-3 h-3 rounded border" 
-                          style={{ backgroundColor: colors.primary }}
-                        />
-                        <span className="text-sm font-medium">{resolution}</span>
+            <div ref={resolutionAnimateRef}>
+              {resolutionViewMode === 'list' ? (
+                <div className="space-y-3">
+                  {Object.entries(stats.screenResolutionCounts)
+                    .sort(([,a], [,b]) => b - a)
+                    .slice(0, 5)
+                    .map(([resolution, count]) => {
+                    const colors = getSdkEraColors(30);
+                    return (
+                      <div key={resolution} className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div 
+                            className="w-3 h-3 rounded border" 
+                            style={{ backgroundColor: colors.primary }}
+                          />
+                          <span className="text-sm font-medium">{resolution}</span>
+                        </div>
+                        <Badge 
+                          variant="secondary" 
+                          className="text-xs"
+                          style={{ 
+                            backgroundColor: colors.secondary, 
+                            color: colors.text 
+                          }}
+                        >
+                          {count} devices
+                        </Badge>
                       </div>
-                      <Badge 
-                        variant="secondary" 
-                        className="text-xs"
-                        style={{ 
-                          backgroundColor: colors.secondary, 
-                          color: colors.text 
-                        }}
-                      >
-                        {count} devices
-                      </Badge>
-                    </div>
-                  );
-                })}
-              </div>
-            ) : resolutionViewMode === 'bar' ? (
-              <RechartsBarChart
-                data={resolutionChartData}
-                height={250}
-                className="w-full"
-              />
-            ) : (
-              <RechartsPieChart
-                data={resolutionChartData}
-                height={250}
-                showLegend={false}
-                className="w-full"
-              />
-            )}
+                    );
+                  })}
+                </div>
+              ) : resolutionViewMode === 'bar' ? (
+                <RechartsBarChart
+                  data={resolutionChartData}
+                  height={250}
+                  className="w-full"
+                />
+              ) : (
+                <RechartsPieChart
+                  data={resolutionChartData}
+                  height={250}
+                  showLegend={false}
+                  className="w-full"
+                />
+              )}
+            </div>
           </CardContent>
         </Card>
       </div>
