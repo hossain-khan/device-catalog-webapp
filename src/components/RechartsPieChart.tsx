@@ -21,18 +21,31 @@ export const RechartsPieChart = ({
   onSegmentClick,
   className = "",
   showLegend = true,
-  innerRadius = 60
+  innerRadius,
 }: RechartsPieChartProps) => {
+  type ChartDatum = {
+    name: string;
+    value: number;
+    color: string;
+    percentage: string;
+  };
+
   // Transform data for Recharts
   const total = data.reduce((sum, item) => sum + item.value, 0);
-  const chartData = data.map((item, index) => ({
+  const chartData: ChartDatum[] = data.map((item, index) => ({
     name: item.label,
     value: item.value,
     color: item.color || `hsl(${(index * 137.5) % 360}, 70%, 50%)`,
-    percentage: ((item.value / total) * 100).toFixed(1)
+    percentage: total > 0 ? ((item.value / total) * 100).toFixed(1) : '0.0',
   }));
 
-  const CustomTooltip = ({ active, payload }: any) => {
+  // Ensure visible donut thickness: compute outer/inner radii based on container size
+  const outerRadius = Math.max(60, Math.min(width, height) / 2 - 40);
+  const computedInnerRadius = innerRadius !== undefined
+    ? innerRadius
+    : Math.max(20, Math.floor(outerRadius * 0.6));
+
+  const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: Array<{ payload: ChartDatum }> }) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (
@@ -47,9 +60,11 @@ export const RechartsPieChart = ({
     return null;
   };
 
-  const handlePieClick = (data: any) => {
-    if (onSegmentClick) {
-      onSegmentClick({ label: data.name, value: data.value });
+  const handlePieClick = (_: unknown, index: number) => {
+    if (!onSegmentClick) return;
+    const d = chartData[index];
+    if (d) {
+      onSegmentClick({ label: d.name, value: d.value });
     }
   };
 
@@ -61,8 +76,8 @@ export const RechartsPieChart = ({
             data={chartData}
             cx="50%"
             cy="50%"
-            innerRadius={innerRadius}
-            outerRadius={Math.min(width, height) / 2 - 40}
+            innerRadius={computedInnerRadius}
+            outerRadius={outerRadius}
             paddingAngle={2}
             dataKey="value"
             onClick={handlePieClick}
@@ -74,11 +89,7 @@ export const RechartsPieChart = ({
           </Pie>
           <Tooltip content={<CustomTooltip />} />
           {showLegend && (
-            <Legend 
-              verticalAlign="bottom" 
-              height={36}
-              formatter={(value, entry: any) => `${value} (${entry.payload.percentage}%)`}
-            />
+            <Legend verticalAlign="bottom" height={36} />
           )}
         </PieChart>
       </ResponsiveContainer>
