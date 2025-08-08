@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -13,9 +13,12 @@ import { ScreenResolutionDialog } from "@/components/ScreenResolutionDialog";
 import { ProcessorDiversityDialog } from "@/components/ProcessorDiversityDialog";
 import { HighResolutionDialog } from "@/components/HighResolutionDialog";
 import { GpuManufacturerDialog } from "@/components/GpuManufacturerDialog";
-import { DeviceStats } from "@/types/device";
+import { FormFactorManufacturersDialog } from "@/components/FormFactorManufacturersDialog";
+import { D3HorizontalBarChart } from "@/components/D3HorizontalBarChart";
+import { D3DonutChart } from "@/components/D3DonutChart";
+import { DeviceStats, AndroidDevice } from "@/types/device";
 import { getFormFactorColors, getManufacturerColors, getSdkEraColors, PERFORMANCE_TIERS } from "@/lib/deviceColors";
-import { ChartBar } from "@phosphor-icons/react";
+import { ChartBar, DeviceMobile, DeviceTablet, Television } from "@phosphor-icons/react";
 
 interface StatsCardProps {
   title: string;
@@ -37,11 +40,12 @@ const StatsCard = ({ title, value, subtitle }: StatsCardProps) => (
 
 interface DeviceStatsProps {
   stats: DeviceStats;
+  devices: AndroidDevice[]; // Add devices for form factor filtering
   onFilterByManufacturer: (manufacturer: string) => void;
   onFilterByFormFactor: (formFactor: string) => void;
 }
 
-export const DeviceStatsPanel = ({ stats, onFilterByManufacturer, onFilterByFormFactor }: DeviceStatsProps) => {
+export const DeviceStatsPanel = ({ stats, devices, onFilterByManufacturer, onFilterByFormFactor }: DeviceStatsProps) => {
   const [sdkDialogOpen, setSdkDialogOpen] = useState(false);
   const [manufacturersDialogOpen, setManufacturersDialogOpen] = useState(false);
   const [formFactorsDialogOpen, setFormFactorsDialogOpen] = useState(false);
@@ -54,6 +58,11 @@ export const DeviceStatsPanel = ({ stats, onFilterByManufacturer, onFilterByForm
   const [highResolutionDialogOpen, setHighResolutionDialogOpen] = useState(false);
   const [gpuManufacturerDialogOpen, setGpuManufacturerDialogOpen] = useState(false);
   
+  // New form factor-specific dialogs
+  const [phoneManufacturersDialogOpen, setPhoneManufacturersDialogOpen] = useState(false);
+  const [tabletManufacturersDialogOpen, setTabletManufacturersDialogOpen] = useState(false);
+  const [tvManufacturersDialogOpen, setTvManufacturersDialogOpen] = useState(false);
+  
   const topManufacturers = Object.entries(stats.manufacturerCounts)
     .sort(([,a], [,b]) => b - a)
     .slice(0, 5);
@@ -61,6 +70,32 @@ export const DeviceStatsPanel = ({ stats, onFilterByManufacturer, onFilterByForm
   const topSdkVersions = Object.entries(stats.sdkVersionCounts)
     .sort(([,a], [,b]) => b - a)
     .slice(0, 5);
+
+  // Prepare data for enhanced charts
+  const manufacturerChartData = useMemo(() => {
+    return Object.entries(stats.manufacturerCounts)
+      .sort(([,a], [,b]) => b - a)
+      .slice(0, 10)
+      .map(([manufacturer, count]) => ({
+        label: manufacturer,
+        value: count,
+        color: getManufacturerColors(manufacturer).primary
+      }));
+  }, [stats.manufacturerCounts]);
+
+  const formFactorChartData = useMemo(() => {
+    return Object.entries(stats.formFactorCounts)
+      .map(([formFactor, count]) => ({
+        label: formFactor,
+        value: count,
+        color: getFormFactorColors(formFactor).primary
+      }));
+  }, [stats.formFactorCounts]);
+
+  // Form factor specific counts
+  const phoneCount = stats.formFactorCounts['Phone'] || 0;
+  const tabletCount = stats.formFactorCounts['Tablet'] || 0;
+  const tvCount = stats.formFactorCounts['TV'] || 0;
 
   return (
     <div className="space-y-6">
@@ -566,6 +601,133 @@ export const DeviceStatsPanel = ({ stats, onFilterByManufacturer, onFilterByForm
         </Card>
       </div>
 
+      {/* Enhanced Interactive Visualizations */}
+      <div className="space-y-6">
+        <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
+          <ChartBar className="h-5 w-5" />
+          Enhanced Analytics & Visualizations
+        </h2>
+
+        {/* Form Factor Specific Manufacturer Analysis */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <DeviceMobile size={18} />
+                Phone Manufacturers
+              </CardTitle>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setPhoneManufacturersDialogOpen(true)}
+                className="h-8 px-3"
+              >
+                <ChartBar size={16} className="mr-1" />
+                View Chart
+              </Button>
+            </CardHeader>
+            <CardContent>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-primary">{phoneCount.toLocaleString()}</div>
+                <p className="text-sm text-muted-foreground mt-1">Phone devices</p>
+                <p className="text-xs text-muted-foreground mt-2">
+                  Click "View Chart" to see top phone manufacturers with interactive visualizations
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <DeviceTablet size={18} />
+                Tablet Manufacturers
+              </CardTitle>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setTabletManufacturersDialogOpen(true)}
+                className="h-8 px-3"
+              >
+                <ChartBar size={16} className="mr-1" />
+                View Chart
+              </Button>
+            </CardHeader>
+            <CardContent>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-primary">{tabletCount.toLocaleString()}</div>
+                <p className="text-sm text-muted-foreground mt-1">Tablet devices</p>
+                <p className="text-xs text-muted-foreground mt-2">
+                  Click "View Chart" to see top tablet manufacturers with interactive visualizations
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Television size={18} />
+                TV Manufacturers
+              </CardTitle>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setTvManufacturersDialogOpen(true)}
+                className="h-8 px-3"
+              >
+                <ChartBar size={16} className="mr-1" />
+                View Chart
+              </Button>
+            </CardHeader>
+            <CardContent>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-primary">{tvCount.toLocaleString()}</div>
+                <p className="text-sm text-muted-foreground mt-1">TV devices</p>
+                <p className="text-xs text-muted-foreground mt-2">
+                  Click "View Chart" to see top TV manufacturers with interactive visualizations
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Enhanced Chart Visualizations */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">Top Manufacturers - Interactive Chart</CardTitle>
+              <p className="text-sm text-muted-foreground">D3.js powered horizontal bar chart with hover interactions</p>
+            </CardHeader>
+            <CardContent>
+              <D3HorizontalBarChart
+                data={manufacturerChartData}
+                height={300}
+                onBarClick={(data) => onFilterByManufacturer(data.label)}
+                className="w-full"
+              />
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">Form Factor Distribution - Donut Chart</CardTitle>
+              <p className="text-sm text-muted-foreground">Interactive donut chart showing device type distribution</p>
+            </CardHeader>
+            <CardContent>
+              <D3DonutChart
+                data={formFactorChartData}
+                width={350}
+                height={350}
+                onSegmentClick={(data) => onFilterByFormFactor(data.label)}
+                className="w-full"
+                showLegend={false}
+              />
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+
       <SdkVersionsDialog
         open={sdkDialogOpen}
         onOpenChange={setSdkDialogOpen}
@@ -632,6 +794,31 @@ export const DeviceStatsPanel = ({ stats, onFilterByManufacturer, onFilterByForm
         open={gpuManufacturerDialogOpen}
         onOpenChange={setGpuManufacturerDialogOpen}
         stats={stats}
+      />
+
+      {/* Form Factor Specific Manufacturer Dialogs */}
+      <FormFactorManufacturersDialog
+        open={phoneManufacturersDialogOpen}
+        onOpenChange={setPhoneManufacturersDialogOpen}
+        devices={devices}
+        formFactor="Phone"
+        onFilterByManufacturer={onFilterByManufacturer}
+      />
+
+      <FormFactorManufacturersDialog
+        open={tabletManufacturersDialogOpen}
+        onOpenChange={setTabletManufacturersDialogOpen}
+        devices={devices}
+        formFactor="Tablet"
+        onFilterByManufacturer={onFilterByManufacturer}
+      />
+
+      <FormFactorManufacturersDialog
+        open={tvManufacturersDialogOpen}
+        onOpenChange={setTvManufacturersDialogOpen}
+        devices={devices}
+        formFactor="TV"
+        onFilterByManufacturer={onFilterByManufacturer}
       />
     </div>
   );
