@@ -270,7 +270,7 @@ export const DeviceStatsPanel = ({ stats, devices, onFilterByManufacturer, onFil
             ) : processorViewMode === 'bar' ? (
               <RechartsBarChart
                 data={processorChartData}
-                height={200}
+                height={260}
                 className="w-full"
               />
             ) : (
@@ -350,7 +350,7 @@ export const DeviceStatsPanel = ({ stats, devices, onFilterByManufacturer, onFil
             ) : gpuViewMode === 'bar' ? (
               <RechartsBarChart
                 data={gpuChartData}
-                height={200}
+                height={260}
                 className="w-full"
               />
             ) : (
