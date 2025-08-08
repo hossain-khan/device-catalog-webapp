@@ -30,7 +30,7 @@ export default defineConfig({
           // Separate vendor chunks
           'react': ['react', 'react-dom'],
           'ui': ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu', '@radix-ui/react-tabs'],
-          'charts': ['recharts', 'd3'],
+          'charts': ['recharts'],
           'icons': ['@phosphor-icons/react'],
           'utils': ['date-fns', 'zod', 'clsx'],
         },
