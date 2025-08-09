@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
+import { useState, useMemo, useCallback, useRef } from 'react';
 import { useKV } from '@/hooks/useKV';
 import { useDebounce } from '@/hooks/useDebounce';
 import { useDataPreload } from '@/hooks/useDataPreload';
@@ -10,13 +10,11 @@ import { DeviceDetailModal } from '@/components/DeviceDetailModal';
 import { ComparisonBar } from '@/components/ComparisonBar';
 import { DeviceComparisonModal } from '@/components/DeviceComparisonModal';
 import { FileUploadPanel, FileUploadPanelRef } from '@/components/FileUploadPanel';
-import { DataPreloading } from '@/components/DataPreloading';
 
 import { BackToTopButton } from '@/components/BackToTopButton';
 import { DeviceExportPanel } from '@/components/DeviceExportPanel';
 import { ExportStatsPanel } from '@/components/ExportStatsPanel';
 import { ComparisonProvider } from '@/contexts/ComparisonContext';
-import { sampleDevices } from '@/data/devices';
 import { AndroidDevice, DeviceFilters, PaginationState } from '@/types/device';
 import { ColorMode } from '@/lib/deviceColors';
 import { 
@@ -33,34 +31,33 @@ import { paginateArray, DEFAULT_ITEMS_PER_PAGE } from '@/lib/paginationUtils';
 import androidLogo from '@/assets/images/android.svg';
 
 function App() {
-  // All hooks must be called at the top level before any conditional returns
   // Preload the full device catalog
-  const { isLoading: isPreloading, progress, error: preloadError, data: preloadedData, deviceCount } = useDataPreload();
-  
-  // Use uploaded devices if available, otherwise use preloaded data, then fall back to sample data
+  const { data: preloadedData } = useDataPreload();
+
+  // Use uploaded devices if available, otherwise use preloaded data
   const [uploadedDevices, setUploadedDevices] = useKV<AndroidDevice[]>('uploaded-devices', []);
-  
+
+  // Memoized devices selection
+  const devices = useMemo(() => (
+    uploadedDevices.length > 0 ? uploadedDevices : (preloadedData || [])
+  ), [uploadedDevices, preloadedData]);
+
   // Tab state management
   const [activeTab, setActiveTab] = useState('devices');
-  
-  // Ref for the file upload panel to trigger URL tab
   const fileUploadRef = useRef<FileUploadPanelRef | null>(null);
-  
-  // Determine which devices to use
-  const devices = uploadedDevices.length > 0 ? uploadedDevices : (preloadedData || sampleDevices);
-  
+
   // Calculate ranges from available devices
   const ramRange = useMemo(() => getRamRange(devices), [devices]);
   const sdkVersionRange = useMemo(() => getSdkVersionRange(devices), [devices]);
-  
+
   const [filters, setFilters] = useKV<DeviceFilters>('device-filters', {
     search: '',
     formFactor: 'all',
     manufacturer: 'all',
     minRam: 'all',
     sdkVersion: 'all',
-    ramRange: [0, 16384], // Default fallback range
-    sdkVersionRange: [23, 35] // Default fallback range
+    ramRange: [0, 16384],
+    sdkVersionRange: [23, 35]
   });
 
   // Pagination state
@@ -73,40 +70,33 @@ function App() {
   // Debounce search to improve performance
   const debouncedFilters = useDebounce(filters, 300);
   const [isFiltering, setIsFiltering] = useState(false);
-  
+
   // Update ranges in filters when devices change
-  useMemo(() => {
-    if (!filters.ramRange || !filters.sdkVersionRange || 
-        (filters.ramRange[0] === 0 && filters.ramRange[1] === 16384) ||
-        (filters.sdkVersionRange[0] === 23 && filters.sdkVersionRange[1] === 35)) {
-      setFilters(current => ({
-        ...current,
-        ramRange: ramRange,
-        sdkVersionRange: sdkVersionRange
-      }));
-    }
-  }, [ramRange, sdkVersionRange, filters.ramRange, filters.sdkVersionRange, setFilters]);
-  
-  const [selectedDevice, setSelectedDevice] = useState<AndroidDevice | null>(null);
-  const [detailModalOpen, setDetailModalOpen] = useState(false);
-  const [comparisonModalOpen, setComparisonModalOpen] = useState(false);
-  
-  // Color mode state
-  const [colorMode, setColorMode] = useKV<ColorMode>('device-color-mode', 'formFactor');
+  const shouldUpdateRanges = (
+    !filters.ramRange || !filters.sdkVersionRange ||
+    filters.ramRange[0] === 0 && filters.ramRange[1] === 16384 ||
+    filters.sdkVersionRange[0] === 23 && filters.sdkVersionRange[1] === 35
+  );
+  if (shouldUpdateRanges) {
+    setFilters({
+      ...filters,
+      ramRange: ramRange,
+      sdkVersionRange: sdkVersionRange
+    });
+  }
 
   // Filter devices with debounced search
   const filteredDevices = useMemo(() => {
     const filtered = filterDevices(devices, debouncedFilters);
-    // Reset to page 1 when filters change and update total items
     if (filtered.length !== pagination.totalItems) {
-      setPagination(current => ({
-        ...current,
+      setPagination({
+        ...pagination,
         currentPage: 1,
         totalItems: filtered.length
-      }));
+      });
     }
     return filtered;
-  }, [devices, debouncedFilters, pagination.totalItems, setPagination]);
+  }, [devices, debouncedFilters, pagination, setPagination]);
 
   // Track filtering state
   useMemo(() => {
@@ -119,77 +109,57 @@ function App() {
     [filteredDevices, pagination.currentPage, pagination.itemsPerPage]
   );
 
-  const allStats = useMemo(() => 
-    calculateDeviceStats(devices), 
-    [devices]
-  );
-
-  const uniqueManufacturers = useMemo(() => 
-    getUniqueManufacturers(devices), 
-    [devices]
-  );
-
-  const uniqueFormFactors = useMemo(() => 
-    getUniqueFormFactors(devices), 
-    [devices]
-  );
-
-  const uniqueSdkVersions = useMemo(() => 
-    getUniqueSdkVersions(devices), 
-    [devices]
-  );
+  const allStats = useMemo(() => calculateDeviceStats(devices), [devices]);
+  const uniqueManufacturers = useMemo(() => getUniqueManufacturers(devices), [devices]);
+  const uniqueFormFactors = useMemo(() => getUniqueFormFactors(devices), [devices]);
+  const uniqueSdkVersions = useMemo(() => getUniqueSdkVersions(devices), [devices]);
 
   const handleDeviceClick = (device: AndroidDevice) => {
     setSelectedDevice(device);
     setDetailModalOpen(true);
   };
 
+  const [selectedDevice, setSelectedDevice] = useState<AndroidDevice | null>(null);
+  const [detailModalOpen, setDetailModalOpen] = useState(false);
+  const [comparisonModalOpen, setComparisonModalOpen] = useState(false);
+
+  // Color mode state
+  const [colorMode, setColorMode] = useKV<ColorMode>('device-color-mode', 'formFactor');
+
   const handleFilterByManufacturer = (manufacturer: string) => {
-    setFilters(current => ({ ...current, manufacturer }));
+    setFilters({ ...filters, manufacturer });
   };
-
   const handleFilterByFormFactor = (formFactor: string) => {
-    setFilters(current => ({ ...current, formFactor }));
+    setFilters({ ...filters, formFactor });
   };
 
-  const handleOpenComparison = () => {
-    setComparisonModalOpen(true);
-  };
-
-  const handleExportClick = () => {
-    setActiveTab('export');
-  };
+  const handleOpenComparison = () => setComparisonModalOpen(true);
+  const handleExportClick = () => setActiveTab('export');
 
   // Pagination handlers
   const handlePageChange = useCallback((page: number) => {
-    setPagination(current => ({ ...current, currentPage: page }));
-  }, [setPagination]);
+    setPagination({ ...pagination, currentPage: page });
+  }, [pagination, setPagination]);
 
   const handleItemsPerPageChange = useCallback((itemsPerPage: number) => {
-    setPagination(current => ({ 
-      ...current, 
+    setPagination({ 
+      ...pagination, 
       itemsPerPage, 
-      currentPage: 1 // Reset to first page when changing page size
-    }));
-  }, [setPagination]);
+      currentPage: 1 
+    });
+  }, [pagination, setPagination]);
 
   // Optimized filter change handler
   const handleFiltersChange = useCallback((newFilters: DeviceFilters) => {
     setFilters(newFilters);
-    // Reset pagination when filters change
-    setPagination(current => ({ ...current, currentPage: 1 }));
-  }, [setFilters, setPagination]);
+    setPagination({ ...pagination, currentPage: 1 });
+  }, [setFilters, setPagination, pagination]);
 
   const handleDevicesLoaded = (newDevices: AndroidDevice[]) => {
-    // Clear old device data and comparison state before loading new data
     const sanitizedDevices = sanitizeDeviceData(newDevices);
     setUploadedDevices(sanitizedDevices);
-    
-    // Calculate new ranges for the loaded devices
     const newRamRange = getRamRange(sanitizedDevices);
     const newSdkVersionRange = getSdkVersionRange(sanitizedDevices);
-    
-    // Reset filters to default when new data is loaded
     setFilters({
       search: '',
       formFactor: 'all',
@@ -199,8 +169,6 @@ function App() {
       ramRange: newRamRange,
       sdkVersionRange: newSdkVersionRange
     });
-
-    // Reset pagination
     setPagination({
       currentPage: 1,
       itemsPerPage: DEFAULT_ITEMS_PER_PAGE,
@@ -209,32 +177,22 @@ function App() {
   };
 
   const handleUseLatestDataset = useCallback(() => {
-    // Switch to upload tab
     setActiveTab('upload');
-    
-    // Wait for tab to render then trigger URL tab activation and scroll
     setTimeout(() => {
       if (fileUploadRef.current) {
         fileUploadRef.current.activateUrlTab();
       }
-      
-      // Scroll to the upload section
       const uploadElement = document.querySelector('[data-upload-section]');
       if (uploadElement) {
-        uploadElement.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
-        });
+        uploadElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
-    }, 150); // Small delay to ensure tab content is rendered
+    }, 150);
   }, []);
 
   const handleClearDevices = () => {
     setUploadedDevices([]);
-    // Reset filters when clearing data
-    const defaultRamRange = getRamRange(sampleDevices);
-    const defaultSdkVersionRange = getSdkVersionRange(sampleDevices);
-    
+    const defaultRamRange = getRamRange(preloadedData || []);
+    const defaultSdkVersionRange = getSdkVersionRange(preloadedData || []);
     setFilters({
       search: '',
       formFactor: 'all',
@@ -244,12 +202,10 @@ function App() {
       ramRange: defaultRamRange,
       sdkVersionRange: defaultSdkVersionRange
     });
-
-    // Reset pagination
     setPagination({
       currentPage: 1,
       itemsPerPage: DEFAULT_ITEMS_PER_PAGE,
-      totalItems: sampleDevices.length
+      totalItems: preloadedData ? preloadedData.length : 0
     });
   };
 
