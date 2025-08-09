@@ -50,6 +50,23 @@ A modern, responsive device catalog application built with React, TypeScript, an
 - `npm run lint` - Run ESLint
 - `npm run preview` - Preview production build
 
+## 🐛 Troubleshooting
+
+### Common Issues
+
+**npm run dev fails:**
+- Try `rm -rf node_modules package-lock.json && npm install`
+- Ensure Node.js version compatibility (v18+)
+
+**Deployment fails:**
+- Verify `account_id` in `wrangler.toml`
+- Check that `_worker.js` and `.assetsignore` exist in `dist/` after build
+- Ensure Cloudflare account has Workers enabled
+
+**Custom domain conflicts:**
+- Use subdomains instead of root domains
+- Check for existing DNS records in Cloudflare dashboard
+
 ## 🏗️ Architecture
 
 This project was originally built using GitHub Spark but has been refactored to use standard web technologies:
