@@ -78,21 +78,6 @@ This project was originally built using GitHub Spark but has been refactored to 
 - **Icons**: Phosphor Icons
 - **Storage**: LocalStorage for persistence
 
-## 📦 Recent Changes
-
-- **Removed GitHub Spark Dependency**: Replaced with local implementations
-- **Added CI/CD**: Automated testing and builds via GitHub Actions
-- **Icon Fixes**: Updated to compatible Phosphor icon names
-- **Local Storage**: Custom `useKV` hook for data persistence
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
