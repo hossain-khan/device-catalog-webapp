@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from 'react';
 import { useKV } from '@/hooks/useKV';
 import { AndroidDevice } from '@/types/device';
 import { DeviceCatalogService, LoadingState } from '@/services/deviceCatalogService';
-import { sampleDevices } from '@/data/devices';
 
 interface CatalogLoadingHook {
   devices: AndroidDevice[];
@@ -30,12 +29,12 @@ export function useCatalogLoader(): CatalogLoadingHook {
 
   const [isInitialLoad, setIsInitialLoad] = useState(true);
 
-  // Determine which devices to use (priority: uploaded > catalog > sample)
+  // Determine which devices to use (priority: uploaded > catalog)
   const devices = uploadedDevices.length > 0 
     ? uploadedDevices 
     : catalogDevices.length > 0 
       ? catalogDevices 
-      : sampleDevices;
+      : [];
 
   const loadCatalog = useCallback(async () => {
     try {
