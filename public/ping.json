@@ -3,8 +3,8 @@
   "site": "android-device.gohk.xyz",
   "status": "alive",
   "build": {
-    "time": "2025-08-09T01:01:05.717Z",
-    "commit": "fc60e40",
-    "branch": "update-deps"
+    "time": "2025-08-09T01:11:43.447Z",
+    "commit": "4afca3c",
+    "branch": "remove-sample-device"
   }
 }
