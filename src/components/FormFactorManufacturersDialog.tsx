@@ -4,19 +4,20 @@ import { ModalHeader } from "@/components/ui/modal-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { AndroidDevice } from "@/types/device";
-import { 
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
   ResponsiveContainer,
   PieChart,
   Pie,
-  Cell
+  Cell,
 } from 'recharts';
 import { ChartBar, ChartPie, List, DeviceMobile, DeviceTablet, Television } from "@phosphor-icons/react";
+import { getFormFactorColors } from "@/lib/deviceColors";
 
 interface FormFactorManufacturersDialogProps {
   open: boolean;
@@ -26,46 +27,81 @@ interface FormFactorManufacturersDialogProps {
   onFilterByManufacturer: (manufacturer: string) => void;
 }
 
-// Color palette for charts
-const CHART_COLORS = [
-  '#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6',
-  '#06b6d4', '#84cc16', '#f97316', '#ec4899', '#6366f1'
-];
+// Data point type for charts
+type DataPoint = {
+  manufacturer: string;
+  count: number;
+  color: string;
+  displayName: string;
+  percentage: string;
+};
 
-export const FormFactorManufacturersDialog = ({ 
-  open, 
-  onOpenChange, 
+// Minimal tooltip props to avoid any
+interface CustomTooltipProps {
+  active?: boolean;
+  payload?: Array<{ payload: DataPoint }>;
+}
+
+// Utility: parse hue from an OKLCH color string like 'oklch(L C H)'
+function parseOklchHue(color: string): number | undefined {
+  const m = color.match(/oklch\(\s*([0-9.]+)\s+([0-9.]+)\s+([0-9.]+)/i);
+  return m ? Number(m[3]) : undefined;
+}
+
+// Generate a soft, professional palette using OKLCH with fixed hue and low chroma
+function generateSoftPalette(hue: number, count = 10): string[] {
+  // Lightness values from light to darker for better distinction
+  const lightnesses = [0.82, 0.78, 0.74, 0.70, 0.66, 0.62, 0.58, 0.54, 0.50, 0.46];
+  const chroma = 0.06; // low saturation for professional look
+  const arr: string[] = [];
+  for (let i = 0; i < count; i++) {
+    const L = lightnesses[i % lightnesses.length];
+    arr.push(`oklch(${L} ${chroma} ${hue})`);
+  }
+  return arr;
+}
+
+export const FormFactorManufacturersDialog = ({
+  open,
+  onOpenChange,
   devices,
   formFactor,
-  onFilterByManufacturer 
+  onFilterByManufacturer,
 }: FormFactorManufacturersDialogProps) => {
   const [viewMode, setViewMode] = useState<'bar' | 'pie' | 'list'>('bar');
-  
-  const manufacturerData = useMemo(() => {
+
+  // Determine a base hue from the form factor color scheme
+  const chartColors = useMemo(() => {
+    const base = getFormFactorColors(formFactor).primary;
+    const hue = parseOklchHue(base) ?? (formFactor === 'Phone' ? 220 : formFactor === 'Tablet' ? 280 : 15);
+    return generateSoftPalette(hue, 10);
+  }, [formFactor]);
+
+  const manufacturerData: DataPoint[] = useMemo(() => {
     // Filter devices by form factor
-    const filteredDevices = devices.filter(device => device.formFactor === formFactor);
-    
+    const filteredDevices = devices.filter((device) => device.formFactor === formFactor);
+
     // Count manufacturers
     const manufacturerCounts: { [key: string]: number } = {};
-    filteredDevices.forEach(device => {
+    filteredDevices.forEach((device) => {
       manufacturerCounts[device.manufacturer] = (manufacturerCounts[device.manufacturer] || 0) + 1;
     });
-    
+
     // Convert to array and sort
     return Object.entries(manufacturerCounts)
-      .sort(([,a], [,b]) => b - a)
+      .sort(([, a], [, b]) => b - a)
       .slice(0, 10) // Top 10 manufacturers
       .map(([manufacturer, count], index) => ({
         manufacturer,
         count,
-        color: CHART_COLORS[index % CHART_COLORS.length],
+        color: chartColors[index % chartColors.length],
         displayName: manufacturer.length > 12 ? `${manufacturer.substring(0, 12)}...` : manufacturer,
-        percentage: ((count / filteredDevices.length) * 100).toFixed(1)
+        percentage: ((count / filteredDevices.length) * 100).toFixed(1),
       }));
-  }, [devices, formFactor]);
+  }, [devices, formFactor, chartColors]);
 
   const totalDevices = useMemo(() => {
-    return devices.filter(device => device.formFactor === formFactor).length;
+    return devices.filter((device) => device.formFactor === formFactor).length;
   }, [devices, formFactor]);
 
   const handleManufacturerClick = (manufacturer: string) => {
@@ -86,7 +122,7 @@ export const FormFactorManufacturersDialog = ({
     }
   };
 
-  const CustomTooltip = ({ active, payload }: any) => {
+  const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (
@@ -116,8 +152,8 @@ export const FormFactorManufacturersDialog = ({
               }}
             >
               <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
-              <XAxis 
-                dataKey="displayName" 
+              <XAxis
+                dataKey="displayName"
                 angle={-45}
                 textAnchor="end"
                 height={60}
@@ -126,11 +162,13 @@ export const FormFactorManufacturersDialog = ({
               />
               <YAxis />
               <Tooltip content={<CustomTooltip />} />
-              <Bar 
-                dataKey="count" 
-                fill={(entry, index) => manufacturerData[index]?.color || CHART_COLORS[0]}
+              <Bar
+                dataKey="count"
                 cursor="pointer"
-                onClick={(data) => handleManufacturerClick(data.manufacturer)}
+                onClick={(_, index) => {
+                  const item = manufacturerData[index as number];
+                  if (item) handleManufacturerClick(item.manufacturer);
+                }}
               >
                 {manufacturerData.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={entry.color} />
@@ -150,11 +188,17 @@ export const FormFactorManufacturersDialog = ({
                 cx="50%"
                 cy="50%"
                 labelLine={false}
-                label={({ manufacturer, percentage }) => `${manufacturer} (${percentage}%)`}
+                label={(d: unknown) => {
+                  const { manufacturer, percentage } = d as Pick<DataPoint, 'manufacturer' | 'percentage'>;
+                  return `${manufacturer} (${percentage}%)`;
+                }}
                 outerRadius={120}
-                fill="#8884d8"
+                fill={chartColors[0]}
                 dataKey="count"
-                onClick={(data) => handleManufacturerClick(data.manufacturer)}
+                onClick={(_, index) => {
+                  const item = manufacturerData[index as number];
+                  if (item) handleManufacturerClick(item.manufacturer);
+                }}
                 cursor="pointer"
               >
                 {manufacturerData.map((entry, index) => (
@@ -230,7 +274,7 @@ export const FormFactorManufacturersDialog = ({
           }
           onClose={() => onOpenChange(false)}
         />
-        
+
         {renderChart()}
       </DialogContent>
     </Dialog>
