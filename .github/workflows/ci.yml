@@ -79,7 +79,7 @@ jobs:
         npm install --include=dev
 
     - name: Run tests (if available)
-      run: npm test --if-present
+      run: npm run test:run --if-present
 
   security:
     runs-on: ubuntu-latest
