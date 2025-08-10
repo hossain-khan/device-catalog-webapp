@@ -25,8 +25,14 @@ export const filterDevices = (devices: AndroidDevice[], filters: DeviceFilters):
       }
     }
 
-    // Manufacturer filter
-    if (filters.manufacturer && filters.manufacturer !== 'all') {
+    // Manufacturer filter - support both legacy single and new multi-manufacturer filtering
+    if (filters.manufacturers && filters.manufacturers.length > 0) {
+      // New multi-manufacturer filtering - only filter if manufacturers are selected
+      if (!filters.manufacturers.includes(device.manufacturer)) {
+        return false;
+      }
+    } else if (filters.manufacturer && filters.manufacturer !== 'all') {
+      // Legacy single manufacturer filtering for backwards compatibility
       if (device.manufacturer !== filters.manufacturer) {
         return false;
       }

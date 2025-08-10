@@ -17,7 +17,8 @@ export interface AndroidDevice {
 export interface DeviceFilters {
   search: string;
   formFactor: string;
-  manufacturer: string;
+  manufacturer: string; // Legacy single manufacturer support for backwards compatibility
+  manufacturers: string[]; // New multi-manufacturer support
   minRam: string;
   sdkVersion: string;
   // New advanced filters

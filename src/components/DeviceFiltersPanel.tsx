@@ -11,6 +11,7 @@ import { MagnifyingGlass, X, Funnel, SlidersHorizontal, CaretDown, Export } from
 import { DeviceFilters } from "@/types/device";
 import { formatRam } from "@/lib/deviceUtils";
 import { getFormFactorColors } from "@/lib/deviceColors";
+import { SearchableMultiSelectManufacturer } from "@/components/SearchableMultiSelectManufacturer";
 
 interface DeviceFiltersProps {
   filters: DeviceFilters;
@@ -48,6 +49,7 @@ export const DeviceFiltersPanel = ({
       search: '',
       formFactor: 'all',
       manufacturer: 'all',
+      manufacturers: [], // Clear the new manufacturers array
       minRam: 'all',
       sdkVersion: 'all',
       ramRange: ramRange,
@@ -59,6 +61,7 @@ export const DeviceFiltersPanel = ({
     filters.search !== '' ||
     filters.formFactor !== 'all' ||
     filters.manufacturer !== 'all' ||
+    (filters.manufacturers && filters.manufacturers.length > 0) || // Check for selected manufacturers
     filters.minRam !== 'all' ||
     filters.sdkVersion !== 'all' ||
     (filters.ramRange && (filters.ramRange[0] !== ramRange[0] || filters.ramRange[1] !== ramRange[1])) ||
@@ -108,17 +111,12 @@ export const DeviceFiltersPanel = ({
           </SelectContent>
         </Select>
 
-        <Select value={filters.manufacturer} onValueChange={(value) => updateFilter('manufacturer', value)}>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Manufacturer" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Manufacturers</SelectItem>
-            {manufacturers.map(manufacturer => (
-              <SelectItem key={manufacturer} value={manufacturer}>{manufacturer}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <SearchableMultiSelectManufacturer
+          manufacturers={manufacturers}
+          selectedManufacturers={filters.manufacturers || []}
+          onSelectionChange={(selected) => updateFilter('manufacturers', selected)}
+          placeholder="All Manufacturers"
+        />
 
         <Select value={filters.minRam} onValueChange={(value) => updateFilter('minRam', value)}>
           <SelectTrigger className="w-[140px]">
@@ -279,6 +277,13 @@ export const DeviceFiltersPanel = ({
                 <Badge variant="secondary" className="text-xs">
                   {filters.manufacturer}
                 </Badge>
+              )}
+              {filters.manufacturers && filters.manufacturers.length > 0 && (
+                filters.manufacturers.map(manufacturer => (
+                  <Badge key={manufacturer} variant="secondary" className="text-xs">
+                    {manufacturer}
+                  </Badge>
+                ))
               )}
               {filters.minRam !== 'all' && (
                 <Badge variant="secondary" className="text-xs">

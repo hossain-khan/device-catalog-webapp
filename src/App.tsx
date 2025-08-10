@@ -54,11 +54,20 @@ function App() {
     search: '',
     formFactor: 'all',
     manufacturer: 'all',
+    manufacturers: [], // Initialize empty manufacturers array
     minRam: 'all',
     sdkVersion: 'all',
     ramRange: [0, 16384],
     sdkVersionRange: [23, 35]
   });
+
+  // Migration: Ensure manufacturers array exists for backwards compatibility
+  if (!filters.manufacturers) {
+    setFilters({
+      ...filters,
+      manufacturers: []
+    });
+  }
 
   // Pagination state
   const [pagination, setPagination] = useKV<PaginationState>('device-pagination', {
@@ -81,7 +90,8 @@ function App() {
     setFilters({
       ...filters,
       ramRange: ramRange,
-      sdkVersionRange: sdkVersionRange
+      sdkVersionRange: sdkVersionRange,
+      manufacturers: filters.manufacturers || [] // Preserve manufacturers array
     });
   }
 
