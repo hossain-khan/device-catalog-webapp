@@ -1,4 +1,21 @@
 import '@testing-library/jest-dom';
+import { vi } from 'vitest';
+import { act } from 'react';
+
+// React 19 compatibility fix for Testing Library
+// Ensures React.act is properly accessible in all environments
+if (typeof globalThis.React === 'undefined') {
+  globalThis.React = { act };
+} else if (!globalThis.React.act) {
+  globalThis.React.act = act;
+}
+
+// Additional polyfill for React DOM test utils compatibility
+Object.defineProperty(globalThis, 'ReactDOMTestUtils', {
+  value: { act },
+  writable: true,
+  configurable: true,
+});
 
 // Mock ResizeObserver which is used by some components
 global.ResizeObserver = class ResizeObserver {
