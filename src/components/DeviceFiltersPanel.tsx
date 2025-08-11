@@ -116,6 +116,7 @@ export const DeviceFiltersPanel = ({
           selectedManufacturers={filters.manufacturers || []}
           onSelectionChange={(selected) => updateFilter('manufacturers', selected)}
           placeholder="All Manufacturers"
+          maxDisplayedItems={1}
         />
 
         <Select value={filters.minRam} onValueChange={(value) => updateFilter('minRam', value)}>
