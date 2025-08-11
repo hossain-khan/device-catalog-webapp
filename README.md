@@ -10,7 +10,7 @@ A modern, responsive device catalog application built with React, TypeScript, an
 - **Advanced Filtering**: Filter by manufacturer, form factor, RAM, SDK version, and more
 - **Device Comparison**: Compare multiple devices side-by-side
 - **Data Management**: Upload custom device data via JSON files
-- **Export Functionality**: Export filtered results and statistics
+- **Export Functionality**: Export filtered results and statistics (button relocated to device grid area)
 - **Responsive Design**: Works seamlessly on desktop and mobile
 - **Performance Optimized**: Virtual scrolling for large datasets
 
@@ -43,12 +43,21 @@ A modern, responsive device catalog application built with React, TypeScript, an
    npm run build
    ```
 
+5. **Run tests**
+   ```bash
+   npm test
+   ```
+
 ### Available Scripts
 
 - `npm run dev` - Start development server
 - `npm run build` - Build for production
+- `npm run build:memory-optimized` - Memory-optimized build
 - `npm run lint` - Run ESLint
 - `npm run preview` - Preview production build
+- `npm test` - Run test suite (110 tests)
+- `npm run test:run` - Run tests once
+- `npm run test:coverage` - Run tests with coverage
 
 ## 🐛 Troubleshooting
 
@@ -56,7 +65,7 @@ A modern, responsive device catalog application built with React, TypeScript, an
 
 **npm run dev fails:**
 - Try `rm -rf node_modules package-lock.json && npm install`
-- Ensure Node.js version compatibility (v18+)
+- Ensure Node.js version compatibility (v20+ LTS)
 
 **Deployment fails:**
 - Verify `account_id` in `wrangler.toml`
@@ -72,11 +81,12 @@ A modern, responsive device catalog application built with React, TypeScript, an
 This project was originally built using GitHub Spark but has been refactored to use standard web technologies:
 
 - **Frontend**: React 19, TypeScript, Tailwind CSS
-- **Build Tool**: Vite
+- **Build Tool**: Vite 7.x
 - **UI Components**: Radix UI primitives with custom styling
 - **Charts**: Recharts for data visualization
 - **Icons**: Phosphor Icons
 - **Storage**: LocalStorage for persistence
+- **Testing**: Vitest with 110 comprehensive tests
 
 ## 📄 License
 
