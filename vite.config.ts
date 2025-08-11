@@ -20,6 +20,10 @@ export default defineConfig({
     setupFiles: ['./src/test/setup.ts'],
     include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     exclude: ['node_modules', 'dist', '.git', '.cache'],
+    // Force test environment even when NODE_ENV=production
+    env: {
+      NODE_ENV: 'test'
+    },
   },
   build: {
     // Optimize build for memory usage
