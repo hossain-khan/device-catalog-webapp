@@ -8,10 +8,10 @@ Always reference these instructions first and fallback to search or bash command
 
 ### Bootstrap, Build, and Test the Repository:
 - Install dependencies: `npm install` -- takes 1 minute. NEVER CANCEL.
-- Lint the code: `npm run lint` -- takes 3 seconds, expect 14 warnings (no errors)
+- Lint the code: `npm run lint` -- takes 3 seconds, expect 10 warnings (no errors)
 - Build for production: `npm run build` -- takes 21 seconds. NEVER CANCEL. Set timeout to 60+ minutes.
 - Memory-optimized build: `npm run build:memory-optimized` -- takes 21 seconds. NEVER CANCEL. Set timeout to 60+ minutes.
-- No test suite configured: `npm test --if-present` exits cleanly with no output
+- Test suite: `npm test` -- runs 110 tests across 6 test files using Vitest
 
 ### Run the Application:
 - Development server: `npm run dev` -- starts in <1 second on http://localhost:5173/
@@ -30,7 +30,8 @@ Always reference these instructions first and fallback to search or bash command
 2. **Search Functionality**: Type "Pixel" in search box → should filter to ~43 devices instantly
 3. **Device Details**: Click any device card → modal opens with hardware specs, display info, architecture details
 4. **Analytics Dashboard**: Click Analytics tab → comprehensive statistics with 22K+ devices, manufacturer breakdowns, technical metrics
-5. **Navigation**: Test all tabs (Upload Data, Device Browser, Analytics, Export Data) load correctly
+5. **Navigation**: Test all tabs (Upload Data, Device Browser, Analytics) load correctly
+6. **Export Functionality**: In Device Browser tab, verify Export button appears to the left of "Color Coding Information" button when color mode controls are visible
 
 ### Build Validation Steps:
 - Run `npm run build` and verify dist/ folder contains ~11MB of assets
@@ -90,7 +91,7 @@ Always reference these instructions first and fallback to search or bash command
 added 496 packages, and audited 497 packages in 1m
 
 # npm run lint  
-14 problems (0 errors, 14 warnings) - warnings are expected
+10 problems (0 errors, 10 warnings) - warnings are expected
 
 # npm run build
 ✓ built in 17.34s
@@ -98,7 +99,7 @@ dist/index.html                    8.74 kB │ gzip:   2.37 kB
 dist/assets/index-C3A5O2qs.js   1,055.82 kB │ gzip: 347.06 kB
 
 # npm run dev
-VITE v6.3.5  ready in 583 ms
+VITE v7.1.1  ready in 583 ms
 ➜  Local:   http://localhost:5173/
 ```
 
@@ -133,7 +134,7 @@ VITE v6.3.5  ready in 583 ms
 - **Build fails with memory errors**: Use `npm run build:memory-optimized` instead
 - **Dev server won't start**: Check if port 5173 is available, kill with `npm run kill` if needed
 - **Large bundle warnings**: Expected due to 22K+ device dataset, optimizations already applied
-- **Linting warnings**: 14 warnings are expected and acceptable (mostly React refresh and unused vars)
+- **Linting warnings**: 10 warnings are expected and acceptable (mostly React refresh and unused vars)
 - **Missing dependencies**: Always run `npm install` after pulling changes
 
 ### Development Tips:

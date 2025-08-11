@@ -78,8 +78,8 @@ jobs:
         rm -rf node_modules package-lock.json
         npm install --include=dev
 
-    - name: Run tests (if available)
-      run: npm run test:run --if-present
+    - name: Run tests
+      run: npm run test:run
 
   security:
     runs-on: ubuntu-latest
