@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { AndroidDevice } from "@/types/device";
 import { ColorMode } from "@/lib/deviceColors";
 import { PaginationInfo } from "@/lib/paginationUtils";
-import { CaretDown } from '@phosphor-icons/react';
+import { CaretDown, Export } from '@phosphor-icons/react';
 
 // Lazy load heavy components
 const DeviceJsonModal = lazy(() => import("./DeviceJsonModal").then(module => ({ default: module.DeviceJsonModal })));
@@ -26,6 +26,7 @@ interface DeviceGridProps {
   totalDevices?: number;
   colorMode?: ColorMode;
   onColorModeChange?: (mode: ColorMode) => void;
+  onExportClick?: () => void;
 }
 
 export const DeviceGrid = memo(({ 
@@ -38,7 +39,8 @@ export const DeviceGrid = memo(({
   isLoading = false,
   totalDevices,
   colorMode = 'formFactor',
-  onColorModeChange
+  onColorModeChange,
+  onExportClick
 }: DeviceGridProps) => {
   const [jsonModalDevice, setJsonModalDevice] = useState<AndroidDevice | null>(null);
   const [jsonModalOpen, setJsonModalOpen] = useState(false);
@@ -96,14 +98,30 @@ export const DeviceGrid = memo(({
             />
             
             {devices.length > 0 && (
-              <Collapsible open={colorInfoOpen} onOpenChange={setColorInfoOpen}>
-                <CollapsibleTrigger asChild>
-                  <Button variant="outline" size="sm" className="flex items-center gap-2 hover:bg-muted hover:text-foreground">
-                    Color Coding Information
-                    <CaretDown className={`h-4 w-4 transition-transform ${colorInfoOpen ? 'rotate-180' : ''}`} />
+              <div className="flex items-center gap-2">
+                {/* Export button */}
+                {onExportClick && (
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={onExportClick}
+                    className="flex items-center gap-2 hover:bg-muted hover:text-foreground"
+                  >
+                    <Export className="h-4 w-4" />
+                    Export
                   </Button>
-                </CollapsibleTrigger>
-              </Collapsible>
+                )}
+                
+                {/* Color Coding Information button */}
+                <Collapsible open={colorInfoOpen} onOpenChange={setColorInfoOpen}>
+                  <CollapsibleTrigger asChild>
+                    <Button variant="outline" size="sm" className="flex items-center gap-2 hover:bg-muted hover:text-foreground">
+                      Color Coding Information
+                      <CaretDown className={`h-4 w-4 transition-transform ${colorInfoOpen ? 'rotate-180' : ''}`} />
+                    </Button>
+                  </CollapsibleTrigger>
+                </Collapsible>
+              </div>
             )}
           </div>
 

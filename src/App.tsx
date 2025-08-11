@@ -274,7 +274,6 @@ function App() {
                 ramRange={ramRange}
                 sdkVersionRange={sdkVersionRange}
                 isFiltering={isFiltering}
-                onExportClick={handleExportClick}
               />
 
               <DeviceGrid
@@ -288,6 +287,7 @@ function App() {
                 allFilteredDevices={filteredDevices}
                 colorMode={colorMode}
                 onColorModeChange={setColorMode}
+                onExportClick={handleExportClick}
               />
             </TabsContent>
 
