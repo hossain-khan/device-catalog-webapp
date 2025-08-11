@@ -120,7 +120,7 @@ export const DeviceFiltersPanel = ({
         />
 
         <Select value={filters.minRam} onValueChange={(value) => updateFilter('minRam', value)}>
-          <SelectTrigger className="w-[140px]">
+          <SelectTrigger className="w-[120px]">
             <SelectValue placeholder="Min RAM" />
           </SelectTrigger>
           <SelectContent>
@@ -135,7 +135,7 @@ export const DeviceFiltersPanel = ({
         </Select>
 
         <Select value={filters.sdkVersion} onValueChange={(value) => updateFilter('sdkVersion', value)}>
-          <SelectTrigger className="w-[140px]">
+          <SelectTrigger className="w-[120px]">
             <SelectValue placeholder="SDK Version" />
           </SelectTrigger>
           <SelectContent>
@@ -173,10 +173,10 @@ export const DeviceFiltersPanel = ({
 
         {hasActiveFilters && (
           <Button
-            variant="outline"
+            variant="destructive"
             size="sm"
             onClick={clearFilters}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 bg-destructive hover:bg-destructive/90 text-destructive-foreground"
           >
             <X className="h-4 w-4" />
             Clear Filters

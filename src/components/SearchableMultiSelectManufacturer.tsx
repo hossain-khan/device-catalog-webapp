@@ -115,7 +115,7 @@ export const SearchableMultiSelectManufacturer = ({
                 >
                   <Check
                     className={cn(
-                      "mr-2 h-4 w-4",
+                      "mr-2 h-4 w-4 text-primary",
                       selectedManufacturers.includes(manufacturer) ? "opacity-100" : "opacity-0"
                     )}
                   />
