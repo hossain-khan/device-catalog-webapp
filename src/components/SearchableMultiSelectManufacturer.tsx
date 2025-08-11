@@ -111,17 +111,17 @@ export const SearchableMultiSelectManufacturer = ({
                   key={manufacturer}
                   value={manufacturer}
                   onSelect={() => handleSelect(manufacturer)}
-                  className="cursor-pointer"
+                  className="cursor-pointer group"
                 >
                   <Check
                     className={cn(
-                      "mr-2 h-4 w-4",
+                      "mr-2 h-4 w-4 text-primary",
                       selectedManufacturers.includes(manufacturer) ? "opacity-100" : "opacity-0"
                     )}
                   />
                   {manufacturer}
                   {selectedManufacturers.includes(manufacturer) && (
-                    <Badge variant="outline" className="ml-auto text-xs">
+                    <Badge variant="outline" className="ml-auto text-xs group-hover:text-primary-foreground group-hover:border-primary-foreground/50">
                       Selected
                     </Badge>
                   )}
