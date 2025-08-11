@@ -176,7 +176,7 @@ export const DeviceFiltersPanel = ({
             variant="destructive"
             size="sm"
             onClick={clearFilters}
-            className="flex items-center gap-2 bg-destructive hover:bg-destructive/90 text-destructive-foreground"
+            className="flex items-center gap-2 bg-destructive hover:bg-destructive/90 text-destructive-foreground border border-destructive"
           >
             <X className="h-4 w-4" />
             Clear Filters
