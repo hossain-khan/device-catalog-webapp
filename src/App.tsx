@@ -28,12 +28,15 @@ import {
   getSdkVersionRange
 } from '@/lib/deviceUtils';
 import { sanitizeDeviceData } from '@/lib/deviceValidation';
-import { paginateArray, DEFAULT_ITEMS_PER_PAGE } from '@/lib/paginationUtils';
+import { paginateArray, DEFAULT_ITEMS_PER_PAGE, MOBILE_DEFAULT_ITEMS_PER_PAGE } from '@/lib/paginationUtils';
 import androidLogo from '@/assets/images/android.svg';
 
 function App() {
   // Mobile detection
   const isMobile = useIsMobile();
+  
+  // Mobile-aware pagination defaults
+  const getDefaultItemsPerPage = () => isMobile ? MOBILE_DEFAULT_ITEMS_PER_PAGE : DEFAULT_ITEMS_PER_PAGE;
   
   // Preload the full device catalog
   const { data: preloadedData } = useDataPreload();
@@ -76,7 +79,7 @@ function App() {
   // Pagination state
   const [pagination, setPagination] = useKV<PaginationState>('device-pagination', {
     currentPage: 1,
-    itemsPerPage: DEFAULT_ITEMS_PER_PAGE,
+    itemsPerPage: getDefaultItemsPerPage(),
     totalItems: 0
   });
 
@@ -185,7 +188,7 @@ function App() {
     });
     setPagination({
       currentPage: 1,
-      itemsPerPage: DEFAULT_ITEMS_PER_PAGE,
+      itemsPerPage: getDefaultItemsPerPage(),
       totalItems: sanitizedDevices.length
     });
   };
@@ -218,7 +221,7 @@ function App() {
     });
     setPagination({
       currentPage: 1,
-      itemsPerPage: DEFAULT_ITEMS_PER_PAGE,
+      itemsPerPage: getDefaultItemsPerPage(),
       totalItems: preloadedData ? preloadedData.length : 0
     });
   };
