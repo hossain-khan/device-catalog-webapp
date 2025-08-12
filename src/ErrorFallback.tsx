@@ -28,7 +28,7 @@ export const ErrorFallback = ({ error, resetErrorBoundary }) => {
         
         <Button 
           onClick={resetErrorBoundary} 
-          className="w-full"
+          className="w-full hover:bg-muted hover:text-foreground"
           variant="outline"
         >
           <RefreshCwIcon />
