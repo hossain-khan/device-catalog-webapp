@@ -47,7 +47,7 @@ export function JsonSchemaModal({ open, onOpenChange }: JsonSchemaModalProps) {
               variant="outline"
               size="sm"
               onClick={handleCopySchema}
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 hover:bg-muted hover:text-foreground"
             >
               <Copy className="w-4 h-4" />
               Copy Schema
