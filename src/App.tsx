@@ -242,7 +242,7 @@ function App() {
                       <img 
                         src={androidLogo} 
                         alt="Android Logo" 
-                        className={`relative z-10 drop-shadow-lg transition-transform duration-300 hover:scale-110 ${isMobile ? 'w-12 h-12' : 'w-16 h-16'}`}
+                        className={`relative z-10 drop-shadow-lg transition-transform duration-300 hover:scale-110 animate-float ${isMobile ? 'w-12 h-12' : 'w-16 h-16'}`}
                       />
                     </div>
                     <div>
