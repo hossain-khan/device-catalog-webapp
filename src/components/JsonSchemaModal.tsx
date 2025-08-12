@@ -8,6 +8,8 @@ import {
 import { Copy, FileCode } from '@phosphor-icons/react';
 import { toast } from 'sonner';
 import { getAndroidDeviceJsonSchema } from '@/lib/deviceValidation';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { tomorrow } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 interface JsonSchemaModalProps {
   open: boolean;
@@ -53,9 +55,21 @@ export function JsonSchemaModal({ open, onOpenChange }: JsonSchemaModalProps) {
           </div>
           
           <div className="relative">
-            <pre className="json-code bg-muted p-4 rounded-md overflow-auto text-xs max-h-96">
-              <code>{jsonSchema}</code>
-            </pre>
+            <div className="border rounded-lg overflow-hidden">
+              <SyntaxHighlighter
+                language="json"
+                style={tomorrow}
+                showLineNumbers={false}
+                wrapLines={true}
+                customStyle={{
+                  fontSize: '0.75rem',
+                  margin: 0,
+                  maxHeight: '24rem'
+                }}
+              >
+                {jsonSchema}
+              </SyntaxHighlighter>
+            </div>
           </div>
           
           <div className="flex justify-end">
