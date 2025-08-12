@@ -1,4 +1,5 @@
 import { useState, useMemo, useCallback, useRef } from 'react';
+import { motion } from 'framer-motion';
 import { useKV } from '@/hooks/useKV';
 import { useDebounce } from '@/hooks/useDebounce';
 import { useDataPreload } from '@/hooks/useDataPreload';
@@ -228,52 +229,60 @@ function App() {
 
   return (
     <ComparisonProvider>
-      <div className="min-h-screen bg-background pb-20">
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-background/95 pb-20">
         <div className="container mx-auto py-8 px-4">
           <div className="mb-8">
-            <div className="flex items-center justify-between mb-4">
-              <div className={`flex items-center ${isMobile ? 'gap-2' : 'gap-4'}`}>
-                <img 
-                  src={androidLogo} 
-                  alt="Android Logo" 
-                  className={isMobile ? 'w-12 h-12' : 'w-16 h-16'}
-                />
-                <div>
-                  <h1 className={`font-bold text-primary mb-2 ${isMobile ? 'text-xl' : 'text-3xl'}`}>
-                    Android Device Catalog Browser
-                  </h1>
-                  <p className={`text-muted-foreground ${isMobile ? 'text-sm' : ''}`}>
-                    Explore and analyze Android devices from the official Device Catalog
-                  </p>
+            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-primary/5 via-accent/5 to-primary/5 border border-border/50 backdrop-blur-sm mb-6">
+              <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-accent/10 opacity-50"></div>
+              <div className="relative p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <div className={`flex items-center ${isMobile ? 'gap-3' : 'gap-6'}`}>
+                    <div className="relative">
+                      <div className="absolute inset-0 bg-gradient-to-br from-green-400 to-green-600 rounded-full blur-md opacity-30 animate-pulse"></div>
+                      <img 
+                        src={androidLogo} 
+                        alt="Android Logo" 
+                        className={`relative z-10 drop-shadow-lg transition-transform duration-300 hover:scale-110 ${isMobile ? 'w-12 h-12' : 'w-16 h-16'}`}
+                      />
+                    </div>
+                    <div>
+                      <h1 className={`font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent mb-2 ${isMobile ? 'text-xl' : 'text-4xl'}`}>
+                        Android Device Catalog Browser
+                      </h1>
+                      <p className={`text-muted-foreground/80 ${isMobile ? 'text-sm' : 'text-lg'}`}>
+                        Explore and analyze Android devices from the official Device Catalog
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
             <div className={isMobile ? 'overflow-x-auto' : ''}>
-              <TabsList className={`${isMobile ? 'grid grid-cols-4 w-max min-w-full gap-1' : 'grid w-full max-w-2xl grid-cols-4'}`}>
+              <TabsList className={`backdrop-blur-sm bg-card/50 border border-border/50 shadow-lg ${isMobile ? 'grid grid-cols-4 w-max min-w-full gap-1' : 'grid w-full max-w-2xl grid-cols-4'}`}>
                 <TabsTrigger 
                   value="upload" 
-                  className={isMobile ? 'text-xs px-3 py-2 whitespace-nowrap' : ''}
+                  className={`transition-all duration-200 hover:bg-accent/50 data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary/20 data-[state=active]:to-accent/20 data-[state=active]:shadow-sm ${isMobile ? 'text-xs px-3 py-2 whitespace-nowrap' : ''}`}
                 >
                   {isMobile ? 'Upload' : 'Upload Data'}
                 </TabsTrigger>
                 <TabsTrigger 
                   value="devices" 
-                  className={isMobile ? 'text-xs px-3 py-2 whitespace-nowrap' : ''}
+                  className={`transition-all duration-200 hover:bg-accent/50 data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary/20 data-[state=active]:to-accent/20 data-[state=active]:shadow-sm ${isMobile ? 'text-xs px-3 py-2 whitespace-nowrap' : ''}`}
                 >
                   {isMobile ? 'Browser' : 'Device Browser'}
                 </TabsTrigger>
                 <TabsTrigger 
                   value="analytics" 
-                  className={isMobile ? 'text-xs px-3 py-2 whitespace-nowrap' : ''}
+                  className={`transition-all duration-200 hover:bg-accent/50 data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary/20 data-[state=active]:to-accent/20 data-[state=active]:shadow-sm ${isMobile ? 'text-xs px-3 py-2 whitespace-nowrap' : ''}`}
                 >
                   Analytics
                 </TabsTrigger>
                 <TabsTrigger 
                   value="export" 
-                  className={isMobile ? 'text-xs px-3 py-2 whitespace-nowrap' : ''}
+                  className={`transition-all duration-200 hover:bg-accent/50 data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary/20 data-[state=active]:to-accent/20 data-[state=active]:shadow-sm ${isMobile ? 'text-xs px-3 py-2 whitespace-nowrap' : ''}`}
                 >
                   {isMobile ? 'Export' : 'Export Data'}
                 </TabsTrigger>
@@ -281,71 +290,103 @@ function App() {
             </div>
 
             <TabsContent value="upload" className="space-y-6">
-              <FileUploadPanel
-                ref={fileUploadRef}
-                onDevicesLoaded={handleDevicesLoaded}
-                onClearDevices={handleClearDevices}
-                deviceCount={devices.length}
-                currentDevices={devices}
-                onActivateUrlTab={handleUseLatestDataset}
-              />
+              <motion.div
+                key="upload-content"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+              >
+                <FileUploadPanel
+                  ref={fileUploadRef}
+                  onDevicesLoaded={handleDevicesLoaded}
+                  onClearDevices={handleClearDevices}
+                  deviceCount={devices.length}
+                  currentDevices={devices}
+                  onActivateUrlTab={handleUseLatestDataset}
+                />
+              </motion.div>
             </TabsContent>
 
             <TabsContent value="devices" className="space-y-6">
-              <DeviceFiltersPanel
-                filters={filters}
-                onFiltersChange={handleFiltersChange}
-                manufacturers={uniqueManufacturers}
-                formFactors={uniqueFormFactors}
-                sdkVersions={uniqueSdkVersions}
-                deviceCount={filteredDevices.length}
-                totalDevices={devices.length}
-                ramRange={ramRange}
-                sdkVersionRange={sdkVersionRange}
-                isFiltering={isFiltering}
-              />
+              <motion.div
+                key="devices-content"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+              >
+                <DeviceFiltersPanel
+                  filters={filters}
+                  onFiltersChange={handleFiltersChange}
+                  manufacturers={uniqueManufacturers}
+                  formFactors={uniqueFormFactors}
+                  sdkVersions={uniqueSdkVersions}
+                  deviceCount={filteredDevices.length}
+                  totalDevices={devices.length}
+                  ramRange={ramRange}
+                  sdkVersionRange={sdkVersionRange}
+                  isFiltering={isFiltering}
+                />
 
-              <DeviceGrid
-                devices={paginatedDevices}
-                onDeviceClick={handleDeviceClick}
-                pagination={paginationInfo}
-                onPageChange={handlePageChange}
-                onItemsPerPageChange={handleItemsPerPageChange}
-                isLoading={isFiltering}
-                totalDevices={filteredDevices.length}
-                allFilteredDevices={filteredDevices}
-                colorMode={colorMode}
-                onColorModeChange={setColorMode}
-                onExportClick={handleExportClick}
-              />
+                <DeviceGrid
+                  devices={paginatedDevices}
+                  onDeviceClick={handleDeviceClick}
+                  pagination={paginationInfo}
+                  onPageChange={handlePageChange}
+                  onItemsPerPageChange={handleItemsPerPageChange}
+                  isLoading={isFiltering}
+                  totalDevices={filteredDevices.length}
+                  allFilteredDevices={filteredDevices}
+                  colorMode={colorMode}
+                  onColorModeChange={setColorMode}
+                  onExportClick={handleExportClick}
+                />
+              </motion.div>
             </TabsContent>
 
             <TabsContent value="analytics" className="space-y-6">
-              <DeviceStatsPanel
-                stats={allStats}
-                devices={devices}
-                onFilterByManufacturer={handleFilterByManufacturer}
-                onFilterByFormFactor={handleFilterByFormFactor}
-              />
+              <motion.div
+                key="analytics-content"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+              >
+                <DeviceStatsPanel
+                  stats={allStats}
+                  devices={devices}
+                  onFilterByManufacturer={handleFilterByManufacturer}
+                  onFilterByFormFactor={handleFilterByFormFactor}
+                />
+              </motion.div>
             </TabsContent>
 
             <TabsContent value="export" className="space-y-6">
-              <div className="grid gap-6 lg:grid-cols-2">
-                <DeviceExportPanel
-                  devices={devices}
-                  filteredDevices={filteredDevices}
-                  isFiltered={
-                    filters.search !== '' ||
-                    filters.formFactor !== 'all' ||
-                    filters.manufacturer !== 'all' ||
-                    filters.minRam !== 'all' ||
-                    filters.sdkVersion !== 'all' ||
-                    (filters.ramRange && (filters.ramRange[0] !== ramRange[0] || filters.ramRange[1] !== ramRange[1])) ||
-                    (filters.sdkVersionRange && (filters.sdkVersionRange[0] !== sdkVersionRange[0] || filters.sdkVersionRange[1] !== sdkVersionRange[1]))
-                  }
-                />
-                <ExportStatsPanel devices={devices} />
-              </div>
+              <motion.div
+                key="export-content"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+              >
+                <div className="grid gap-6 lg:grid-cols-2">
+                  <DeviceExportPanel
+                    devices={devices}
+                    filteredDevices={filteredDevices}
+                    isFiltered={
+                      filters.search !== '' ||
+                      filters.formFactor !== 'all' ||
+                      filters.manufacturer !== 'all' ||
+                      filters.minRam !== 'all' ||
+                      filters.sdkVersion !== 'all' ||
+                      (filters.ramRange && (filters.ramRange[0] !== ramRange[0] || filters.ramRange[1] !== ramRange[1])) ||
+                      (filters.sdkVersionRange && (filters.sdkVersionRange[0] !== sdkVersionRange[0] || filters.sdkVersionRange[1] !== sdkVersionRange[1]))
+                    }
+                  />
+                  <ExportStatsPanel devices={devices} />
+                </div>
+              </motion.div>
             </TabsContent>
           </Tabs>
 
