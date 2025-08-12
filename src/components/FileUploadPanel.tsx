@@ -326,7 +326,7 @@ export const FileUploadPanel = forwardRef<FileUploadPanelRef, FileUploadPanelPro
                 value="url"
                 className={isMobile ? 'text-xs px-2 py-2 whitespace-nowrap' : ''}
               >
-                {isMobile ? 'URL' : 'Load from URL'}
+                {isMobile ? 'JSON URL' : 'Load from URL'}
               </TabsTrigger>
             </TabsList>
           </div>
