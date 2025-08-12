@@ -1,5 +1,5 @@
 import { memo, useCallback, useState, lazy, Suspense } from 'react';
-import { motion, stagger, useAnimate } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { DeviceCard } from "./DeviceCard";
 import { DeviceCardSkeleton } from "./DeviceCardSkeleton";

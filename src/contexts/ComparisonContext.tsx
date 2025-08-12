@@ -61,6 +61,7 @@ export const ComparisonProvider = ({ children }: ComparisonProviderProps) => {
   );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useComparison = () => {
   const context = useContext(ComparisonContext);
   if (context === undefined) {

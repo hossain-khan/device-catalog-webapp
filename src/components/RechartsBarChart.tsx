@@ -11,6 +11,14 @@ interface RechartsBarChartProps {
   className?: string;
 }
 
+interface TooltipPayload {
+  payload: {
+    name: string;
+    value: number;
+    color: string;
+  };
+}
+
 export const RechartsBarChart = ({
   data,
   height = 300,
@@ -24,7 +32,7 @@ export const RechartsBarChart = ({
     color: item.color || '#3b82f6'
   }));
 
-  const CustomTooltip = ({ active, payload }: any) => {
+  const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: TooltipPayload[] }) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (
@@ -39,7 +47,7 @@ export const RechartsBarChart = ({
     return null;
   };
 
-  const handleBarClick = (data: any) => {
+  const handleBarClick = (data: { name: string; value: number }) => {
     if (onBarClick) {
       onBarClick({ label: data.name, value: data.value });
     }
