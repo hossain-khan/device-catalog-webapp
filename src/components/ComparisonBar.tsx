@@ -57,7 +57,6 @@ export const ComparisonBar = ({ onOpenComparison }: ComparisonBarProps) => {
               variant="outline"
               size="sm"
               onClick={clearComparison}
-              className="hover:bg-muted hover:text-foreground"
             >
               Clear All
             </Button>

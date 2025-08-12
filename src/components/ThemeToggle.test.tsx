@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { ThemeToggle } from "./ThemeToggle";
 import { useTheme, ThemeProvider } from "next-themes";
-import { vi } from 'vitest';
+import { vi, Mock } from 'vitest';
 
 // Mock the useTheme hook
 vi.mock("next-themes", async () => {
@@ -18,7 +18,7 @@ describe("ThemeToggle", () => {
 
   beforeEach(() => {
     setTheme = vi.fn();
-    (useTheme as jest.Mock).mockReturnValue({ setTheme });
+    (useTheme as Mock).mockReturnValue({ setTheme });
   });
 
   const renderWithProvider = (component: React.ReactElement) => {

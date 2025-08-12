@@ -60,7 +60,7 @@ export function CatalogLoadingIndicator({
                 <Button 
                   onClick={onRetry} 
                   variant="outline" 
-                  className="flex-1 hover:bg-muted hover:text-foreground"
+                  className="flex-1"
                   size="sm"
                 >
                   <RefreshCw className="h-4 w-4 mr-2" />
@@ -71,7 +71,7 @@ export function CatalogLoadingIndicator({
                 <Button 
                   onClick={onSkip} 
                   variant={error ? "default" : "outline"} 
-                  className={`flex-1 ${error ? '' : 'hover:bg-muted hover:text-foreground'}`}
+                  className="flex-1"
                   size="sm"
                 >
                   {error ? 'Continue with Sample Data' : 'Skip'}

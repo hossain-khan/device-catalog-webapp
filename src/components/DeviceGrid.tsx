@@ -1,5 +1,4 @@
 import { memo, useCallback, useState, lazy, Suspense } from 'react';
-import { useIsMobile } from '@/hooks/use-mobile';
 import { DeviceCard } from "./DeviceCard";
 import { DeviceCardSkeleton } from "./DeviceCardSkeleton";
 import { PaginationControls } from "./PaginationControls";
@@ -43,7 +42,6 @@ export const DeviceGrid = memo(({
   onColorModeChange,
   onExportClick
 }: DeviceGridProps) => {
-  const isMobile = useIsMobile();
   const [jsonModalDevice, setJsonModalDevice] = useState<AndroidDevice | null>(null);
   const [jsonModalOpen, setJsonModalOpen] = useState(false);
   const [colorInfoOpen, setColorInfoOpen] = useState(false);
@@ -93,14 +91,14 @@ export const DeviceGrid = memo(({
       {/* Color mode controls with collapsible color information */}
       {onColorModeChange && (
         <div className="space-y-4">
-          <div className={`flex ${isMobile ? 'flex-col gap-3' : 'items-center justify-between'}`}>
+          <div className="flex items-center justify-between">
             <ColorModeControls 
               colorMode={colorMode} 
               onColorModeChange={onColorModeChange} 
             />
             
             {devices.length > 0 && (
-              <div className={`flex items-center gap-2 ${isMobile ? 'mt-2' : ''}`}>
+              <div className="flex items-center gap-2">
                 {/* Export button */}
                 {onExportClick && (
                   <Button 

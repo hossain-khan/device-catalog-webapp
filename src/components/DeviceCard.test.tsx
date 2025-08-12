@@ -2,7 +2,7 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { DeviceCard } from "./DeviceCard";
 import { useComparison } from "@/contexts/ComparisonContext";
 import { AndroidDevice } from "@/types/device";
-import { vi } from 'vitest';
+import { vi, Mock } from 'vitest';
 import * as deviceUtils from "@/lib/deviceUtils";
 
 // Mock the deviceUtils module
@@ -42,12 +42,12 @@ const mockDevice: AndroidDevice = {
 };
 
 describe("DeviceCard", () => {
-  let addToComparison: vi.Mock;
-  let removeFromComparison: vi.Mock;
-  let isInComparison: vi.Mock;
+  let addToComparison: Mock;
+  let removeFromComparison: Mock;
+  let isInComparison: Mock;
   let canAddToComparison: boolean;
-  let onClick: vi.Mock;
-  let onShowJson: vi.Mock;
+  let onClick: Mock;
+  let onShowJson: Mock;
 
   beforeEach(() => {
     addToComparison = vi.fn();
@@ -57,7 +57,7 @@ describe("DeviceCard", () => {
     onClick = vi.fn();
     onShowJson = vi.fn();
 
-    (useComparison as jest.Mock).mockReturnValue({
+    (useComparison as Mock).mockReturnValue({
       addToComparison,
       removeFromComparison,
       isInComparison,
@@ -139,7 +139,7 @@ describe("DeviceCard", () => {
 
   it("should disable the add button when canAddToComparison is false", () => {
     canAddToComparison = false;
-    (useComparison as jest.Mock).mockReturnValue({
+    (useComparison as Mock).mockReturnValue({
         addToComparison,
         removeFromComparison,
         isInComparison,

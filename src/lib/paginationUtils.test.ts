@@ -3,8 +3,7 @@ import {
   calculatePagination,
   paginateArray,
   ITEMS_PER_PAGE_OPTIONS,
-  DEFAULT_ITEMS_PER_PAGE,
-  MOBILE_DEFAULT_ITEMS_PER_PAGE
+  DEFAULT_ITEMS_PER_PAGE
 } from '@/lib/paginationUtils';
 
 describe('paginationUtils', () => {
@@ -206,19 +205,14 @@ describe('paginationUtils', () => {
 
   describe('constants', () => {
     it('should have valid items per page options', () => {
-      expect(ITEMS_PER_PAGE_OPTIONS).toEqual([12, 24, 48, 96, 200, 500, 1000]);
-      expect(ITEMS_PER_PAGE_OPTIONS).toHaveLength(7);
+      expect(ITEMS_PER_PAGE_OPTIONS).toEqual([24, 48, 96, 200, 500, 1000]);
+      expect(ITEMS_PER_PAGE_OPTIONS).toHaveLength(6);
       expect(ITEMS_PER_PAGE_OPTIONS.every(option => typeof option === 'number' && option > 0)).toBe(true);
     });
 
     it('should have valid default items per page', () => {
       expect(DEFAULT_ITEMS_PER_PAGE).toBe(24);
       expect(ITEMS_PER_PAGE_OPTIONS).toContain(DEFAULT_ITEMS_PER_PAGE);
-    });
-
-    it('should have valid mobile default items per page', () => {
-      expect(MOBILE_DEFAULT_ITEMS_PER_PAGE).toBe(12);
-      expect(ITEMS_PER_PAGE_OPTIONS).toContain(MOBILE_DEFAULT_ITEMS_PER_PAGE);
     });
   });
 });

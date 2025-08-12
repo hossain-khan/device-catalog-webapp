@@ -2,15 +2,12 @@ import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Copy, FileCode } from '@phosphor-icons/react';
 import { toast } from 'sonner';
 import { getAndroidDeviceJsonSchema } from '@/lib/deviceValidation';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { tomorrow } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 interface JsonSchemaModalProps {
   open: boolean;
@@ -36,9 +33,6 @@ export function JsonSchemaModal({ open, onOpenChange }: JsonSchemaModalProps) {
             <FileCode className="w-5 h-5" />
             Android Device Catalog JSON Schema
           </DialogTitle>
-          <DialogDescription>
-            JSON Schema definition for validating Android device catalog data structure and requirements.
-          </DialogDescription>
         </DialogHeader>
         
         <div className="space-y-4">
@@ -51,7 +45,7 @@ export function JsonSchemaModal({ open, onOpenChange }: JsonSchemaModalProps) {
               variant="outline"
               size="sm"
               onClick={handleCopySchema}
-              className="flex items-center gap-2 hover:bg-muted hover:text-foreground"
+              className="flex items-center gap-2"
             >
               <Copy className="w-4 h-4" />
               Copy Schema
@@ -59,21 +53,9 @@ export function JsonSchemaModal({ open, onOpenChange }: JsonSchemaModalProps) {
           </div>
           
           <div className="relative">
-            <div className="border rounded-lg overflow-hidden">
-              <SyntaxHighlighter
-                language="json"
-                style={tomorrow}
-                showLineNumbers={false}
-                wrapLines={true}
-                customStyle={{
-                  fontSize: '0.75rem',
-                  margin: 0,
-                  maxHeight: '24rem'
-                }}
-              >
-                {jsonSchema}
-              </SyntaxHighlighter>
-            </div>
+            <pre className="json-code bg-muted p-4 rounded-md overflow-auto text-xs max-h-96">
+              <code>{jsonSchema}</code>
+            </pre>
           </div>
           
           <div className="flex justify-end">

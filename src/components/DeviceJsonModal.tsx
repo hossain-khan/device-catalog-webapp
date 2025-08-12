@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogDescription } from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { ModalHeader } from "@/components/ui/modal-header";
 import { Button } from "@/components/ui/button";
 import { AndroidDevice } from "@/types/device";
@@ -55,10 +55,6 @@ export const DeviceJsonModal = ({ device, open, onOpenChange }: DeviceJsonModalP
           }
           onClose={() => onOpenChange(false)}
         />
-        
-        <DialogDescription className="sr-only">
-          JSON source code for {device.modelName} device with complete technical specifications and metadata.
-        </DialogDescription>
 
         {/* https://react-syntax-highlighter.github.io/react-syntax-highlighter/demo/ */}
         <div className="flex-1 overflow-hidden">

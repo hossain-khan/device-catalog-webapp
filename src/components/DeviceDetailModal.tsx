@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogDescription } from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { ModalHeader } from "@/components/ui/modal-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -82,10 +82,6 @@ export const DeviceDetailModal = ({ device, open, onOpenChange }: DeviceDetailMo
           }
           onClose={() => onOpenChange(false)}
         />
-        
-        <DialogDescription className="sr-only">
-          Detailed information about {device.modelName} including hardware specifications, display details, and technical specifications.
-        </DialogDescription>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <Card>

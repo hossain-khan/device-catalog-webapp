@@ -1,5 +1,4 @@
 import { useState, useCallback, useImperativeHandle, forwardRef } from 'react';
-import { useIsMobile } from '@/hooks/use-mobile';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -31,7 +30,6 @@ export interface FileUploadPanelRef {
 
 export const FileUploadPanel = forwardRef<FileUploadPanelRef, FileUploadPanelProps>(
   ({ onDevicesLoaded, onClearDevices, deviceCount, currentDevices, onActivateUrlTab }, ref) => {
-  const isMobile = useIsMobile();
   const [uploadStatus, setUploadStatus] = useState<'idle' | 'loading' | 'success' | 'error' | 'warning'>('idle');
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
@@ -308,28 +306,11 @@ export const FileUploadPanel = forwardRef<FileUploadPanelRef, FileUploadPanelPro
         </div>
 
         <Tabs value={activeTabInternal} onValueChange={setActiveTabInternal} className="w-full">
-          <div className={isMobile ? 'overflow-x-auto' : ''}>
-            <TabsList className={`${isMobile ? 'grid grid-cols-3 w-max min-w-full gap-1' : 'grid w-full grid-cols-3'}`}>
-              <TabsTrigger 
-                value="preloaded"
-                className={isMobile ? 'text-xs px-2 py-2 whitespace-nowrap' : ''}
-              >
-                {isMobile ? 'Preloaded' : 'Preloaded Data'}
-              </TabsTrigger>
-              <TabsTrigger 
-                value="file"
-                className={isMobile ? 'text-xs px-2 py-2 whitespace-nowrap' : ''}
-              >
-                {isMobile ? 'Upload' : 'Upload File'}
-              </TabsTrigger>
-              <TabsTrigger 
-                value="url"
-                className={isMobile ? 'text-xs px-2 py-2 whitespace-nowrap' : ''}
-              >
-                {isMobile ? 'JSON URL' : 'Load from URL'}
-              </TabsTrigger>
-            </TabsList>
-          </div>
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="preloaded">Preloaded Data</TabsTrigger>
+            <TabsTrigger value="file">Upload File</TabsTrigger>
+            <TabsTrigger value="url">Load from URL</TabsTrigger>
+          </TabsList>
 
           <TabsContent value="preloaded" className="space-y-4">
             <Card>
