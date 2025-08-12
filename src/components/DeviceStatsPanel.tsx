@@ -257,7 +257,7 @@ export const DeviceStatsPanel = ({ stats, devices, onFilterByManufacturer, onFil
               variant="outline"
               size="sm"
               onClick={() => setHighResolutionDialogOpen(true)}
-              className="h-8 px-3"
+              className="h-8 px-3 hover:bg-muted hover:text-foreground"
             >
               <ChartBar size={16} className="mr-1" />
               Show All
