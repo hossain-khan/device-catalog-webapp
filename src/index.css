@@ -319,3 +319,45 @@ body{
 .hljs, .hljs * {
   text-shadow: none !important;
 }
+
+/* Shimmer animation for loading skeletons */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite;
+}
+
+/* Subtle pulse animation for key interactive elements */
+@keyframes gentle-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(var(--primary) / 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(var(--primary) / 0);
+  }
+}
+
+.animate-gentle-pulse {
+  animation: gentle-pulse 3s infinite;
+}
+
+/* Floating animation for special elements */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
