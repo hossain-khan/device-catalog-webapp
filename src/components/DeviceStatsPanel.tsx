@@ -219,7 +219,7 @@ export const DeviceStatsPanel = ({ stats, devices, onFilterByManufacturer, onFil
                 variant="outline"
                 size="sm"
                 onClick={() => setProcessorDiversityDialogOpen(true)}
-                className="h-7 px-2 text-xs"
+                className="h-7 px-2 text-xs hover:bg-muted hover:text-foreground"
               >
                 Show All
               </Button>
@@ -301,7 +301,7 @@ export const DeviceStatsPanel = ({ stats, devices, onFilterByManufacturer, onFil
                 variant="outline"
                 size="sm"
                 onClick={() => setGpuManufacturerDialogOpen(true)}
-                className="h-7 px-2 text-xs"
+                className="h-7 px-2 text-xs hover:bg-muted hover:text-foreground"
               >
                 Show All
               </Button>
@@ -367,7 +367,7 @@ export const DeviceStatsPanel = ({ stats, devices, onFilterByManufacturer, onFil
                 variant="outline"
                 size="sm"
                 onClick={() => setArchitectureDialogOpen(true)}
-                className="h-8 px-3"
+                className="h-8 px-3 hover:bg-muted hover:text-foreground"
               >
                 Show All
               </Button>
@@ -455,7 +455,7 @@ export const DeviceStatsPanel = ({ stats, devices, onFilterByManufacturer, onFil
                 variant="outline"
                 size="sm"
                 onClick={() => setPlatformDialogOpen(true)}
-                className="h-8 px-3"
+                className="h-8 px-3 hover:bg-muted hover:text-foreground"
               >
                 Show All
               </Button>
@@ -564,7 +564,7 @@ export const DeviceStatsPanel = ({ stats, devices, onFilterByManufacturer, onFil
                 variant="outline"
                 size="sm"
                 onClick={() => setPerformanceDialogOpen(true)}
-                className="h-8 px-3"
+                className="h-8 px-3 hover:bg-muted hover:text-foreground"
               >
                 Show All
               </Button>
@@ -652,7 +652,7 @@ export const DeviceStatsPanel = ({ stats, devices, onFilterByManufacturer, onFil
                 variant="outline"
                 size="sm"
                 onClick={() => setResolutionDialogOpen(true)}
-                className="h-8 px-3"
+                className="h-8 px-3 hover:bg-muted hover:text-foreground"
               >
                 Show All
               </Button>
@@ -718,7 +718,7 @@ export const DeviceStatsPanel = ({ stats, devices, onFilterByManufacturer, onFil
               variant="outline"
               size="sm"
               onClick={() => setManufacturersDialogOpen(true)}
-              className="h-8 px-3"
+              className="h-8 px-3 hover:bg-muted hover:text-foreground"
             >
               <ChartBar size={16} className="mr-1" />
               Show All
@@ -810,7 +810,7 @@ export const DeviceStatsPanel = ({ stats, devices, onFilterByManufacturer, onFil
               variant="outline"
               size="sm"
               onClick={() => setRamDialogOpen(true)}
-              className="h-8 px-3"
+              className="h-8 px-3 hover:bg-muted hover:text-foreground"
             >
               <ChartBar size={16} className="mr-1" />
               Show All
@@ -857,7 +857,7 @@ export const DeviceStatsPanel = ({ stats, devices, onFilterByManufacturer, onFil
               variant="outline"
               size="sm"
               onClick={() => setSdkDialogOpen(true)}
-              className="h-8 px-3"
+              className="h-8 px-3 hover:bg-muted hover:text-foreground"
             >
               <ChartBar size={16} className="mr-1" />
               Show All
@@ -914,7 +914,7 @@ export const DeviceStatsPanel = ({ stats, devices, onFilterByManufacturer, onFil
                 variant="outline"
                 size="sm"
                 onClick={() => setPhoneManufacturersDialogOpen(true)}
-                className="h-8 px-3"
+                className="h-8 px-3 hover:bg-muted hover:text-foreground"
               >
                 <ChartBar size={16} className="mr-1" />
                 View Chart
@@ -941,7 +941,7 @@ export const DeviceStatsPanel = ({ stats, devices, onFilterByManufacturer, onFil
                 variant="outline"
                 size="sm"
                 onClick={() => setTabletManufacturersDialogOpen(true)}
-                className="h-8 px-3"
+                className="h-8 px-3 hover:bg-muted hover:text-foreground"
               >
                 <ChartBar size={16} className="mr-1" />
                 View Chart
@@ -968,7 +968,7 @@ export const DeviceStatsPanel = ({ stats, devices, onFilterByManufacturer, onFil
                 variant="outline"
                 size="sm"
                 onClick={() => setTvManufacturersDialogOpen(true)}
-                className="h-8 px-3"
+                className="h-8 px-3 hover:bg-muted hover:text-foreground"
               >
                 <ChartBar size={16} className="mr-1" />
                 View Chart
