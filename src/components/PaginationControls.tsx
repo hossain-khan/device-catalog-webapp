@@ -97,7 +97,7 @@ export const PaginationControls = ({
             size="sm"
             onClick={() => handlePageChange(1)}
             disabled={currentPage === 1}
-            className="h-8 w-8 p-0"
+            className="h-8 w-8 p-0 hover:bg-muted hover:text-foreground"
           >
             <CaretDoubleLeft size={16} />
           </Button>
@@ -107,7 +107,7 @@ export const PaginationControls = ({
             size="sm"
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={!pagination.hasPreviousPage}
-            className="h-8 w-8 p-0"
+            className="h-8 w-8 p-0 hover:bg-muted hover:text-foreground"
           >
             <CaretLeft size={16} />
           </Button>
@@ -124,7 +124,7 @@ export const PaginationControls = ({
                   variant={currentPage === page ? "default" : "outline"}
                   size="sm"
                   onClick={() => handlePageChange(page as number)}
-                  className="h-8 min-w-8 px-2"
+                  className="h-8 min-w-8 px-2 hover:bg-muted hover:text-foreground"
                 >
                   {page}
                 </Button>
@@ -137,7 +137,7 @@ export const PaginationControls = ({
             size="sm"
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={!pagination.hasNextPage}
-            className="h-8 w-8 p-0"
+            className="h-8 w-8 p-0 hover:bg-muted hover:text-foreground"
           >
             <CaretRight size={16} />
           </Button>
@@ -147,7 +147,7 @@ export const PaginationControls = ({
             size="sm"
             onClick={() => handlePageChange(totalPages)}
             disabled={currentPage === totalPages}
-            className="h-8 w-8 p-0"
+            className="h-8 w-8 p-0 hover:bg-muted hover:text-foreground"
           >
             <CaretDoubleRight size={16} />
           </Button>

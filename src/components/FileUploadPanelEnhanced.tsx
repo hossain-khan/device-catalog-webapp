@@ -161,7 +161,7 @@ export function FileUploadPanelEnhanced({
                   variant="outline" 
                   size="sm" 
                   onClick={handleClearData}
-                  className="flex items-center gap-2 w-full"
+                  className="flex items-center gap-2 w-full hover:bg-muted hover:text-foreground"
                 >
                   <Trash2 className="w-4 h-4" />
                   Clear All Data
@@ -183,7 +183,7 @@ export function FileUploadPanelEnhanced({
             <Button 
               onClick={handleReloadCatalog}
               disabled={catalogStatus === 'loading'}
-              className="flex items-center gap-2 w-full"
+              className="flex items-center gap-2 w-full hover:bg-muted hover:text-foreground"
               variant="outline"
             >
               {catalogStatus === 'loading' ? (
@@ -271,7 +271,7 @@ export function FileUploadPanelEnhanced({
               />
               <Button 
                 variant="outline" 
-                className="mt-2"
+                className="mt-2 hover:bg-muted hover:text-foreground"
                 disabled={uploadStatus === 'loading'}
               >
                 Browse Files
