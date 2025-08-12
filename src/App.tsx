@@ -2,6 +2,7 @@ import { useState, useMemo, useCallback, useRef } from 'react';
 import { useKV } from '@/hooks/useKV';
 import { useDebounce } from '@/hooks/useDebounce';
 import { useDataPreload } from '@/hooks/useDataPreload';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DeviceStatsPanel } from '@/components/DeviceStatsPanel';
 import { DeviceFiltersPanel } from '@/components/DeviceFiltersPanel';
@@ -31,6 +32,9 @@ import { paginateArray, DEFAULT_ITEMS_PER_PAGE } from '@/lib/paginationUtils';
 import androidLogo from '@/assets/images/android.svg';
 
 function App() {
+  // Mobile detection
+  const isMobile = useIsMobile();
+  
   // Preload the full device catalog
   const { data: preloadedData } = useDataPreload();
 
@@ -225,17 +229,17 @@ function App() {
         <div className="container mx-auto py-8 px-4">
           <div className="mb-8">
             <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-4">
+              <div className={`flex items-center ${isMobile ? 'gap-2' : 'gap-4'}`}>
                 <img 
                   src={androidLogo} 
                   alt="Android Logo" 
-                  className="w-16 h-16"
+                  className={isMobile ? 'w-12 h-12' : 'w-16 h-16'}
                 />
                 <div>
-                  <h1 className="text-3xl font-bold text-primary mb-2">
+                  <h1 className={`font-bold text-primary mb-2 ${isMobile ? 'text-xl' : 'text-3xl'}`}>
                     Android Device Catalog Browser
                   </h1>
-                  <p className="text-muted-foreground">
+                  <p className={`text-muted-foreground ${isMobile ? 'text-sm' : ''}`}>
                     Explore and analyze Android devices from the official Device Catalog
                   </p>
                 </div>
@@ -244,12 +248,34 @@ function App() {
           </div>
 
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-            <TabsList className="grid w-full max-w-2xl grid-cols-4">
-              <TabsTrigger value="upload">Upload Data</TabsTrigger>
-              <TabsTrigger value="devices">Device Browser</TabsTrigger>
-              <TabsTrigger value="analytics">Analytics</TabsTrigger>
-              <TabsTrigger value="export">Export Data</TabsTrigger>
-            </TabsList>
+            <div className={isMobile ? 'overflow-x-auto' : ''}>
+              <TabsList className={`${isMobile ? 'grid grid-cols-4 w-max min-w-full gap-1' : 'grid w-full max-w-2xl grid-cols-4'}`}>
+                <TabsTrigger 
+                  value="upload" 
+                  className={isMobile ? 'text-xs px-3 py-2 whitespace-nowrap' : ''}
+                >
+                  {isMobile ? 'Upload' : 'Upload Data'}
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="devices" 
+                  className={isMobile ? 'text-xs px-3 py-2 whitespace-nowrap' : ''}
+                >
+                  {isMobile ? 'Browser' : 'Device Browser'}
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="analytics" 
+                  className={isMobile ? 'text-xs px-3 py-2 whitespace-nowrap' : ''}
+                >
+                  Analytics
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="export" 
+                  className={isMobile ? 'text-xs px-3 py-2 whitespace-nowrap' : ''}
+                >
+                  {isMobile ? 'Export' : 'Export Data'}
+                </TabsTrigger>
+              </TabsList>
+            </div>
 
             <TabsContent value="upload" className="space-y-6">
               <FileUploadPanel
