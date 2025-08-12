@@ -6,6 +6,7 @@ import { formatRam } from "@/lib/deviceUtils";
 import { getDeviceColors, getDeviceCategoryLabel, parseRamMB, ColorMode } from "@/lib/deviceColors";
 import { DeviceMobile, DeviceTablet, Television, Car, Laptop, Watch, GameController, Plus, Minus, Code, Question } from "@phosphor-icons/react";
 import { useComparison } from "@/contexts/ComparisonContext";
+import { motion } from "framer-motion";
 
 interface DeviceCardProps {
   device: AndroidDevice;
@@ -65,17 +66,28 @@ export const DeviceCard = ({ device, onClick, onShowJson, colorMode = 'formFacto
   };
 
   return (
-    <Card 
-      className={`cursor-pointer transition-all duration-200 relative flex flex-col w-full border-2 overflow-hidden p-0 ${
-        inComparison ? 'ring-2 ring-primary ring-offset-2' : 'hover:shadow-md'
-      }`}
-      style={{ 
-        backgroundColor: colors.background,
-        borderColor: colors.border,
-        color: colors.text
+    <motion.div
+      whileHover={{ 
+        scale: 1.02, 
+        y: -4,
+        transition: { duration: 0.2, ease: "easeInOut" }
       }}
-      onClick={onClick}
+      whileTap={{ scale: 0.98 }}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, ease: "easeOut" }}
     >
+      <Card 
+        className={`cursor-pointer transition-all duration-300 relative flex flex-col w-full border-2 overflow-hidden p-0 shadow-md hover:shadow-xl ${
+          inComparison ? 'ring-2 ring-primary ring-offset-2 shadow-lg' : ''
+        }`}
+        style={{ 
+          backgroundColor: colors.background,
+          borderColor: colors.border,
+          color: colors.text
+        }}
+        onClick={onClick}
+      >
       {/* Form Factor Hero Section */}
       <div 
         className="relative px-4 pt-4 pb-4 text-center border-b"
@@ -86,14 +98,16 @@ export const DeviceCard = ({ device, onClick, onShowJson, colorMode = 'formFacto
       >
         {/* Form Factor Icon - Large and Prominent */}
         <div className="mb-3 flex justify-center">
-          <div 
-            className="p-3 rounded-full shadow-sm"
+          <motion.div 
+            className="p-3 rounded-full shadow-lg hover:shadow-xl transition-shadow duration-300"
             style={{ 
               backgroundColor: colors.primary,
             }}
+            whileHover={{ scale: 1.1, rotate: 5 }}
+            transition={{ duration: 0.2 }}
           >
             {getFormFactorIcon(device.formFactor, 'lg')}
-          </div>
+          </motion.div>
         </div>
         
         {/* Form Factor Label */}
@@ -116,29 +130,33 @@ export const DeviceCard = ({ device, onClick, onShowJson, colorMode = 'formFacto
         
         {/* Action Buttons - Positioned in top right */}
         <div className="absolute top-2 right-2 flex flex-col gap-1">
-          <Button
-            variant={inComparison ? "default" : "outline"}
-            size="sm"
-            className="h-7 w-7 p-0 shadow-sm"
-            onClick={handleComparisonToggle}
-            disabled={!inComparison && !canAddToComparison}
-            title={inComparison ? "Remove from comparison" : "Add to comparison"}
-          >
-            {inComparison ? (
-              <Minus className="h-3 w-3" />
-            ) : (
-              <Plus className="h-3 w-3" />
-            )}
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-7 w-7 p-0 shadow-sm"
-            onClick={handleShowJson}
-            title="View source JSON"
-          >
-            <Code className="h-3 w-3" />
-          </Button>
+          <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
+            <Button
+              variant={inComparison ? "default" : "outline"}
+              size="sm"
+              className="h-7 w-7 p-0 shadow-md hover:shadow-lg transition-all duration-200"
+              onClick={handleComparisonToggle}
+              disabled={!inComparison && !canAddToComparison}
+              title={inComparison ? "Remove from comparison" : "Add to comparison"}
+            >
+              {inComparison ? (
+                <Minus className="h-3 w-3" />
+              ) : (
+                <Plus className="h-3 w-3" />
+              )}
+            </Button>
+          </motion.div>
+          <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-7 w-7 p-0 shadow-md hover:shadow-lg transition-all duration-200"
+              onClick={handleShowJson}
+              title="View source JSON"
+            >
+              <Code className="h-3 w-3" />
+            </Button>
+          </motion.div>
         </div>
       </div>
       
@@ -218,5 +236,6 @@ export const DeviceCard = ({ device, onClick, onShowJson, colorMode = 'formFacto
         </div>
       </CardContent>
     </Card>
+    </motion.div>
   );
 };

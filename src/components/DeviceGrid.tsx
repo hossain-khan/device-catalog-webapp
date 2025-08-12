@@ -1,4 +1,5 @@
 import { memo, useCallback, useState, lazy, Suspense } from 'react';
+import { motion, stagger, useAnimate } from 'framer-motion';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { DeviceCard } from "./DeviceCard";
 import { DeviceCardSkeleton } from "./DeviceCardSkeleton";
@@ -55,7 +56,12 @@ export const DeviceGrid = memo(({
 
   if (isLoading) {
     return (
-      <div className="space-y-6">
+      <motion.div 
+        className="space-y-6"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.3 }}
+      >
         <DeviceCardSkeleton count={pagination?.itemsPerPage || 24} />
         {pagination && onPageChange && onItemsPerPageChange && (
           <PaginationControls
@@ -65,26 +71,60 @@ export const DeviceGrid = memo(({
             scrollToTopOnPageChange={false}
           />
         )}
-      </div>
+      </motion.div>
     );
   }
 
   if (devices.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-16 text-center">
-        <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-4">
-          <span className="text-2xl">📱</span>
-        </div>
-        <h3 className="text-lg font-semibold mb-2">No devices found</h3>
-        <p className="text-muted-foreground max-w-sm">
+      <motion.div 
+        className="flex flex-col items-center justify-center py-16 text-center"
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+      >
+        <motion.div 
+          className="w-20 h-20 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center mb-6 shadow-lg"
+          initial={{ scale: 0, rotate: -180 }}
+          animate={{ scale: 1, rotate: 0 }}
+          transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
+        >
+          <motion.span 
+            className="text-3xl"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5, duration: 0.3 }}
+          >
+            📱
+          </motion.span>
+        </motion.div>
+        <motion.h3 
+          className="text-xl font-semibold mb-3 bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.4 }}
+        >
+          No devices found
+        </motion.h3>
+        <motion.p 
+          className="text-muted-foreground max-w-sm"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4, duration: 0.4 }}
+        >
           Try adjusting your search terms or filters to find the devices you're looking for.
-        </p>
+        </motion.p>
         {totalDevices !== undefined && totalDevices > 0 && (
-          <p className="text-sm text-muted-foreground mt-2">
+          <motion.p 
+            className="text-sm text-muted-foreground mt-3"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5, duration: 0.4 }}
+          >
             {totalDevices.toLocaleString()} devices available in total
-          </p>
+          </motion.p>
         )}
-      </div>
+      </motion.div>
     );
   }
 
@@ -92,7 +132,12 @@ export const DeviceGrid = memo(({
     <div className="space-y-6">
       {/* Color mode controls with collapsible color information */}
       {onColorModeChange && (
-        <div className="space-y-4">
+        <motion.div 
+          className="space-y-4"
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
+        >
           <div className={`flex ${isMobile ? 'flex-col gap-3' : 'items-center justify-between'}`}>
             <ColorModeControls 
               colorMode={colorMode} 
@@ -100,14 +145,19 @@ export const DeviceGrid = memo(({
             />
             
             {devices.length > 0 && (
-              <div className={`flex items-center gap-2 ${isMobile ? 'mt-2' : ''}`}>
+              <motion.div 
+                className={`flex items-center gap-2 ${isMobile ? 'mt-2' : ''}`}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.2, duration: 0.4 }}
+              >
                 {/* Export button */}
                 {onExportClick && (
                   <Button 
                     variant="outline" 
                     size="sm" 
                     onClick={onExportClick}
-                    className="flex items-center gap-2 hover:bg-muted hover:text-foreground"
+                    className="flex items-center gap-2 hover:bg-muted hover:text-foreground transition-all duration-200 hover:scale-105"
                   >
                     <Export className="h-4 w-4" />
                     Export
@@ -117,13 +167,13 @@ export const DeviceGrid = memo(({
                 {/* Color Coding Information button */}
                 <Collapsible open={colorInfoOpen} onOpenChange={setColorInfoOpen}>
                   <CollapsibleTrigger asChild>
-                    <Button variant="outline" size="sm" className="flex items-center gap-2 hover:bg-muted hover:text-foreground">
+                    <Button variant="outline" size="sm" className="flex items-center gap-2 hover:bg-muted hover:text-foreground transition-all duration-200 hover:scale-105">
                       Color Coding Information
                       <CaretDown className={`h-4 w-4 transition-transform ${colorInfoOpen ? 'rotate-180' : ''}`} />
                     </Button>
                   </CollapsibleTrigger>
                 </Collapsible>
-              </div>
+              </motion.div>
             )}
           </div>
 
@@ -153,21 +203,50 @@ export const DeviceGrid = memo(({
               </CollapsibleContent>
             </Collapsible>
           )}
-        </div>
+        </motion.div>
       )}
 
       {/* Device display */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      <motion.div 
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
+        initial="hidden"
+        animate="visible"
+        variants={{
+          hidden: { opacity: 0 },
+          visible: {
+            opacity: 1,
+            transition: {
+              staggerChildren: 0.05,
+              delayChildren: 0.1
+            }
+          }
+        }}
+      >
         {devices.map((device, index) => (
-          <DeviceCard
+          <motion.div
             key={`${device.device}-${index}`}
-            device={device}
-            onClick={() => onDeviceClick(device)}
-            onShowJson={() => handleShowJson(device)}
-            colorMode={colorMode}
-          />
+            variants={{
+              hidden: { opacity: 0, y: 30, scale: 0.9 },
+              visible: { 
+                opacity: 1, 
+                y: 0, 
+                scale: 1,
+                transition: {
+                  duration: 0.4,
+                  ease: "easeOut"
+                }
+              }
+            }}
+          >
+            <DeviceCard
+              device={device}
+              onClick={() => onDeviceClick(device)}
+              onShowJson={() => handleShowJson(device)}
+              colorMode={colorMode}
+            />
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
       
       {pagination && onPageChange && onItemsPerPageChange && (
         <PaginationControls
