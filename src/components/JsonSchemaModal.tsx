@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
@@ -35,6 +36,9 @@ export function JsonSchemaModal({ open, onOpenChange }: JsonSchemaModalProps) {
             <FileCode className="w-5 h-5" />
             Android Device Catalog JSON Schema
           </DialogTitle>
+          <DialogDescription>
+            JSON Schema definition for validating Android device catalog data structure and requirements.
+          </DialogDescription>
         </DialogHeader>
         
         <div className="space-y-4">
