@@ -57,7 +57,7 @@ describe("DeviceCard", () => {
     onClick = vi.fn();
     onShowJson = vi.fn();
 
-    (useComparison as jest.Mock).mockReturnValue({
+    (useComparison as vi.Mock).mockReturnValue({
       addToComparison,
       removeFromComparison,
       isInComparison,
@@ -139,7 +139,7 @@ describe("DeviceCard", () => {
 
   it("should disable the add button when canAddToComparison is false", () => {
     canAddToComparison = false;
-    (useComparison as jest.Mock).mockReturnValue({
+    (useComparison as vi.Mock).mockReturnValue({
         addToComparison,
         removeFromComparison,
         isInComparison,

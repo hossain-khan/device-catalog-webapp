@@ -18,7 +18,7 @@ describe("ThemeToggle", () => {
 
   beforeEach(() => {
     setTheme = vi.fn();
-    (useTheme as jest.Mock).mockReturnValue({ setTheme });
+    (useTheme as vi.MockedFunction<typeof useTheme>).mockReturnValue({ setTheme });
   });
 
   const renderWithProvider = (component: React.ReactElement) => {
