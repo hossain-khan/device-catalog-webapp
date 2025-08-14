@@ -34,7 +34,9 @@ export function useDataPreload(): UseDataPreloadResult {
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load device catalog');
         setIsLoading(false);
-        console.error('Failed to preload device catalog:', err);
+        if (process.env.NODE_ENV === 'development') {
+          console.error(err);
+        }
       }
     };
 
