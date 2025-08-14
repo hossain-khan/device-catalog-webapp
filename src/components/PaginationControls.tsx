@@ -98,6 +98,7 @@ export const PaginationControls = ({
             onClick={() => handlePageChange(1)}
             disabled={currentPage === 1}
             className="h-8 w-8 p-0 hover:bg-muted hover:text-foreground"
+            aria-label="Go to first page"
           >
             <CaretDoubleLeft size={16} />
           </Button>
@@ -108,6 +109,7 @@ export const PaginationControls = ({
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={!pagination.hasPreviousPage}
             className="h-8 w-8 p-0 hover:bg-muted hover:text-foreground"
+            aria-label="Go to previous page"
           >
             <CaretLeft size={16} />
           </Button>
@@ -138,6 +140,7 @@ export const PaginationControls = ({
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={!pagination.hasNextPage}
             className="h-8 w-8 p-0 hover:bg-muted hover:text-foreground"
+            aria-label="Go to next page"
           >
             <CaretRight size={16} />
           </Button>
@@ -148,6 +151,7 @@ export const PaginationControls = ({
             onClick={() => handlePageChange(totalPages)}
             disabled={currentPage === totalPages}
             className="h-8 w-8 p-0 hover:bg-muted hover:text-foreground"
+            aria-label="Go to last page"
           >
             <CaretDoubleRight size={16} />
           </Button>
