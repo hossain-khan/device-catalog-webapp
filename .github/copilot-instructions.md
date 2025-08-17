@@ -8,13 +8,13 @@ Always reference these instructions first and fallback to search or bash command
 
 ### Bootstrap, Build, and Test the Repository:
 - Install dependencies: `npm install` -- takes 1 minute. NEVER CANCEL.
-- Lint the code: `npm run lint` -- takes 3 seconds, expect 10 warnings (no errors)
-- Build for production: `npm run build` -- takes 21 seconds. NEVER CANCEL. Set timeout to 60+ minutes.
-- Memory-optimized build: `npm run build:memory-optimized` -- takes 21 seconds. NEVER CANCEL. Set timeout to 60+ minutes.
-- Test suite: `npm test` -- runs 110 tests across 6 test files using Vitest
+- Lint the code: `npm run lint` -- takes 3 seconds, expect 1 warning (no errors)
+- Build for production: `npm run build` -- takes 23 seconds. NEVER CANCEL. Set timeout to 60+ minutes.
+- Memory-optimized build: `npm run build:memory-optimized` -- takes 22 seconds. NEVER CANCEL. Set timeout to 60+ minutes.
+- Test suite: `npm test` -- runs 160 tests across 14 test files using Vitest
 
 ### Run the Application:
-- Development server: `npm run dev` -- starts in <1 second on http://localhost:5173/
+- Development server: `npm run dev` -- starts in ~570ms on http://localhost:5173/
 - Production preview: `npm run preview` -- serves built app on http://localhost:4173/
 - ALWAYS run `npm install` first before starting servers
 
@@ -36,12 +36,12 @@ Always reference these instructions first and fallback to search or bash command
 ### Build Validation Steps:
 - Run `npm run build` and verify dist/ folder contains ~11MB of assets
 - Check build output shows proper chunk splitting and memory optimization warnings
-- Verify build completes in ~21 seconds (normal range: 15-30 seconds)
+- Verify build completes in ~23 seconds (normal range: 20-30 seconds)
 - Always run `npm run lint` before committing - warnings are acceptable, errors are not
 
 ### CRITICAL Timeout Values:
 - **Build commands**: NEVER CANCEL. Set timeout to 60+ minutes minimum
-- **Development server**: Starts in <5 seconds
+- **Development server**: Starts in ~570ms
 - **Dependency installation**: Takes 1 minute, set timeout to 10+ minutes
 - **Linting**: Completes in 3 seconds
 
@@ -88,18 +88,18 @@ Always reference these instructions first and fallback to search or bash command
 ### npm scripts output examples:
 ```bash
 # npm install
-added 496 packages, and audited 497 packages in 1m
+added 562 packages, and audited 563 packages in 1m
 
 # npm run lint  
-10 problems (0 errors, 10 warnings) - warnings are expected
+1 problem (0 errors, 1 warning) - warnings are expected
 
 # npm run build
-✓ built in 17.34s
-dist/index.html                    8.74 kB │ gzip:   2.37 kB
-dist/assets/index-C3A5O2qs.js   1,055.82 kB │ gzip: 347.06 kB
+✓ built in 18.40s
+dist/index.html                                   8.74 kB │ gzip:   2.37 kB
+dist/assets/index-Cyq0wmll.js                 1,212.02 kB │ gzip: 393.11 kB
 
 # npm run dev
-VITE v7.1.1  ready in 583 ms
+VITE v7.1.2  ready in 571 ms
 ➜  Local:   http://localhost:5173/
 ```
 
@@ -134,7 +134,7 @@ VITE v7.1.1  ready in 583 ms
 - **Build fails with memory errors**: Use `npm run build:memory-optimized` instead
 - **Dev server won't start**: Check if port 5173 is available, kill with `npm run kill` if needed
 - **Large bundle warnings**: Expected due to 22K+ device dataset, optimizations already applied
-- **Linting warnings**: 10 warnings are expected and acceptable (mostly React refresh and unused vars)
+- **Linting warnings**: 1 warning is expected and acceptable (console statement in hooks)
 - **Missing dependencies**: Always run `npm install` after pulling changes
 
 ### Development Tips:
