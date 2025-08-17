@@ -64,9 +64,8 @@ function App() {
     manufacturer: 'all',
     manufacturers: [], // Initialize empty manufacturers array
     minRam: 'all',
-    sdkVersion: 'all',
-    ramRange: [0, 16384],
-    sdkVersionRange: [23, 35]
+    sdkVersion: 'all'
+    // Don't initialize ramRange and sdkVersionRange - they'll be set when valid data is available
   });
 
   // Migration: Ensure manufacturers array exists for backwards compatibility
@@ -88,13 +87,17 @@ function App() {
   const debouncedFilters = useDebounce(filters, 300);
   const [isFiltering, setIsFiltering] = useState(false);
 
-  // Update ranges in filters when devices change
-  const shouldUpdateRanges = (
-    !filters.ramRange || !filters.sdkVersionRange ||
-    filters.ramRange[0] === 0 && filters.ramRange[1] === 16384 ||
-    filters.sdkVersionRange[0] === 23 && filters.sdkVersionRange[1] === 35
+  // Update ranges in filters when devices change and no ranges are set yet
+  const shouldUpdateRanges = !filters.ramRange || !filters.sdkVersionRange;
+  
+  // Only set ranges if devices are available and ranges are valid (not Infinity/-Infinity)
+  const hasValidRanges = (
+    devices.length > 0 &&
+    ramRange[0] !== Infinity && ramRange[1] !== -Infinity &&
+    sdkVersionRange[0] !== Infinity && sdkVersionRange[1] !== -Infinity
   );
-  if (shouldUpdateRanges) {
+  
+  if (shouldUpdateRanges && hasValidRanges) {
     setFilters({
       ...filters,
       ramRange: ramRange,
@@ -182,6 +185,7 @@ function App() {
       search: '',
       formFactor: 'all',
       manufacturer: 'all',
+      manufacturers: [], // Add missing manufacturers array
       minRam: 'all',
       sdkVersion: 'all',
       ramRange: newRamRange,
@@ -215,6 +219,7 @@ function App() {
       search: '',
       formFactor: 'all',
       manufacturer: 'all',
+      manufacturers: [], // Add missing manufacturers array
       minRam: 'all',
       sdkVersion: 'all',
       ramRange: defaultRamRange,
@@ -380,8 +385,8 @@ function App() {
                       filters.manufacturer !== 'all' ||
                       filters.minRam !== 'all' ||
                       filters.sdkVersion !== 'all' ||
-                      (filters.ramRange && (filters.ramRange[0] !== ramRange[0] || filters.ramRange[1] !== ramRange[1])) ||
-                      (filters.sdkVersionRange && (filters.sdkVersionRange[0] !== sdkVersionRange[0] || filters.sdkVersionRange[1] !== sdkVersionRange[1]))
+                      (filters.ramRange ? (filters.ramRange[0] !== ramRange[0] || filters.ramRange[1] !== ramRange[1]) : false) ||
+                      (filters.sdkVersionRange ? (filters.sdkVersionRange[0] !== sdkVersionRange[0] || filters.sdkVersionRange[1] !== sdkVersionRange[1]) : false)
                     }
                   />
                   <ExportStatsPanel devices={devices} />
