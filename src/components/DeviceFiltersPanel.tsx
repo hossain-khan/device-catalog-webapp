@@ -62,8 +62,10 @@ export const DeviceFiltersPanel = ({
     (filters.manufacturers && filters.manufacturers.length > 0) || // Check for selected manufacturers
     filters.minRam !== 'all' ||
     filters.sdkVersion !== 'all' ||
-    (filters.ramRange && (filters.ramRange[0] !== ramRange[0] || filters.ramRange[1] !== ramRange[1])) ||
-    (filters.sdkVersionRange && (filters.sdkVersionRange[0] !== sdkVersionRange[0] || filters.sdkVersionRange[1] !== sdkVersionRange[1]));
+    (filters.ramRange && ramRange[0] !== Infinity && ramRange[1] !== -Infinity && 
+     (filters.ramRange[0] !== ramRange[0] || filters.ramRange[1] !== ramRange[1])) ||
+    (filters.sdkVersionRange && sdkVersionRange[0] !== Infinity && sdkVersionRange[1] !== -Infinity && 
+     (filters.sdkVersionRange[0] !== sdkVersionRange[0] || filters.sdkVersionRange[1] !== sdkVersionRange[1]));
 
   const [advancedOpen, setAdvancedOpen] = useState(false);
 
@@ -281,12 +283,14 @@ export const DeviceFiltersPanel = ({
                   API {filters.sdkVersion}
                 </Badge>
               )}
-              {filters.ramRange && (filters.ramRange[0] !== ramRange[0] || filters.ramRange[1] !== ramRange[1]) && (
+              {filters.ramRange && (filters.ramRange[0] !== ramRange[0] || filters.ramRange[1] !== ramRange[1]) && 
+               ramRange[0] !== Infinity && ramRange[1] !== -Infinity && (
                 <Badge variant="secondary" className="text-xs">
                   RAM: {formatRam(`${filters.ramRange[0]}MB`)} - {formatRam(`${filters.ramRange[1]}MB`)}
                 </Badge>
               )}
-              {filters.sdkVersionRange && (filters.sdkVersionRange[0] !== sdkVersionRange[0] || filters.sdkVersionRange[1] !== sdkVersionRange[1]) && (
+              {filters.sdkVersionRange && (filters.sdkVersionRange[0] !== sdkVersionRange[0] || filters.sdkVersionRange[1] !== sdkVersionRange[1]) && 
+               sdkVersionRange[0] !== Infinity && sdkVersionRange[1] !== -Infinity && (
                 <Badge variant="secondary" className="text-xs">
                   SDK: API {filters.sdkVersionRange[0]} - {filters.sdkVersionRange[1]}
                 </Badge>
