@@ -22,8 +22,8 @@ export interface DeviceFilters {
   minRam: string;
   sdkVersion: string;
   // New advanced filters
-  ramRange: [number, number]; // [min, max] in MB
-  sdkVersionRange: [number, number]; // [min, max] SDK version
+  ramRange?: [number, number]; // [min, max] in MB - optional to allow no range filter
+  sdkVersionRange?: [number, number]; // [min, max] SDK version - optional to allow no range filter
 }
 
 export interface PaginationState {
