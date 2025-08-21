@@ -64,6 +64,13 @@ export function useCatalogLoader(): CatalogLoadingHook {
     } catch {
       // Error is already handled in the service and reflected in loadingState
       setHasAttemptedLoad(true);
+
+      // Also ensure loading is stopped on error
+      setLoadingState(prev => ({
+        ...prev,
+        isLoading: false
+      }));
+
       setTimeout(() => {
         setIsInitialLoad(false);
       }, 100);
