@@ -16,6 +16,7 @@ import { FileUploadPanel, FileUploadPanelRef } from '@/components/FileUploadPane
 import { BackToTopButton } from '@/components/BackToTopButton';
 import { DeviceExportPanel } from '@/components/DeviceExportPanel';
 import { ExportStatsPanel } from '@/components/ExportStatsPanel';
+import { MobileBanner } from '@/components/MobileBanner';
 import { ComparisonProvider } from '@/contexts/ComparisonContext';
 import { AndroidDevice, DeviceFilters, PaginationState } from '@/types/device';
 import { ColorMode } from '@/lib/deviceColors';
@@ -263,6 +264,8 @@ function App() {
               </div>
             </div>
           </div>
+
+          <MobileBanner />
 
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
             <div className={isMobile ? 'overflow-x-auto' : ''}>
