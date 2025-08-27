@@ -1,9 +1,9 @@
-import { useState, useMemo, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useKV } from '@/hooks/useKV';
-import { useDebounce } from '@/hooks/useDebounce';
 import { useDataPreload } from '@/hooks/useDataPreload';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useDeviceManager } from '@/hooks/useDeviceManager';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DeviceStatsPanel } from '@/components/DeviceStatsPanel';
 import { DeviceFiltersPanel } from '@/components/DeviceFiltersPanel';
@@ -12,135 +12,51 @@ import { DeviceDetailModal } from '@/components/DeviceDetailModal';
 import { ComparisonBar } from '@/components/ComparisonBar';
 import { DeviceComparisonModal } from '@/components/DeviceComparisonModal';
 import { FileUploadPanel, FileUploadPanelRef } from '@/components/FileUploadPanel';
-
 import { BackToTopButton } from '@/components/BackToTopButton';
 import { DeviceExportPanel } from '@/components/DeviceExportPanel';
 import { ExportStatsPanel } from '@/components/ExportStatsPanel';
 import { MobileBanner } from '@/components/MobileBanner';
 import { ComparisonProvider } from '@/contexts/ComparisonContext';
-import { AndroidDevice, DeviceFilters, PaginationState } from '@/types/device';
+import { AndroidDevice } from '@/types/device';
 import { ColorMode } from '@/lib/deviceColors';
-import { 
-  filterDevices, 
-  calculateDeviceStats, 
-  getUniqueManufacturers, 
-  getUniqueFormFactors, 
-  getUniqueSdkVersions,
-  getRamRange,
-  getSdkVersionRange
-} from '@/lib/deviceUtils';
 import { sanitizeDeviceData } from '@/lib/deviceValidation';
-import { paginateArray, DEFAULT_ITEMS_PER_PAGE, MOBILE_DEFAULT_ITEMS_PER_PAGE } from '@/lib/paginationUtils';
 import androidLogo from '@/assets/images/android.svg';
 
 function App() {
   // Mobile detection
   const isMobile = useIsMobile();
   
-  // Mobile-aware pagination defaults
-  const getDefaultItemsPerPage = () => isMobile ? MOBILE_DEFAULT_ITEMS_PER_PAGE : DEFAULT_ITEMS_PER_PAGE;
-  
   // Preload the full device catalog
   const { data: preloadedData } = useDataPreload();
 
-  // Use uploaded devices if available, otherwise use preloaded data
-  const [uploadedDevices, setUploadedDevices] = useKV<AndroidDevice[]>('uploaded-devices', []);
-
-  // Memoized devices selection
-  const devices = useMemo(() => (
-    uploadedDevices.length > 0 ? uploadedDevices : (preloadedData || [])
-  ), [uploadedDevices, preloadedData]);
+  // Centralized device management with all optimizations
+  const {
+    devices,
+    filteredDevices,
+    paginatedDevices,
+    filters,
+    handleFiltersChange,
+    resetToUploadedDefaults,
+    resetToPreloadedDefaults,
+    isFiltering,
+    paginationInfo,
+    handlePageChange,
+    handleItemsPerPageChange,
+    resetPagination,
+    allStats,
+    uniqueManufacturers,
+    uniqueFormFactors,
+    uniqueSdkVersions,
+    ramRange,
+    sdkVersionRange,
+    setUploadedDevices
+  } = useDeviceManager({ preloadedData, isMobile });
 
   // Tab state management
   const [activeTab, setActiveTab] = useState('devices');
   const fileUploadRef = useRef<FileUploadPanelRef | null>(null);
 
-  // Calculate ranges from available devices
-  const ramRange = useMemo(() => getRamRange(devices), [devices]);
-  const sdkVersionRange = useMemo(() => getSdkVersionRange(devices), [devices]);
-
-  const [filters, setFilters] = useKV<DeviceFilters>('device-filters', {
-    search: '',
-    formFactor: 'all',
-    manufacturer: 'all',
-    manufacturers: [], // Initialize empty manufacturers array
-    minRam: 'all',
-    sdkVersion: 'all'
-    // Don't initialize ramRange and sdkVersionRange - they'll be set when valid data is available
-  });
-
-  // Migration: Ensure manufacturers array exists for backwards compatibility
-  if (!filters.manufacturers) {
-    setFilters({
-      ...filters,
-      manufacturers: []
-    });
-  }
-
-  // Pagination state
-  const [pagination, setPagination] = useKV<PaginationState>('device-pagination', {
-    currentPage: 1,
-    itemsPerPage: getDefaultItemsPerPage(),
-    totalItems: 0
-  });
-
-  // Debounce search to improve performance
-  const debouncedFilters = useDebounce(filters, 300);
-  const [isFiltering, setIsFiltering] = useState(false);
-
-  // Update ranges in filters when devices change and no ranges are set yet
-  const shouldUpdateRanges = !filters.ramRange || !filters.sdkVersionRange;
-  
-  // Only set ranges if devices are available and ranges are valid (not Infinity/-Infinity)
-  const hasValidRanges = (
-    devices.length > 0 &&
-    ramRange[0] !== Infinity && ramRange[1] !== -Infinity &&
-    sdkVersionRange[0] !== Infinity && sdkVersionRange[1] !== -Infinity
-  );
-  
-  if (shouldUpdateRanges && hasValidRanges) {
-    setFilters({
-      ...filters,
-      ramRange: ramRange,
-      sdkVersionRange: sdkVersionRange,
-      manufacturers: filters.manufacturers || [] // Preserve manufacturers array
-    });
-  }
-
-  // Filter devices with debounced search
-  const filteredDevices = useMemo(() => {
-    const filtered = filterDevices(devices, debouncedFilters);
-    if (filtered.length !== pagination.totalItems) {
-      setPagination({
-        ...pagination,
-        currentPage: 1,
-        totalItems: filtered.length
-      });
-    }
-    return filtered;
-  }, [devices, debouncedFilters, pagination, setPagination]);
-
-  // Track filtering state
-  useMemo(() => {
-    setIsFiltering(filters !== debouncedFilters);
-  }, [filters, debouncedFilters]);
-
-  // Paginate filtered devices
-  const { items: paginatedDevices, pagination: paginationInfo } = useMemo(() => 
-    paginateArray(filteredDevices, pagination.currentPage, pagination.itemsPerPage),
-    [filteredDevices, pagination.currentPage, pagination.itemsPerPage]
-  );
-
-  const allStats = useMemo(() => calculateDeviceStats(devices), [devices]);
-  const uniqueManufacturers = useMemo(() => getUniqueManufacturers(devices), [devices]);
-  const uniqueFormFactors = useMemo(() => getUniqueFormFactors(devices), [devices]);
-  const uniqueSdkVersions = useMemo(() => getUniqueSdkVersions(devices), [devices]);
-
-  const handleDeviceClick = (device: AndroidDevice) => {
-    setSelectedDevice(device);
-    setDetailModalOpen(true);
-  };
-
+  // Modal state
   const [selectedDevice, setSelectedDevice] = useState<AndroidDevice | null>(null);
   const [detailModalOpen, setDetailModalOpen] = useState(false);
   const [comparisonModalOpen, setComparisonModalOpen] = useState(false);
@@ -148,57 +64,32 @@ function App() {
   // Color mode state
   const [colorMode, setColorMode] = useKV<ColorMode>('device-color-mode', 'formFactor');
 
-  const handleFilterByManufacturer = (manufacturer: string) => {
-    setFilters({ ...filters, manufacturer });
+  // Event handlers
+  const handleDeviceClick = (device: AndroidDevice) => {
+    setSelectedDevice(device);
+    setDetailModalOpen(true);
   };
+
+  const handleFilterByManufacturer = (manufacturer: string) => {
+    handleFiltersChange({ ...filters, manufacturer });
+  };
+
   const handleFilterByFormFactor = (formFactor: string) => {
-    setFilters({ ...filters, formFactor });
+    handleFiltersChange({ ...filters, formFactor });
   };
 
   const handleOpenComparison = () => setComparisonModalOpen(true);
   const handleExportClick = () => setActiveTab('export');
 
-  // Pagination handlers
-  const handlePageChange = useCallback((page: number) => {
-    setPagination({ ...pagination, currentPage: page });
-  }, [pagination, setPagination]);
-
-  const handleItemsPerPageChange = useCallback((itemsPerPage: number) => {
-    setPagination({ 
-      ...pagination, 
-      itemsPerPage, 
-      currentPage: 1 
-    });
-  }, [pagination, setPagination]);
-
-  // Optimized filter change handler
-  const handleFiltersChange = useCallback((newFilters: DeviceFilters) => {
-    setFilters(newFilters);
-    setPagination({ ...pagination, currentPage: 1 });
-  }, [setFilters, setPagination, pagination]);
-
-  const handleDevicesLoaded = (newDevices: AndroidDevice[]) => {
+  // Optimized device loading handler
+  const handleDevicesLoaded = useCallback((newDevices: AndroidDevice[]) => {
     const sanitizedDevices = sanitizeDeviceData(newDevices);
     setUploadedDevices(sanitizedDevices);
-    const newRamRange = getRamRange(sanitizedDevices);
-    const newSdkVersionRange = getSdkVersionRange(sanitizedDevices);
-    setFilters({
-      search: '',
-      formFactor: 'all',
-      manufacturer: 'all',
-      manufacturers: [], // Add missing manufacturers array
-      minRam: 'all',
-      sdkVersion: 'all',
-      ramRange: newRamRange,
-      sdkVersionRange: newSdkVersionRange
-    });
-    setPagination({
-      currentPage: 1,
-      itemsPerPage: getDefaultItemsPerPage(),
-      totalItems: sanitizedDevices.length
-    });
-  };
+    resetToUploadedDefaults(sanitizedDevices);
+    resetPagination(sanitizedDevices.length);
+  }, [setUploadedDevices, resetToUploadedDefaults, resetPagination]);
 
+  // Optimized use latest dataset handler
   const handleUseLatestDataset = useCallback(() => {
     setActiveTab('upload');
     setTimeout(() => {
@@ -212,26 +103,12 @@ function App() {
     }, 150);
   }, []);
 
-  const handleClearDevices = () => {
+  // Optimized clear devices handler
+  const handleClearDevices = useCallback(() => {
     setUploadedDevices([]);
-    const defaultRamRange = getRamRange(preloadedData || []);
-    const defaultSdkVersionRange = getSdkVersionRange(preloadedData || []);
-    setFilters({
-      search: '',
-      formFactor: 'all',
-      manufacturer: 'all',
-      manufacturers: [], // Add missing manufacturers array
-      minRam: 'all',
-      sdkVersion: 'all',
-      ramRange: defaultRamRange,
-      sdkVersionRange: defaultSdkVersionRange
-    });
-    setPagination({
-      currentPage: 1,
-      itemsPerPage: getDefaultItemsPerPage(),
-      totalItems: preloadedData ? preloadedData.length : 0
-    });
-  };
+    resetToPreloadedDefaults();
+    resetPagination(preloadedData ? preloadedData.length : 0);
+  }, [setUploadedDevices, resetToPreloadedDefaults, resetPagination, preloadedData]);
 
   return (
     <ComparisonProvider>
