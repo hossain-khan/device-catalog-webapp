@@ -55,7 +55,7 @@ A modern, responsive device catalog application built with React, TypeScript, an
 - `npm run build:memory-optimized` - Memory-optimized build
 - `npm run lint` - Run ESLint
 - `npm run preview` - Preview production build
-- `npm test` - Run test suite (110 tests)
+- `npm test` - Run test suite (179 tests)
 - `npm run test:run` - Run tests once
 - `npm run test:coverage` - Run tests with coverage
 
@@ -86,7 +86,7 @@ This project was originally built using GitHub Spark but has been refactored to 
 - **Charts**: Recharts for data visualization
 - **Icons**: Phosphor Icons
 - **Storage**: LocalStorage for persistence
-- **Testing**: Vitest with 110 comprehensive tests
+- **Testing**: Vitest with 179 comprehensive tests
 
 ## 📄 License
 
