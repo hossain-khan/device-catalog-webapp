@@ -1,9 +1,10 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useKV } from '@/hooks/useKV';
 import { useDataPreload } from '@/hooks/useDataPreload';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useDeviceManager } from '@/hooks/useDeviceManager';
+import { trackPageView, trackDeviceAction } from '@/lib/analytics';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DeviceStatsPanel } from '@/components/DeviceStatsPanel';
 import { DeviceFiltersPanel } from '@/components/DeviceFiltersPanel';
@@ -64,10 +65,27 @@ function App() {
   // Color mode state
   const [colorMode, setColorMode] = useKV<ColorMode>('device-color-mode', 'formFactor');
 
+  // Track initial page load (only once on mount)
+  useEffect(() => {
+    trackPageView('App Loaded', {
+      total_devices: devices.length,
+      filtered_devices: filteredDevices.length
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // Event handlers
   const handleDeviceClick = (device: AndroidDevice) => {
     setSelectedDevice(device);
     setDetailModalOpen(true);
+    
+    // Track device view
+    trackDeviceAction('view_device', {
+      device_name: device.name,
+      manufacturer: device.manufacturer,
+      form_factor: device.formFactor,
+      retail_branding: device.retailBranding
+    });
   };
 
   const handleFilterByManufacturer = (manufacturer: string) => {
@@ -144,7 +162,10 @@ function App() {
 
           <MobileBanner />
 
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
+          <Tabs value={activeTab} onValueChange={(tab) => {
+            setActiveTab(tab);
+            trackPageView(`${tab.charAt(0).toUpperCase() + tab.slice(1)} Tab`, { tab_name: tab });
+          }} className="space-y-8">
             <div className={isMobile ? 'overflow-x-auto' : ''}>
               <TabsList className={`backdrop-blur-sm bg-card/50 border border-border/50 shadow-lg ${isMobile ? 'grid grid-cols-4 w-max min-w-full gap-1' : 'grid w-full max-w-2xl grid-cols-4'}`}>
                 <TabsTrigger 

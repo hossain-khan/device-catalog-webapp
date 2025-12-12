@@ -6,6 +6,9 @@ import App from './App.tsx'
 import { ErrorFallback } from './ErrorFallback.tsx'
 import { ThemeProvider } from '@/components/ThemeProvider'
 
+// Initialize Firebase
+import './lib/firebase'
+
 import "./main.css"
 import "./styles/theme.css"
 import "./index.css"
