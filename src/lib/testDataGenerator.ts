@@ -15,7 +15,7 @@ const brands = [
 ];
 
 const formFactors = [
-  'Phone', 'Tablet', 'TV', 'Android Automotive', 'Chromebook', 'Wearable', 'Google Play Games on PC', 'Unknown'
+  'Phone', 'Tablet', 'TV', 'Android Automotive', 'Chromebook', 'Desktop', 'Wearable', 'Google Play Games on PC', 'Unknown'
 ];
 
 const processors = [

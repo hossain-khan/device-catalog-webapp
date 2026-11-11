@@ -18,13 +18,13 @@ const AndroidDeviceSchema = z.object({
     'TV', 
     'Tablet', 
     'Android Automotive', 
-    'Chromebook', 
+    'Chromebook', 'Desktop', 
     'Wearable', 
     'Google Play Games on PC',
     'Unknown'
   ], {
     errorMap: () => ({ 
-      message: 'Form factor must be one of: Phone, TV, Tablet, Android Automotive, Chromebook, Wearable, Google Play Games on PC, Unknown' 
+      message: 'Form factor must be one of: Phone, TV, Tablet, Android Automotive, Chromebook, Desktop, Wearable, Google Play Games on PC, Unknown' 
     })
   }),
   processorName: z.string().min(1, 'Processor name is required'),
@@ -148,7 +148,7 @@ export function getAndroidDeviceJsonSchema() {
         },
         "formFactor": {
           "type": "string",
-          "enum": ["Phone", "TV", "Tablet", "Android Automotive", "Chromebook", "Wearable", "Google Play Games on PC", "Unknown"],
+          "enum": ["Phone", "TV", "Tablet", "Android Automotive", "Chromebook", "Desktop", "Wearable", "Google Play Games on PC", "Unknown"],
           "description": "Device form factor."
         },
         "processorName": {

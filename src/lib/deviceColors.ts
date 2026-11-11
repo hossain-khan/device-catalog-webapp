@@ -68,6 +68,14 @@ export const FORM_FACTOR_COLORS: Record<string, DeviceColorScheme> = {
     text: 'oklch(0.25 0.18 180)',
     icon: 'oklch(0.35 0.20 180)'
   },
+  'Desktop': {
+    primary: 'oklch(0.65 0.08 180)', // Cyan - lighter and less saturated
+    secondary: 'oklch(0.92 0.04 180)',
+    background: 'oklch(0.98 0.01 180)',
+    border: 'oklch(0.85 0.06 180)',
+    text: 'oklch(0.25 0.18 180)',
+    icon: 'oklch(0.35 0.20 180)'
+  },
   'Google Play Games on PC': {
     primary: 'oklch(0.65 0.08 340)', // Magenta - lighter and less saturated
     secondary: 'oklch(0.92 0.04 340)',

@@ -138,7 +138,7 @@ describe('deviceValidation', () => {
     it('should validate all valid form factors', () => {
       const validFormFactors = [
         'Phone', 'TV', 'Tablet', 'Android Automotive', 
-        'Chromebook', 'Wearable', 'Google Play Games on PC', 'Unknown'
+        'Chromebook', 'Desktop', 'Wearable', 'Google Play Games on PC', 'Unknown'
       ];
 
       validFormFactors.forEach(formFactor => {
@@ -321,6 +321,7 @@ describe('deviceValidation', () => {
       expect(formFactorEnum).toContain('Tablet');
       expect(formFactorEnum).toContain('Android Automotive');
       expect(formFactorEnum).toContain('Chromebook');
+      expect(formFactorEnum).toContain('Desktop');
       expect(formFactorEnum).toContain('Wearable');
       expect(formFactorEnum).toContain('Google Play Games on PC');
       expect(formFactorEnum).toContain('Unknown');
