@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, afterEach } from 'vitest';
 import { DeviceCatalogService } from './deviceCatalogService';
 import { sanitizeDeviceData } from '@/lib/deviceValidation';
 
@@ -7,7 +7,7 @@ vi.mock('@/lib/deviceValidation', () => ({
   sanitizeDeviceData: vi.fn(data => data),
 }));
 
-const mockFetch = (data: any, ok = true, status = 200) => {
+const mockFetch = (data: unknown, ok = true, status = 200) => {
   global.fetch = vi.fn().mockResolvedValue({
     ok,
     status,

@@ -60,7 +60,7 @@
         "cmdk": "^1.1.1",
         "date-fns": "^4.1.0",
         "embla-carousel-react": "^8.5.2",
-        "firebase": "^12.6.0",
+        "firebase": "^13.3.0",
         "framer-motion": "^12.6.2",
         "input-otp": "^1.4.2",
         "lucide-react": "^0.539.0",
@@ -73,7 +73,7 @@
         "react-error-boundary": "^6.0.0",
         "react-hook-form": "^7.54.2",
         "react-resizable-panels": "^3.0.4",
-        "react-syntax-highlighter": "^15.6.1",
+        "react-syntax-highlighter": "^16.1.2",
         "react-window": "^1.8.11",
         "react-window-infinite-loader": "^1.0.10",
         "recharts": "^3.1.2",
@@ -95,8 +95,8 @@
         "@types/react": "^19.1.10",
         "@types/react-dom": "^19.0.4",
         "@vitejs/plugin-react": "^5.1.1",
-        "@vitest/coverage-v8": "^3.2.4",
-        "@vitest/ui": "^3.2.4",
+        "@vitest/coverage-v8": "^5.1.0",
+        "@vitest/ui": "^5.1.0",
         "eslint": "^9.28.0",
         "eslint-plugin-react-hooks": "^5.2.0",
         "eslint-plugin-react-refresh": "^0.4.19",
@@ -107,11 +107,14 @@
         "typescript": "~5.9.2",
         "typescript-eslint": "^8.39.1",
         "vite": "^7.1.2",
-        "vitest": "^3.2.4"
+        "vitest": "^5.1.0"
     },
     "workspaces": {
         "packages": [
             "packages/*"
         ]
+    },
+    "overrides": {
+        "@grpc/grpc-js": "^1.14.7"
     }
 }

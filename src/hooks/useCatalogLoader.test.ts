@@ -19,7 +19,7 @@ vi.mock('@/hooks/useKV', () => ({
 describe('useCatalogLoader', () => {
   let mockSetCatalogDevices: vi.Mock;
   let mockSetHasAttemptedLoad: vi.Mock;
-  let mockCatalogDevices: any[] = [];
+  let mockCatalogDevices: unknown[] = [];
   let mockHasAttemptedLoad = false;
 
   beforeEach(() => {
@@ -31,7 +31,7 @@ describe('useCatalogLoader', () => {
       mockHasAttemptedLoad = typeof updater === 'function' ? updater(mockHasAttemptedLoad) : updater;
     });
 
-    (useKV as vi.Mock).mockImplementation((key: string, initialValue: any) => {
+    (useKV as vi.Mock).mockImplementation((key: string, initialValue: unknown) => {
       if (key === 'catalog-devices') {
         mockCatalogDevices = []; // Start with empty catalog
         return [mockCatalogDevices, mockSetCatalogDevices];

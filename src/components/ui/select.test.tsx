@@ -3,9 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import {
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from './select';
