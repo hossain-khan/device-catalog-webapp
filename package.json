@@ -109,11 +109,6 @@
         "vite": "^7.1.2",
         "vitest": "^4.1.12"
     },
-    "workspaces": {
-        "packages": [
-            "packages/*"
-        ]
-    },
     "overrides": {
         "@grpc/grpc-js": "^1.14.7"
     }
