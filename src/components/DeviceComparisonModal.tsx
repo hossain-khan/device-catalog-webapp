@@ -50,6 +50,7 @@ export const DeviceComparisonModal = ({ open, onOpenChange }: DeviceComparisonMo
       case 'android automotive':
         return <Car className="h-4 w-4" />;
       case 'chromebook':
+      case 'desktop':
         return <Laptop className="h-4 w-4" />;
       case 'wearable':
         return <Watch className="h-4 w-4" />;

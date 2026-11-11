@@ -39,6 +39,7 @@ export const DeviceCard = ({ device, onClick, onShowJson, colorMode = 'formFacto
       case 'android automotive':
         return <Car className={iconClass} style={iconStyle} />;
       case 'chromebook':
+      case 'desktop':
         return <Laptop className={iconClass} style={iconStyle} />;
       case 'wearable':
         return <Watch className={iconClass} style={iconStyle} />;

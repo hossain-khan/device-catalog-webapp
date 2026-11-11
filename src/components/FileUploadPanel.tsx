@@ -342,7 +342,7 @@ export const FileUploadPanel = forwardRef<FileUploadPanelRef, FileUploadPanelPro
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="text-center p-4 bg-muted rounded-lg">
-                    <div className="text-2xl font-bold text-primary">22,751</div>
+                    <div className="text-2xl font-bold text-primary">23,997</div>
                     <div className="text-sm text-muted-foreground">Total Devices</div>
                   </div>
                   <div className="text-center p-4 bg-muted rounded-lg">
@@ -359,7 +359,7 @@ export const FileUploadPanel = forwardRef<FileUploadPanelRef, FileUploadPanelPro
                   </AlertDescription>
                 </Alert>
                 
-                {deviceCount > 0 && deviceCount !== 22751 && (
+                {deviceCount > 0 && deviceCount !== 23997 && (
                   <Alert>
                     <Warning className="h-4 w-4" />
                     <AlertDescription>

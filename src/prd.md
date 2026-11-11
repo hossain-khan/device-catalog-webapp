@@ -157,6 +157,7 @@
 - **Wearable**: Green spectrum (oklch 0.45 0.15 120) - natural, active feeling
 - **Android Automotive**: Yellow-orange (oklch 0.45 0.15 60) - automotive industry association
 - **Chromebook**: Cyan spectrum (oklch 0.45 0.15 180) - tech/productivity association
+- **Desktop**: Cyan spectrum, same as Chromebook (ChromeOS devices; replaces deprecated Chromebook in parser 1.12)
 - **Google Play Games on PC**: Magenta (oklch 0.45 0.15 340) - gaming/entertainment association
 
 #### Performance Tier Colors

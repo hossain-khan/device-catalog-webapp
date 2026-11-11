@@ -39,6 +39,7 @@ export const DeviceDetailModal = ({ device, open, onOpenChange }: DeviceDetailMo
       case 'android automotive':
         return <Car className="h-5 w-5" />;
       case 'chromebook':
+      case 'desktop':
         return <Laptop className="h-5 w-5" />;
       case 'wearable':
         return <Watch className="h-5 w-5" />;
