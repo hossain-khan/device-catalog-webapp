@@ -19,6 +19,7 @@
     },
     "dependencies": {
         "@formkit/auto-animate": "^0.8.2",
+        "@grpc/grpc-js": "^1.14.7",
         "@heroicons/react": "^2.2.0",
         "@hookform/resolvers": "^5.2.1",
         "@octokit/core": "^7.0.3",
@@ -110,6 +111,6 @@
         "vitest": "^4.1.12"
     },
     "overrides": {
-        "@grpc/grpc-js": "^1.14.7"
+        "@grpc/grpc-js": "$@grpc/grpc-js"
     }
 }
