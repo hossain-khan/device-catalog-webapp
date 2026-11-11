@@ -3,8 +3,8 @@
   "site": "android-device.gohk.xyz",
   "status": "alive",
   "build": {
-    "time": "2025-08-17T04:02:25.950Z",
-    "commit": "cdb3cd1",
-    "branch": "copilot/fix-95"
+    "time": "2025-12-12T12:59:22.164Z",
+    "commit": "0f4e0b7",
+    "branch": "feature/firebase-integration"
   }
 }

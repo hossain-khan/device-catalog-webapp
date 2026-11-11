@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { trackEvent } from '@/lib/analytics';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
@@ -65,6 +66,15 @@ export function DeviceExportPanel({ devices, filteredDevices, isFiltered }: Devi
       };
 
       exportDevices(devicesToExport, options);
+      
+      // Track export action
+      trackEvent('export_data', {
+        format: exportFormat,
+        device_count: devicesToExport.length,
+        is_filtered: exportFiltered,
+        estimated_size: estimatedSize,
+        pretty_print: prettyPrint
+      });
       
       toast.success(
         `Successfully exported ${devicesToExport.length} devices as ${exportFormat.toUpperCase()}`,

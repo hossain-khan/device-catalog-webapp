@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Input } from "@/components/ui/input";
+import { trackSearch, trackFilter } from '@/lib/analytics';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -68,6 +69,24 @@ export const DeviceFiltersPanel = ({
      (filters.sdkVersionRange[0] !== sdkVersionRange[0] || filters.sdkVersionRange[1] !== sdkVersionRange[1]));
 
   const [advancedOpen, setAdvancedOpen] = useState(false);
+  const searchTimeoutRef = useRef<NodeJS.Timeout>();
+
+  // Track search with debounce
+  useEffect(() => {
+    if (filters.search) {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+      searchTimeoutRef.current = setTimeout(() => {
+        trackSearch(filters.search, deviceCount);
+      }, 1000);
+    }
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+    };
+  }, [filters.search, deviceCount]);
 
   return (
     <div className="space-y-4">
@@ -88,7 +107,10 @@ export const DeviceFiltersPanel = ({
           <Funnel className="h-4 w-4 text-muted-foreground" />
           <span className="text-sm text-muted-foreground">Filters:</span>
         </div>
-        <Select value={filters.formFactor} onValueChange={(value) => updateFilter('formFactor', value)}>
+        <Select value={filters.formFactor} onValueChange={(value) => {
+          updateFilter('formFactor', value);
+          if (value !== 'all') trackFilter('form_factor', value);
+        }}>
           <SelectTrigger className="w-[200px]">
             <SelectValue placeholder="Form Factor" />
           </SelectTrigger>
@@ -162,7 +184,10 @@ export const DeviceFiltersPanel = ({
           <Button
             variant="destructive"
             size="sm"
-            onClick={clearFilters}
+            onClick={() => {
+              clearFilters();
+              trackDeviceAction('clear_filters', { filters_cleared: true });
+            }}
             className="flex items-center gap-2 bg-destructive hover:bg-destructive/90 text-destructive-foreground border border-destructive"
           >
             <X className="h-4 w-4" />

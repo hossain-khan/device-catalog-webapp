@@ -1,5 +1,7 @@
+import { useEffect } from 'react';
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { ModalHeader } from "@/components/ui/modal-header";
+import { trackEvent } from '@/lib/analytics';
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
@@ -17,6 +19,26 @@ interface DeviceComparisonModalProps {
 export const DeviceComparisonModal = ({ open, onOpenChange }: DeviceComparisonModalProps) => {
   const { comparedDevices, removeFromComparison } = useComparison();
 
+  // Track comparison modal opening
+  useEffect(() => {
+    if (open && comparedDevices.length > 0) {
+      trackEvent('compare_devices', {
+        device_count: comparedDevices.length,
+        device_names: comparedDevices.map(d => d.name).join(', ')
+      });
+    }
+  }, [open, comparedDevices]);
+
+  // Track comparison modal opening
+  useEffect(() => {
+    if (open && comparedDevices.length > 0) {
+      trackEvent('compare_devices', {
+        device_count: comparedDevices.length,
+        device_names: comparedDevices.map(d => d.name).join(', ')
+      });
+    }
+  }, [open, comparedDevices]);
+
   const getFormFactorIcon = (formFactor: string) => {
     switch (formFactor.toLowerCase()) {
       case 'phone':
@@ -28,6 +50,7 @@ export const DeviceComparisonModal = ({ open, onOpenChange }: DeviceComparisonMo
       case 'android automotive':
         return <Car className="h-4 w-4" />;
       case 'chromebook':
+      case 'desktop':
         return <Laptop className="h-4 w-4" />;
       case 'wearable':
         return <Watch className="h-4 w-4" />;

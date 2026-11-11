@@ -1,6 +1,6 @@
 # Android Device Catalog Browser
 
-Android Device Catalog Browser is a modern React/TypeScript web application for exploring and analyzing 22,751+ Android devices from the official Device Catalog. Built with React 19, Vite, Tailwind CSS, and Radix UI components.
+Android Device Catalog Browser is a modern React/TypeScript web application for exploring and analyzing 23,997+ Android devices from the official Device Catalog. Built with React 19, Vite, Tailwind CSS, and Radix UI components.
 
 Always reference these instructions first and fallback to search or bash commands only when you encounter unexpected information that does not match the info here.
 
@@ -26,10 +26,10 @@ Always reference these instructions first and fallback to search or bash command
 ## Validation
 
 ### ALWAYS manually validate any changes via these complete scenarios:
-1. **Device Browsing**: Verify app loads showing "22,751 devices" and displays device grid with color-coded categories
+1. **Device Browsing**: Verify app loads showing "23,997 devices" and displays device grid with color-coded categories
 2. **Search Functionality**: Type "Pixel" in search box → should filter to ~43 devices instantly
 3. **Device Details**: Click any device card → modal opens with hardware specs, display info, architecture details
-4. **Analytics Dashboard**: Click Analytics tab → comprehensive statistics with 22K+ devices, manufacturer breakdowns, technical metrics
+4. **Analytics Dashboard**: Click Analytics tab → comprehensive statistics with 24K+ devices, manufacturer breakdowns, technical metrics
 5. **Navigation**: Test all tabs (Upload Data, Device Browser, Analytics) load correctly
 6. **Export Functionality**: In Device Browser tab, verify Export button appears to the left of "Color Coding Information" button when color mode controls are visible
 
@@ -60,7 +60,7 @@ Always reference these instructions first and fallback to search or bash command
 - **Frontend**: React 19 with TypeScript, functional components with hooks
 - **Styling**: Tailwind CSS + Radix UI primitives for components
 - **Build**: Vite with memory optimization and chunk splitting
-- **Data**: 22,751 device records loaded via JSON, virtual scrolling for performance
+- **Data**: 23,997 device records loaded via JSON, virtual scrolling for performance
 - **State**: React hooks + local storage via custom useKV hook
 - **Routing**: Single-page app with tab-based navigation
 
@@ -72,7 +72,7 @@ Always reference these instructions first and fallback to search or bash command
 - Color coding logic is in `/src/lib/deviceColors.ts`
 
 ### Performance Considerations:
-- Virtual scrolling handles 22K+ devices efficiently
+- Virtual scrolling handles 24K+ devices efficiently
 - Memory-optimized build available for resource-constrained environments
 - Large device JSON file (~7.5MB) is optimized for loading
 - Chunk splitting reduces initial bundle size
@@ -133,7 +133,7 @@ VITE v7.1.2  ready in 571 ms
 ### Common Issues:
 - **Build fails with memory errors**: Use `npm run build:memory-optimized` instead
 - **Dev server won't start**: Check if port 5173 is available, kill with `npm run kill` if needed
-- **Large bundle warnings**: Expected due to 22K+ device dataset, optimizations already applied
+- **Large bundle warnings**: Expected due to 24K+ device dataset, optimizations already applied
 - **Linting warnings**: 1 warning is expected and acceptable (console statement in hooks)
 - **Missing dependencies**: Always run `npm install` after pulling changes
 

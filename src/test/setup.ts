@@ -64,3 +64,6 @@ Object.defineProperty(window, 'scrollTo', {
   writable: true,
   value: vi.fn(),
 });
+
+// Mock scrollIntoView for Radix UI components
+Element.prototype.scrollIntoView = vi.fn();
