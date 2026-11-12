@@ -1,6 +1,6 @@
 import { AndroidDevice } from "@/types/device";
 
-const BASE_IMAGE_URL = "https://android-device.gohk.xyz/images";
+const BASE_IMAGE_URL = "https://cdn.android-device.gohk.xyz/images";
 
 /**
  * Sanitizes a string for use in device image filenames.
@@ -18,7 +18,7 @@ export function sanitizeFilenamePart(part: string | undefined | null): string {
 
 /**
  * Generates the primary device image URL using the standard format:
- * `https://android-device.gohk.xyz/images/{brand}_{device}.png`
+ * `https://cdn.android-device.gohk.xyz/images/{brand}_{device}.png`
  */
 export function getDeviceImageUrl(device: AndroidDevice): string {
   const brand = sanitizeFilenamePart(device.brand || device.manufacturer);
