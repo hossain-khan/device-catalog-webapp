@@ -45,9 +45,11 @@ export function getDeviceImageCandidates(device: AndroidDevice): string[] {
   for (const prefix of prefixes) {
     if (devCode) {
       candidates.add(`${BASE_IMAGE_URL}/${prefix}_${devCode}.png`);
+      candidates.add(`${BASE_IMAGE_URL}/${prefix}_${devCode}.webp`);
     }
     if (modelName && modelName !== devCode) {
       candidates.add(`${BASE_IMAGE_URL}/${prefix}_${modelName}.png`);
+      candidates.add(`${BASE_IMAGE_URL}/${prefix}_${modelName}.webp`);
     }
   }
 
