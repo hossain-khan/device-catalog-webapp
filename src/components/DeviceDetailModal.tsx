@@ -9,6 +9,7 @@ import { DeviceMobile, Monitor, DeviceTablet, Television, Car, Laptop, Watch, Ga
 import { DeviceJsonModal } from "./DeviceJsonModal";
 import { useState } from "react";
 import GoogleLogoSVG from "@/assets/images/google_G_logo.svg";
+import { DeviceImage } from "./DeviceImage";
 
 interface DeviceDetailModalProps {
   device: AndroidDevice | null;
@@ -87,6 +88,17 @@ export const DeviceDetailModal = ({ device, open, onOpenChange }: DeviceDetailMo
         <DialogDescription className="sr-only">
           Detailed information about {device.modelName} including hardware specifications, display details, and technical specifications.
         </DialogDescription>
+
+        {/* Device Image Preview Banner */}
+        <div className="flex justify-center items-center py-4 px-6 bg-muted/40 rounded-xl border border-border/50">
+          <DeviceImage
+            device={device}
+            className="w-40 h-40 max-h-48"
+            imgClassName="max-h-48 w-auto object-contain filter drop-shadow-md"
+            fallbackIconClassName="h-16 w-16 text-muted-foreground/60"
+            fallbackIconContainerClassName="w-40 h-40 rounded-xl bg-muted/60 flex items-center justify-center border border-border/40"
+          />
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <Card>

@@ -7,6 +7,7 @@ import { getDeviceColors, getDeviceCategoryLabel, parseRamMB, ColorMode } from "
 import { DeviceMobile, DeviceTablet, Television, Car, Laptop, Watch, GameController, Plus, Minus, Code, Question } from "@phosphor-icons/react";
 import { useComparison } from "@/contexts/ComparisonContext";
 import { motion } from "framer-motion";
+import { DeviceImage } from "./DeviceImage";
 
 interface DeviceCardProps {
   device: AndroidDevice;
@@ -97,17 +98,22 @@ export const DeviceCard = ({ device, onClick, onShowJson, colorMode = 'formFacto
           borderBottomColor: colors.border
         }}
       >
-        {/* Form Factor Icon - Large and Prominent */}
+        {/* Form Factor / Device Image - Prominent Hero Element */}
         <div className="mb-3 flex justify-center">
           <motion.div 
-            className="p-3 rounded-full shadow-lg hover:shadow-xl transition-shadow duration-300"
+            className="w-16 h-16 rounded-full shadow-lg hover:shadow-xl transition-shadow duration-300 flex items-center justify-center overflow-hidden p-1.5"
             style={{ 
               backgroundColor: colors.primary,
             }}
             whileHover={{ scale: 1.1, rotate: 5 }}
             transition={{ duration: 0.2 }}
           >
-            {getFormFactorIcon(device.formFactor, 'lg')}
+            <DeviceImage
+              device={device}
+              className="w-full h-full"
+              imgClassName="w-full h-full object-contain filter drop-shadow"
+              fallbackIconClassName="h-8 w-8 text-white"
+            />
           </motion.div>
         </div>
         

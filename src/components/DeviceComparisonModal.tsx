@@ -10,6 +10,7 @@ import { AndroidDevice } from "@/types/device";
 import { formatRam } from "@/lib/deviceUtils";
 import { DeviceMobile, DeviceTablet, Television, Car, Laptop, Watch, GameController, X, Question } from "@phosphor-icons/react";
 import { useComparison } from "@/contexts/ComparisonContext";
+import { DeviceImage } from "./DeviceImage";
 
 interface DeviceComparisonModalProps {
   open: boolean;
@@ -151,6 +152,14 @@ export const DeviceComparisonModal = ({ open, onOpenChange }: DeviceComparisonMo
                             </span>
                           </div>
                         </div>
+                      </div>
+                      <div className="mt-3 flex justify-center py-2 bg-muted/40 rounded-lg">
+                        <DeviceImage
+                          device={device}
+                          className="w-20 h-20"
+                          imgClassName="max-h-20 w-auto object-contain filter drop-shadow-sm"
+                          fallbackIconClassName="h-8 w-8 text-muted-foreground/50"
+                        />
                       </div>
                     </CardHeader>
                   </Card>
