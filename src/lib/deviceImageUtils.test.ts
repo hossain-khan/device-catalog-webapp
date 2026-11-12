@@ -25,14 +25,14 @@ describe("deviceImageUtils", () => {
 
   it("builds the standard device image URL", () => {
     expect(getDeviceImageUrl(mockDevice)).toBe(
-      "https://android-device.gohk.xyz/images/samsung_herolte.png"
+      "https://android-device-catalog.gohk.xyz/images/samsung_herolte.png"
     );
   });
 
   it("provides fallback candidates for image resolution", () => {
     const candidates = getDeviceImageCandidates(mockDevice);
-    expect(candidates).toContain("https://android-device.gohk.xyz/images/samsung_herolte.png");
-    expect(candidates).toContain("https://android-device.gohk.xyz/images/Samsung_herolte.png");
-    expect(candidates).toContain("https://android-device.gohk.xyz/images/samsung_Galaxy_S7.png");
+    expect(candidates).toContain("https://android-device-catalog.gohk.xyz/images/samsung_herolte.png");
+    expect(candidates).toContain("https://android-device-catalog.gohk.xyz/images/Samsung_herolte.png");
+    expect(candidates).toContain("https://android-device-catalog.gohk.xyz/images/samsung_Galaxy_S7.png");
   });
 });

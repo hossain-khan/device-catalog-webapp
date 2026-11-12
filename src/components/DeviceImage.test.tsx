@@ -23,7 +23,7 @@ describe("DeviceImage", () => {
   it("renders image tag with primary candidate URL", () => {
     render(<DeviceImage device={mockDevice} />);
     const img = screen.getByRole("img") as HTMLImageElement;
-    expect(img.src).toContain("https://android-device.gohk.xyz/images/samsung_herolte.png");
+    expect(img.src).toContain("https://android-device-catalog.gohk.xyz/images/samsung_herolte.png");
   });
 
   it("falls back to icon when all candidate URLs fail", () => {
