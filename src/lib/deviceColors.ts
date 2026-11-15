@@ -1,6 +1,6 @@
 /**
  * Color coding system for Android device categories
- * Provides visual distinction based on form factors, performance tiers, and other characteristics
+ * Provides semantic accent colors based on form factors, performance tiers, manufacturers, and SDK eras
  */
 
 export interface DeviceColorScheme {
@@ -18,79 +18,79 @@ export interface PerformanceTier {
   colors: DeviceColorScheme;
 }
 
-// Form factor color schemes using distinct hues for accessibility
+// Form factor color schemes using crisp, modern hues that work in both light and dark mode
 export const FORM_FACTOR_COLORS: Record<string, DeviceColorScheme> = {
   'Phone': {
-    primary: 'oklch(0.65 0.08 220)', // Blue - lighter and less saturated
-    secondary: 'oklch(0.92 0.04 220)', // Much lighter secondary
-    background: 'oklch(0.98 0.01 220)', // Very light background
-    border: 'oklch(0.85 0.06 220)', // Lighter border
-    text: 'oklch(0.25 0.18 220)',
-    icon: 'oklch(0.35 0.20 220)'
+    primary: 'oklch(0.60 0.16 245)',     // Technical Blue
+    secondary: 'oklch(0.60 0.16 245 / 0.12)',
+    background: 'oklch(0.60 0.16 245 / 0.06)',
+    border: 'oklch(0.60 0.16 245 / 0.28)',
+    text: 'oklch(0.55 0.16 245)',
+    icon: 'oklch(0.60 0.16 245)'
   },
   'Tablet': {
-    primary: 'oklch(0.65 0.08 280)', // Purple - lighter and less saturated
-    secondary: 'oklch(0.92 0.04 280)',
-    background: 'oklch(0.98 0.01 280)',
-    border: 'oklch(0.85 0.06 280)',
-    text: 'oklch(0.25 0.18 280)',
-    icon: 'oklch(0.35 0.20 280)'
+    primary: 'oklch(0.60 0.17 290)',     // Indigo / Violet
+    secondary: 'oklch(0.60 0.17 290 / 0.12)',
+    background: 'oklch(0.60 0.17 290 / 0.06)',
+    border: 'oklch(0.60 0.17 290 / 0.28)',
+    text: 'oklch(0.55 0.17 290)',
+    icon: 'oklch(0.60 0.17 290)'
   },
   'TV': {
-    primary: 'oklch(0.65 0.08 15)', // Red-orange - lighter and less saturated
-    secondary: 'oklch(0.92 0.04 15)',
-    background: 'oklch(0.98 0.01 15)',
-    border: 'oklch(0.85 0.06 15)',
-    text: 'oklch(0.25 0.18 15)',
-    icon: 'oklch(0.35 0.20 15)'
+    primary: 'oklch(0.62 0.18 25)',      // Coral / Rose
+    secondary: 'oklch(0.62 0.18 25 / 0.12)',
+    background: 'oklch(0.62 0.18 25 / 0.06)',
+    border: 'oklch(0.62 0.18 25 / 0.28)',
+    text: 'oklch(0.56 0.18 25)',
+    icon: 'oklch(0.62 0.18 25)'
   },
   'Wearable': {
-    primary: 'oklch(0.65 0.08 120)', // Green - lighter and less saturated
-    secondary: 'oklch(0.92 0.04 120)',
-    background: 'oklch(0.98 0.01 120)',
-    border: 'oklch(0.85 0.06 120)',
-    text: 'oklch(0.25 0.18 120)',
-    icon: 'oklch(0.35 0.20 120)'
+    primary: 'oklch(0.64 0.16 155)',     // Emerald
+    secondary: 'oklch(0.64 0.16 155 / 0.12)',
+    background: 'oklch(0.64 0.16 155 / 0.06)',
+    border: 'oklch(0.64 0.16 155 / 0.28)',
+    text: 'oklch(0.54 0.16 155)',
+    icon: 'oklch(0.64 0.16 155)'
   },
   'Android Automotive': {
-    primary: 'oklch(0.65 0.08 60)', // Yellow-orange - lighter and less saturated
-    secondary: 'oklch(0.92 0.04 60)',
-    background: 'oklch(0.98 0.01 60)',
-    border: 'oklch(0.85 0.06 60)',
-    text: 'oklch(0.25 0.18 60)',
-    icon: 'oklch(0.35 0.20 60)'
+    primary: 'oklch(0.68 0.16 65)',      // Amber
+    secondary: 'oklch(0.68 0.16 65 / 0.12)',
+    background: 'oklch(0.68 0.16 65 / 0.06)',
+    border: 'oklch(0.68 0.16 65 / 0.28)',
+    text: 'oklch(0.58 0.16 65)',
+    icon: 'oklch(0.68 0.16 65)'
   },
   'Chromebook': {
-    primary: 'oklch(0.65 0.08 180)', // Cyan - lighter and less saturated
-    secondary: 'oklch(0.92 0.04 180)',
-    background: 'oklch(0.98 0.01 180)',
-    border: 'oklch(0.85 0.06 180)',
-    text: 'oklch(0.25 0.18 180)',
-    icon: 'oklch(0.35 0.20 180)'
+    primary: 'oklch(0.62 0.14 200)',     // Cyan
+    secondary: 'oklch(0.62 0.14 200 / 0.12)',
+    background: 'oklch(0.62 0.14 200 / 0.06)',
+    border: 'oklch(0.62 0.14 200 / 0.28)',
+    text: 'oklch(0.54 0.14 200)',
+    icon: 'oklch(0.62 0.14 200)'
   },
   'Desktop': {
-    primary: 'oklch(0.65 0.08 180)', // Cyan - lighter and less saturated
-    secondary: 'oklch(0.92 0.04 180)',
-    background: 'oklch(0.98 0.01 180)',
-    border: 'oklch(0.85 0.06 180)',
-    text: 'oklch(0.25 0.18 180)',
-    icon: 'oklch(0.35 0.20 180)'
+    primary: 'oklch(0.62 0.14 200)',     // Cyan
+    secondary: 'oklch(0.62 0.14 200 / 0.12)',
+    background: 'oklch(0.62 0.14 200 / 0.06)',
+    border: 'oklch(0.62 0.14 200 / 0.28)',
+    text: 'oklch(0.54 0.14 200)',
+    icon: 'oklch(0.62 0.14 200)'
   },
   'Google Play Games on PC': {
-    primary: 'oklch(0.65 0.08 340)', // Magenta - lighter and less saturated
-    secondary: 'oklch(0.92 0.04 340)',
-    background: 'oklch(0.98 0.01 340)',
-    border: 'oklch(0.85 0.06 340)',
-    text: 'oklch(0.25 0.18 340)',
-    icon: 'oklch(0.35 0.20 340)'
+    primary: 'oklch(0.62 0.18 335)',     // Magenta
+    secondary: 'oklch(0.62 0.18 335 / 0.12)',
+    background: 'oklch(0.62 0.18 335 / 0.06)',
+    border: 'oklch(0.62 0.18 335 / 0.28)',
+    text: 'oklch(0.56 0.18 335)',
+    icon: 'oklch(0.62 0.18 335)'
   },
   'Unknown': {
-    primary: 'oklch(0.65 0.08 0)', // Grey - lighter and less saturated
-    secondary: 'oklch(0.92 0.04 0)',
-    background: 'oklch(0.98 0.01 0)',
-    border: 'oklch(0.85 0.06 0)',
-    text: 'oklch(0.25 0.18 0)',
-    icon: 'oklch(0.35 0.20 0)'
+    primary: 'oklch(0.58 0.02 250)',     // Slate
+    secondary: 'oklch(0.58 0.02 250 / 0.12)',
+    background: 'oklch(0.58 0.02 250 / 0.06)',
+    border: 'oklch(0.58 0.02 250 / 0.28)',
+    text: 'oklch(0.50 0.02 250)',
+    icon: 'oklch(0.58 0.02 250)'
   }
 };
 
@@ -100,48 +100,48 @@ export const PERFORMANCE_TIERS: PerformanceTier[] = [
     name: 'Budget',
     ramThreshold: 2048, // < 2GB
     colors: {
-      primary: 'oklch(0.65 0.06 30)', // Lighter and less saturated
-      secondary: 'oklch(0.92 0.03 30)',
-      background: 'oklch(0.98 0.005 30)',
-      border: 'oklch(0.85 0.04 30)',
-      text: 'oklch(0.25 0.15 30)',
-      icon: 'oklch(0.35 0.15 30)'
+      primary: 'oklch(0.60 0.12 45)',
+      secondary: 'oklch(0.60 0.12 45 / 0.12)',
+      background: 'oklch(0.60 0.12 45 / 0.06)',
+      border: 'oklch(0.60 0.12 45 / 0.28)',
+      text: 'oklch(0.55 0.12 45)',
+      icon: 'oklch(0.60 0.12 45)'
     }
   },
   {
     name: 'Mid-Range',
     ramThreshold: 6144, // 2GB - 6GB
     colors: {
-      primary: 'oklch(0.65 0.06 50)', // Lighter and less saturated
-      secondary: 'oklch(0.92 0.03 50)',
-      background: 'oklch(0.98 0.005 50)',
-      border: 'oklch(0.85 0.04 50)',
-      text: 'oklch(0.25 0.15 50)',
-      icon: 'oklch(0.35 0.15 50)'
+      primary: 'oklch(0.60 0.15 245)',
+      secondary: 'oklch(0.60 0.15 245 / 0.12)',
+      background: 'oklch(0.60 0.15 245 / 0.06)',
+      border: 'oklch(0.60 0.15 245 / 0.28)',
+      text: 'oklch(0.55 0.15 245)',
+      icon: 'oklch(0.60 0.15 245)'
     }
   },
   {
     name: 'Premium',
     ramThreshold: 12288, // 6GB - 12GB
     colors: {
-      primary: 'oklch(0.65 0.06 90)', // Lighter and less saturated
-      secondary: 'oklch(0.92 0.03 90)',
-      background: 'oklch(0.98 0.005 90)',
-      border: 'oklch(0.85 0.04 90)',
-      text: 'oklch(0.25 0.15 90)',
-      icon: 'oklch(0.35 0.15 90)'
+      primary: 'oklch(0.62 0.17 290)',
+      secondary: 'oklch(0.62 0.17 290 / 0.12)',
+      background: 'oklch(0.62 0.17 290 / 0.06)',
+      border: 'oklch(0.62 0.17 290 / 0.28)',
+      text: 'oklch(0.56 0.17 290)',
+      icon: 'oklch(0.62 0.17 290)'
     }
   },
   {
     name: 'Flagship',
     ramThreshold: Infinity, // > 12GB
     colors: {
-      primary: 'oklch(0.65 0.06 140)', // Lighter and less saturated
-      secondary: 'oklch(0.92 0.03 140)',
-      background: 'oklch(0.98 0.005 140)',
-      border: 'oklch(0.85 0.04 140)',
-      text: 'oklch(0.25 0.15 140)',
-      icon: 'oklch(0.35 0.15 140)'
+      primary: 'oklch(0.64 0.16 158)',
+      secondary: 'oklch(0.64 0.16 158 / 0.12)',
+      background: 'oklch(0.64 0.16 158 / 0.06)',
+      border: 'oklch(0.64 0.16 158 / 0.28)',
+      text: 'oklch(0.55 0.16 158)',
+      icon: 'oklch(0.64 0.16 158)'
     }
   }
 ];
@@ -149,72 +149,72 @@ export const PERFORMANCE_TIERS: PerformanceTier[] = [
 // Manufacturer color schemes for brand recognition
 export const MANUFACTURER_COLORS: Record<string, DeviceColorScheme> = {
   'Google': {
-    primary: 'oklch(0.65 0.08 220)', // Lighter and less saturated
-    secondary: 'oklch(0.92 0.04 220)',
-    background: 'oklch(0.98 0.01 220)',
-    border: 'oklch(0.85 0.06 220)',
-    text: 'oklch(0.25 0.18 220)',
-    icon: 'oklch(0.35 0.20 220)'
+    primary: 'oklch(0.62 0.16 155)',
+    secondary: 'oklch(0.62 0.16 155 / 0.12)',
+    background: 'oklch(0.62 0.16 155 / 0.06)',
+    border: 'oklch(0.62 0.16 155 / 0.28)',
+    text: 'oklch(0.54 0.16 155)',
+    icon: 'oklch(0.62 0.16 155)'
   },
   'Samsung': {
-    primary: 'oklch(0.65 0.08 250)', // Lighter and less saturated
-    secondary: 'oklch(0.92 0.04 250)',
-    background: 'oklch(0.98 0.01 250)',
-    border: 'oklch(0.85 0.06 250)',
-    text: 'oklch(0.25 0.18 250)',
-    icon: 'oklch(0.35 0.20 250)'
+    primary: 'oklch(0.58 0.17 255)',
+    secondary: 'oklch(0.58 0.17 255 / 0.12)',
+    background: 'oklch(0.58 0.17 255 / 0.06)',
+    border: 'oklch(0.58 0.17 255 / 0.28)',
+    text: 'oklch(0.54 0.17 255)',
+    icon: 'oklch(0.58 0.17 255)'
   },
   'OnePlus': {
-    primary: 'oklch(0.65 0.08 15)', // Lighter and less saturated
-    secondary: 'oklch(0.92 0.04 15)',
-    background: 'oklch(0.98 0.01 15)',
-    border: 'oklch(0.85 0.06 15)',
-    text: 'oklch(0.25 0.18 15)',
-    icon: 'oklch(0.35 0.20 15)'
+    primary: 'oklch(0.60 0.19 25)',
+    secondary: 'oklch(0.60 0.19 25 / 0.12)',
+    background: 'oklch(0.60 0.19 25 / 0.06)',
+    border: 'oklch(0.60 0.19 25 / 0.28)',
+    text: 'oklch(0.56 0.19 25)',
+    icon: 'oklch(0.60 0.19 25)'
   },
   'Oppo': {
-    primary: 'oklch(0.65 0.08 120)', // Lighter and less saturated
-    secondary: 'oklch(0.92 0.04 120)',
-    background: 'oklch(0.98 0.01 120)',
-    border: 'oklch(0.85 0.06 120)',
-    text: 'oklch(0.25 0.18 120)',
-    icon: 'oklch(0.35 0.20 120)'
+    primary: 'oklch(0.62 0.15 165)',
+    secondary: 'oklch(0.62 0.15 165 / 0.12)',
+    background: 'oklch(0.62 0.15 165 / 0.06)',
+    border: 'oklch(0.62 0.15 165 / 0.28)',
+    text: 'oklch(0.54 0.15 165)',
+    icon: 'oklch(0.62 0.15 165)'
   }
 };
 
 // SDK version era colors
 export const SDK_ERA_COLORS: Record<string, DeviceColorScheme> = {
   'Legacy': { // SDK < 26
-    primary: 'oklch(0.60 0.05 30)', // Lighter and less saturated
-    secondary: 'oklch(0.90 0.025 30)',
-    background: 'oklch(0.98 0.005 30)',
-    border: 'oklch(0.85 0.04 30)',
-    text: 'oklch(0.30 0.12 30)',
-    icon: 'oklch(0.35 0.12 30)'
+    primary: 'oklch(0.60 0.16 25)',
+    secondary: 'oklch(0.60 0.16 25 / 0.12)',
+    background: 'oklch(0.60 0.16 25 / 0.06)',
+    border: 'oklch(0.60 0.16 25 / 0.28)',
+    text: 'oklch(0.55 0.16 25)',
+    icon: 'oklch(0.60 0.16 25)'
   },
   'Modern': { // SDK 26-30
-    primary: 'oklch(0.65 0.06 180)', // Lighter and less saturated
-    secondary: 'oklch(0.92 0.03 180)',
-    background: 'oklch(0.98 0.005 180)',
-    border: 'oklch(0.85 0.04 180)',
-    text: 'oklch(0.25 0.15 180)',
-    icon: 'oklch(0.35 0.15 180)'
+    primary: 'oklch(0.66 0.15 70)',
+    secondary: 'oklch(0.66 0.15 70 / 0.12)',
+    background: 'oklch(0.66 0.15 70 / 0.06)',
+    border: 'oklch(0.66 0.15 70 / 0.28)',
+    text: 'oklch(0.56 0.15 70)',
+    icon: 'oklch(0.66 0.15 70)'
   },
   'Recent': { // SDK 31-33
-    primary: 'oklch(0.65 0.08 140)', // Lighter and less saturated
-    secondary: 'oklch(0.92 0.04 140)',
-    background: 'oklch(0.98 0.01 140)',
-    border: 'oklch(0.85 0.06 140)',
-    text: 'oklch(0.25 0.18 140)',
-    icon: 'oklch(0.35 0.20 140)'
+    primary: 'oklch(0.60 0.16 245)',
+    secondary: 'oklch(0.60 0.16 245 / 0.12)',
+    background: 'oklch(0.60 0.16 245 / 0.06)',
+    border: 'oklch(0.60 0.16 245 / 0.28)',
+    text: 'oklch(0.55 0.16 245)',
+    icon: 'oklch(0.60 0.16 245)'
   },
   'Latest': { // SDK >= 34
-    primary: 'oklch(0.65 0.09 240)', // Lighter and less saturated
-    secondary: 'oklch(0.92 0.05 240)',
-    background: 'oklch(0.98 0.015 240)',
-    border: 'oklch(0.85 0.08 240)',
-    text: 'oklch(0.25 0.20 240)',
-    icon: 'oklch(0.35 0.22 240)'
+    primary: 'oklch(0.64 0.16 158)',
+    secondary: 'oklch(0.64 0.16 158 / 0.12)',
+    background: 'oklch(0.64 0.16 158 / 0.06)',
+    border: 'oklch(0.64 0.16 158 / 0.28)',
+    text: 'oklch(0.54 0.16 158)',
+    icon: 'oklch(0.64 0.16 158)'
   }
 };
 
@@ -240,7 +240,6 @@ export function getSdkEraColors(maxSdk: number): DeviceColorScheme {
 }
 
 export function parseRamMB(ramString: string): number {
-  // Parse RAM strings like "3742MB", "1992-4116MB"
   const match = ramString.match(/(\d+)/);
   return match ? parseInt(match[1]) : 0;
 }
@@ -261,9 +260,10 @@ export function getDeviceColors(
       return getPerformanceTierColors(parseRamMB(device.ram));
     case 'manufacturer':
       return getManufacturerColors(device.manufacturer);
-    case 'sdkEra':
+    case 'sdkEra': {
       const maxSdk = Math.max(...device.sdkVersions);
       return getSdkEraColors(maxSdk);
+    }
     case 'formFactor':
     default:
       return getFormFactorColors(device.formFactor);
