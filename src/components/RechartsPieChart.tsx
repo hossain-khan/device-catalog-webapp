@@ -14,6 +14,19 @@ interface RechartsPieChartProps {
   innerRadius?: number;
 }
 
+const DEFAULT_CHART_PALETTE = [
+  '#10b981',
+  '#3b82f6',
+  '#8b5cf6',
+  '#06b6d4',
+  '#f59e0b',
+  '#6366f1',
+  '#ec4899',
+  '#14b8a6',
+  '#f97316',
+  '#64748b',
+];
+
 export const RechartsPieChart = ({
   data,
   width = 350,
@@ -35,7 +48,7 @@ export const RechartsPieChart = ({
   const chartData: ChartDatum[] = data.map((item, index) => ({
     name: item.label,
     value: item.value,
-    color: item.color || `hsl(${(index * 137.5) % 360}, 70%, 50%)`,
+    color: item.color || DEFAULT_CHART_PALETTE[index % DEFAULT_CHART_PALETTE.length],
     percentage: total > 0 ? ((item.value / total) * 100).toFixed(1) : '0.0',
   }));
 
@@ -49,9 +62,9 @@ export const RechartsPieChart = ({
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (
-        <div className="bg-popover border rounded-lg p-3 shadow-lg">
-          <p className="font-medium">{data.name}</p>
-          <p className="text-sm text-muted-foreground">
+        <div className="bg-popover text-popover-foreground border border-border rounded-lg px-3 py-2 shadow-md">
+          <p className="text-xs font-semibold">{data.name}</p>
+          <p className="text-xs font-mono text-muted-foreground mt-0.5">
             {data.value.toLocaleString()} devices ({data.percentage}%)
           </p>
         </div>
@@ -79,6 +92,8 @@ export const RechartsPieChart = ({
             innerRadius={computedInnerRadius}
             outerRadius={outerRadius}
             paddingAngle={2}
+            stroke="var(--card)"
+            strokeWidth={2}
             dataKey="value"
             onClick={handlePieClick}
             cursor="pointer"
@@ -89,7 +104,11 @@ export const RechartsPieChart = ({
           </Pie>
           <Tooltip content={<CustomTooltip />} />
           {showLegend && (
-            <Legend verticalAlign="bottom" height={36} />
+            <Legend
+              verticalAlign="bottom"
+              height={36}
+              wrapperStyle={{ fontSize: '12px', color: 'var(--muted-foreground)' }}
+            />
           )}
         </PieChart>
       </ResponsiveContainer>

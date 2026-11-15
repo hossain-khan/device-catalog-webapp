@@ -90,69 +90,93 @@ export const DeviceDetailModal = ({ device, open, onOpenChange }: DeviceDetailMo
         </DialogDescription>
 
         {/* Device Image Preview Banner */}
-        <div className="flex justify-center items-center py-4 px-6 bg-muted/40 rounded-xl border border-border/50">
-          <DeviceImage
-            device={device}
-            className="w-40 h-40 max-h-48"
-            imgClassName="max-h-48 w-auto object-contain filter drop-shadow-md"
-            fallbackIconClassName="h-16 w-16 text-muted-foreground/60"
-            fallbackIconContainerClassName="w-40 h-40 rounded-xl bg-muted/60 flex items-center justify-center border border-border/40"
-          />
+        <div className="mb-6 rounded-xl border border-border/70 bg-muted/30 overflow-hidden">
+          <div className="flex justify-center items-center py-6 px-6">
+            <DeviceImage
+              device={device}
+              className="w-40 h-40 max-h-48"
+              imgClassName="max-h-48 w-auto object-contain filter drop-shadow-md"
+              fallbackIconClassName="h-16 w-16 text-muted-foreground/60"
+              fallbackIconContainerClassName="w-40 h-40 rounded-xl bg-muted/60 flex items-center justify-center border border-border/40"
+            />
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-border/60 border-t border-border/60 bg-card/60">
+            <div className="px-4 py-2.5 text-center">
+              <div className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Memory</div>
+              <div className="text-xs font-mono font-semibold text-foreground mt-0.5">{formatRam(device.ram)}</div>
+            </div>
+            <div className="px-4 py-2.5 text-center">
+              <div className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Latest SDK</div>
+              <div className="text-xs font-mono font-semibold text-primary mt-0.5">API {Math.max(...device.sdkVersions)}</div>
+            </div>
+            <div className="px-4 py-2.5 text-center">
+              <div className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Architecture</div>
+              <div className="text-xs font-mono font-semibold text-foreground mt-0.5">
+                {device.abis.includes('arm64-v8a') ? '64-bit ARM' : '32-bit ARM'}
+              </div>
+            </div>
+            <div className="px-4 py-2.5 text-center">
+              <div className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Codename</div>
+              <div className="text-xs font-mono font-semibold text-foreground mt-0.5 truncate" title={device.device}>
+                {device.device}
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-base">
-                <Cpu className="h-4 w-4" />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+          <Card className="shadow-sm hover:shadow-sm border-border/80 py-5 gap-4">
+            <CardHeader className="pb-2">
+              <CardTitle className="flex items-center gap-2 text-sm font-semibold">
+                <Cpu className="h-4 w-4 text-primary" />
                 Hardware Specifications
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-3.5">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm font-medium text-muted-foreground">Device Code</label>
-                  <div className="text-sm font-mono">{device.device}</div>
+                  <label className="text-xs font-medium text-muted-foreground">Device Code</label>
+                  <div className="text-sm font-mono font-medium mt-0.5">{device.device}</div>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-muted-foreground">Form Factor</label>
-                  <div className="text-sm">{device.formFactor}</div>
+                  <label className="text-xs font-medium text-muted-foreground">Form Factor</label>
+                  <div className="text-sm font-medium mt-0.5">{device.formFactor}</div>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-muted-foreground">RAM</label>
-                  <div className="text-sm font-medium">{formatRam(device.ram)}</div>
+                  <label className="text-xs font-medium text-muted-foreground">RAM</label>
+                  <div className="text-sm font-mono font-medium mt-0.5">{formatRam(device.ram)}</div>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-muted-foreground">Brand</label>
-                  <div className="text-sm">{device.brand}</div>
+                  <label className="text-xs font-medium text-muted-foreground">Brand</label>
+                  <div className="text-sm font-medium mt-0.5">{device.brand}</div>
                 </div>
               </div>
 
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">Processor</label>
-                <div className="text-sm font-medium">{device.processorName}</div>
+              <div className="pt-2 border-t border-border/50">
+                <label className="text-xs font-medium text-muted-foreground">Processor (SoC)</label>
+                <div className="text-sm font-mono font-medium mt-0.5">{device.processorName}</div>
               </div>
 
               <div>
-                <label className="text-sm font-medium text-muted-foreground">GPU</label>
-                <div className="text-sm font-medium">{device.gpu}</div>
+                <label className="text-xs font-medium text-muted-foreground">GPU</label>
+                <div className="text-sm font-mono font-medium mt-0.5">{device.gpu}</div>
               </div>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-base">
-                <Monitor className="h-4 w-4" />
+          <Card className="shadow-sm hover:shadow-sm border-border/80 py-5 gap-4">
+            <CardHeader className="pb-2">
+              <CardTitle className="flex items-center gap-2 text-sm font-semibold">
+                <Monitor className="h-4 w-4 text-primary" />
                 Display & Graphics
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-3.5">
               <div>
-                <label className="text-sm font-medium text-muted-foreground">Screen Sizes</label>
-                <div className="flex flex-wrap gap-2 mt-1">
+                <label className="text-xs font-medium text-muted-foreground">Screen Sizes</label>
+                <div className="flex flex-wrap gap-1.5 mt-1.5">
                   {device.screenSizes.map((size, index) => (
-                    <Badge key={index} variant="outline" className="text-xs">
+                    <Badge key={index} variant="outline" className="text-xs font-mono">
                       {size}
                     </Badge>
                   ))}
@@ -160,21 +184,21 @@ export const DeviceDetailModal = ({ device, open, onOpenChange }: DeviceDetailMo
               </div>
 
               <div>
-                <label className="text-sm font-medium text-muted-foreground">Screen Densities (DPI)</label>
-                <div className="flex flex-wrap gap-2 mt-1">
+                <label className="text-xs font-medium text-muted-foreground">Screen Densities (DPI)</label>
+                <div className="flex flex-wrap gap-1.5 mt-1.5">
                   {device.screenDensities.map((density, index) => (
-                    <Badge key={index} variant="outline" className="text-xs">
-                      {density}
+                    <Badge key={index} variant="outline" className="text-xs font-mono">
+                      {density} dpi
                     </Badge>
                   ))}
                 </div>
               </div>
 
               <div>
-                <label className="text-sm font-medium text-muted-foreground">OpenGL ES Versions</label>
-                <div className="flex flex-wrap gap-2 mt-1">
+                <label className="text-xs font-medium text-muted-foreground">OpenGL ES Versions</label>
+                <div className="flex flex-wrap gap-1.5 mt-1.5">
                   {device.openGlEsVersions.map((version, index) => (
-                    <Badge key={index} variant="outline" className="text-xs">
+                    <Badge key={index} variant="outline" className="text-xs font-mono">
                       {version}
                     </Badge>
                   ))}
@@ -183,19 +207,19 @@ export const DeviceDetailModal = ({ device, open, onOpenChange }: DeviceDetailMo
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-base">
-                <Desktop className="h-4 w-4" />
+          <Card className="shadow-sm hover:shadow-sm border-border/80 py-5 gap-4">
+            <CardHeader className="pb-2">
+              <CardTitle className="flex items-center gap-2 text-sm font-semibold">
+                <Desktop className="h-4 w-4 text-primary" />
                 Architecture & APIs
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-3.5">
               <div>
-                <label className="text-sm font-medium text-muted-foreground">Supported ABIs</label>
-                <div className="flex flex-wrap gap-2 mt-1">
+                <label className="text-xs font-medium text-muted-foreground">Supported ABIs</label>
+                <div className="flex flex-wrap gap-1.5 mt-1.5">
                   {device.abis.map((abi, index) => (
-                    <Badge key={index} variant="secondary" className="text-xs">
+                    <Badge key={index} variant="secondary" className="text-xs font-mono">
                       {abi}
                     </Badge>
                   ))}
@@ -203,10 +227,10 @@ export const DeviceDetailModal = ({ device, open, onOpenChange }: DeviceDetailMo
               </div>
 
               <div>
-                <label className="text-sm font-medium text-muted-foreground">SDK Versions (API Levels)</label>
-                <div className="flex flex-wrap gap-2 mt-1">
+                <label className="text-xs font-medium text-muted-foreground">SDK Versions (API Levels)</label>
+                <div className="flex flex-wrap gap-1.5 mt-1.5">
                   {device.sdkVersions.map((version, index) => (
-                    <Badge key={index} variant="secondary" className="text-xs">
+                    <Badge key={index} variant="secondary" className="text-xs font-mono">
                       API {version}
                     </Badge>
                   ))}
@@ -215,27 +239,27 @@ export const DeviceDetailModal = ({ device, open, onOpenChange }: DeviceDetailMo
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">Technical Summary</CardTitle>
+          <Card className="shadow-sm hover:shadow-sm border-border/80 py-5 gap-4">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-semibold">Technical Summary</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Architecture:</span>
-                  <span className="font-medium">
+              <div className="space-y-2.5 text-sm">
+                <div className="flex justify-between items-center py-1 border-b border-border/40">
+                  <span className="text-xs text-muted-foreground">Architecture</span>
+                  <span className="text-xs font-mono font-medium">
                     {device.abis.includes('arm64-v8a') ? '64-bit ARM' : '32-bit ARM'}
                   </span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Latest Android:</span>
-                  <span className="font-medium">
+                <div className="flex justify-between items-center py-1 border-b border-border/40">
+                  <span className="text-xs text-muted-foreground">Latest Android</span>
+                  <span className="text-xs font-mono font-medium text-primary">
                     API {Math.max(...device.sdkVersions)}
                   </span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Screen Configs:</span>
-                  <span className="font-medium">
+                <div className="flex justify-between items-center py-1">
+                  <span className="text-xs text-muted-foreground">Screen Configs</span>
+                  <span className="text-xs font-mono font-medium">
                     {device.screenSizes.length} size{device.screenSizes.length !== 1 ? 's' : ''}, {device.screenDensities.length} densit{device.screenDensities.length !== 1 ? 'ies' : 'y'}
                   </span>
                 </div>
