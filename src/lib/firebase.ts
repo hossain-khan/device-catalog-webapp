@@ -34,7 +34,9 @@ let analytics: Analytics | null = null;
 
 // Check if we're in a browser environment and not in a test environment
 const isBrowser = typeof window !== 'undefined' && typeof window.document !== 'undefined';
-const isTest = process.env.NODE_ENV === 'test' || process.env.VITEST === 'true';
+const isTest =
+  import.meta.env?.MODE === 'test' ||
+  (typeof process !== 'undefined' && (process.env?.NODE_ENV === 'test' || process.env?.VITEST === 'true'));
 
 if (isBrowser && !isTest) {
   try {

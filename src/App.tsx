@@ -6,6 +6,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { useDeviceManager } from '@/hooks/useDeviceManager';
 import { trackPageView, trackDeviceAction } from '@/lib/analytics';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
 import { DeviceStatsPanel } from '@/components/DeviceStatsPanel';
 import { DeviceFiltersPanel } from '@/components/DeviceFiltersPanel';
 import { DeviceGrid } from '@/components/DeviceGrid';
@@ -17,20 +18,24 @@ import { BackToTopButton } from '@/components/BackToTopButton';
 import { DeviceExportPanel } from '@/components/DeviceExportPanel';
 import { ExportStatsPanel } from '@/components/ExportStatsPanel';
 import { MobileBanner } from '@/components/MobileBanner';
+import { ThemeToggle } from '@/components/ThemeToggle';
 import { ComparisonProvider } from '@/contexts/ComparisonContext';
 import { AndroidDevice } from '@/types/device';
 import { ColorMode } from '@/lib/deviceColors';
 import { sanitizeDeviceData } from '@/lib/deviceValidation';
+import {
+  DeviceMobile,
+  ChartBar,
+  Database,
+  Export,
+  GithubLogo,
+} from '@phosphor-icons/react';
 import androidLogo from '@/assets/images/android.svg';
 
 function App() {
-  // Mobile detection
   const isMobile = useIsMobile();
-  
-  // Preload the full device catalog
   const { data: preloadedData } = useDataPreload();
 
-  // Centralized device management with all optimizations
   const {
     devices,
     filteredDevices,
@@ -53,19 +58,15 @@ function App() {
     setUploadedDevices
   } = useDeviceManager({ preloadedData, isMobile });
 
-  // Tab state management
   const [activeTab, setActiveTab] = useState('devices');
   const fileUploadRef = useRef<FileUploadPanelRef | null>(null);
 
-  // Modal state
   const [selectedDevice, setSelectedDevice] = useState<AndroidDevice | null>(null);
   const [detailModalOpen, setDetailModalOpen] = useState(false);
   const [comparisonModalOpen, setComparisonModalOpen] = useState(false);
 
-  // Color mode state
   const [colorMode, setColorMode] = useKV<ColorMode>('device-color-mode', 'formFactor');
 
-  // Track initial page load (only once on mount)
   useEffect(() => {
     trackPageView('App Loaded', {
       total_devices: devices.length,
@@ -74,12 +75,10 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Event handlers
   const handleDeviceClick = (device: AndroidDevice) => {
     setSelectedDevice(device);
     setDetailModalOpen(true);
-    
-    // Track device view
+
     trackDeviceAction('view_device', {
       device_name: device.name,
       manufacturer: device.manufacturer,
@@ -90,16 +89,17 @@ function App() {
 
   const handleFilterByManufacturer = (manufacturer: string) => {
     handleFiltersChange({ ...filters, manufacturer });
+    setActiveTab('devices');
   };
 
   const handleFilterByFormFactor = (formFactor: string) => {
     handleFiltersChange({ ...filters, formFactor });
+    setActiveTab('devices');
   };
 
   const handleOpenComparison = () => setComparisonModalOpen(true);
   const handleExportClick = () => setActiveTab('export');
 
-  // Optimized device loading handler
   const handleDevicesLoaded = useCallback((newDevices: AndroidDevice[]) => {
     const sanitizedDevices = sanitizeDeviceData(newDevices);
     setUploadedDevices(sanitizedDevices);
@@ -107,7 +107,6 @@ function App() {
     resetPagination(sanitizedDevices.length);
   }, [setUploadedDevices, resetToUploadedDefaults, resetPagination]);
 
-  // Optimized use latest dataset handler
   const handleUseLatestDataset = useCallback(() => {
     setActiveTab('upload');
     setTimeout(() => {
@@ -121,106 +120,158 @@ function App() {
     }, 150);
   }, []);
 
-  // Optimized clear devices handler
   const handleClearDevices = useCallback(() => {
     setUploadedDevices([]);
     resetToPreloadedDefaults();
     resetPagination(preloadedData ? preloadedData.length : 0);
   }, [setUploadedDevices, resetToPreloadedDefaults, resetPagination, preloadedData]);
 
+  const handleTabChange = (tab: string) => {
+    setActiveTab(tab);
+    trackPageView(`${tab.charAt(0).toUpperCase() + tab.slice(1)} Tab`, { tab_name: tab });
+  };
+
   return (
     <ComparisonProvider>
-      <div className="min-h-screen bg-gradient-to-br from-background via-background to-background/95 pb-20">
-        <div className="container mx-auto py-8 px-4">
-          <div className="mb-8">
-            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-primary/5 via-accent/5 to-primary/5 border border-border/50 backdrop-blur-sm mb-6">
-              <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-accent/10 opacity-50"></div>
-              <div className="relative p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <div className={`flex items-center ${isMobile ? 'gap-3' : 'gap-6'}`}>
-                    <div className="relative">
-                      <div className="absolute inset-0 bg-gradient-to-br from-green-400 to-green-600 rounded-full blur-md opacity-30 animate-pulse"></div>
-                      <img 
-                        src={androidLogo} 
-                        alt="Android Logo" 
-                        className={`relative z-10 drop-shadow-lg transition-transform duration-300 hover:scale-110 animate-float ${isMobile ? 'w-12 h-12' : 'w-16 h-16'}`}
-                      />
-                    </div>
-                    <div>
-                      <h1 className={`font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent mb-2 ${isMobile ? 'text-xl' : 'text-4xl'}`}>
-                        Android Device Catalog Browser
-                      </h1>
-                      <p className={`text-muted-foreground/80 ${isMobile ? 'text-sm' : 'text-lg'}`}>
-                        Explore and analyze Android devices from the official Device Catalog
-                      </p>
-                    </div>
+      <div className="min-h-screen bg-background text-foreground flex flex-col pb-20">
+        <Tabs value={activeTab} onValueChange={handleTabChange} className="flex-1 flex flex-col">
+          {/* Sticky Top Application Header */}
+          <header className="sticky top-0 z-40 w-full border-b border-border/80 bg-background/85 backdrop-blur-md">
+            <div className="container mx-auto px-4 h-16 flex items-center justify-between gap-4">
+              {/* Brand Identity */}
+              <div className="flex items-center gap-3 min-w-0">
+                <button
+                  type="button"
+                  onClick={() => handleTabChange('devices')}
+                  className="flex items-center gap-3 text-left group focus-visible:outline-2 focus-visible:outline-ring rounded-lg"
+                >
+                  <div className="w-9 h-9 rounded-xl bg-primary/10 border border-primary/25 flex items-center justify-center shrink-0 transition-transform group-hover:scale-105">
+                    <img
+                      src={androidLogo}
+                      alt="Android Logo"
+                      className="w-5 h-5 object-contain"
+                    />
                   </div>
-                </div>
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2">
+                      <h1 className="font-semibold text-sm sm:text-base tracking-tight text-foreground truncate">
+                        Android Device Catalog
+                      </h1>
+                      <span className="hidden md:inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-mono font-medium bg-primary/10 text-primary border border-primary/20">
+                        Play Console
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-muted-foreground hidden sm:block truncate">
+                      Hardware specifications & ecosystem telemetry
+                    </p>
+                  </div>
+                </button>
+              </div>
+
+              {/* Center Navigation Tabs (Desktop) */}
+              <div className="hidden lg:flex items-center">
+                <TabsList className="h-9 bg-muted/60 border border-border/60 p-1 rounded-lg">
+                  <TabsTrigger
+                    value="devices"
+                    className="text-xs px-3 py-1 rounded-md gap-1.5 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-xs"
+                  >
+                    <DeviceMobile className="h-3.5 w-3.5" />
+                    <span>Device Browser</span>
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="analytics"
+                    className="text-xs px-3 py-1 rounded-md gap-1.5 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-xs"
+                  >
+                    <ChartBar className="h-3.5 w-3.5" />
+                    <span>Analytics</span>
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="upload"
+                    className="text-xs px-3 py-1 rounded-md gap-1.5 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-xs"
+                  >
+                    <Database className="h-3.5 w-3.5" />
+                    <span>Data Source</span>
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="export"
+                    className="text-xs px-3 py-1 rounded-md gap-1.5 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-xs"
+                  >
+                    <Export className="h-3.5 w-3.5" />
+                    <span>Export Data</span>
+                  </TabsTrigger>
+                </TabsList>
+              </div>
+
+              {/* Right Utilities: Dataset Status Pill, GitHub, Theme Toggle */}
+              <div className="flex items-center gap-2 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => handleTabChange('upload')}
+                  title="Manage loaded device catalog dataset"
+                  className="hidden sm:inline-flex items-center gap-2 h-8 px-3 rounded-full text-xs font-medium bg-muted/60 hover:bg-muted border border-border/70 transition-colors cursor-pointer"
+                >
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                  <span className="font-mono tabular-nums font-semibold text-foreground">
+                    {devices.length.toLocaleString()}
+                  </span>
+                  <span className="text-muted-foreground">devices</span>
+                </button>
+
+                <Button
+                  variant="outline"
+                  size="icon"
+                  asChild
+                  className="h-8 w-8 rounded-lg border-border/70 bg-background/60 hover:bg-muted hover:text-foreground"
+                >
+                  <a
+                    href="https://github.com/hossain-khan/android-device-catalog-parser"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="View Android Device Catalog Parser on GitHub"
+                    title="View on GitHub"
+                  >
+                    <GithubLogo className="h-4 w-4" />
+                  </a>
+                </Button>
+
+                <ThemeToggle />
               </div>
             </div>
-          </div>
 
-          <MobileBanner />
-
-          <Tabs value={activeTab} onValueChange={(tab) => {
-            setActiveTab(tab);
-            trackPageView(`${tab.charAt(0).toUpperCase() + tab.slice(1)} Tab`, { tab_name: tab });
-          }} className="space-y-8">
-            <div className={isMobile ? 'overflow-x-auto' : ''}>
-              <TabsList className={`backdrop-blur-sm bg-card/50 border border-border/50 shadow-lg ${isMobile ? 'grid grid-cols-4 w-max min-w-full gap-1' : 'grid w-full max-w-2xl grid-cols-4'}`}>
-                <TabsTrigger 
-                  value="upload" 
-                  className={`transition-all duration-200 hover:bg-accent/50 data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary/20 data-[state=active]:to-accent/20 data-[state=active]:shadow-sm ${isMobile ? 'text-xs px-3 py-2 whitespace-nowrap' : ''}`}
-                >
-                  {isMobile ? 'Upload' : 'Upload Data'}
+            {/* Mobile / Tablet Navigation Bar */}
+            <div className="lg:hidden border-t border-border/60 bg-muted/30 px-4 py-1.5 overflow-x-auto">
+              <TabsList className="grid grid-cols-4 w-full min-w-[320px] h-8 bg-muted/60 p-0.5 rounded-lg">
+                <TabsTrigger value="devices" className="text-xs py-1 rounded-md gap-1">
+                  <DeviceMobile className="h-3.5 w-3.5" />
+                  <span>Browser</span>
                 </TabsTrigger>
-                <TabsTrigger 
-                  value="devices" 
-                  className={`transition-all duration-200 hover:bg-accent/50 data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary/20 data-[state=active]:to-accent/20 data-[state=active]:shadow-sm ${isMobile ? 'text-xs px-3 py-2 whitespace-nowrap' : ''}`}
-                >
-                  {isMobile ? 'Browser' : 'Device Browser'}
+                <TabsTrigger value="analytics" className="text-xs py-1 rounded-md gap-1">
+                  <ChartBar className="h-3.5 w-3.5" />
+                  <span>Analytics</span>
                 </TabsTrigger>
-                <TabsTrigger 
-                  value="analytics" 
-                  className={`transition-all duration-200 hover:bg-accent/50 data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary/20 data-[state=active]:to-accent/20 data-[state=active]:shadow-sm ${isMobile ? 'text-xs px-3 py-2 whitespace-nowrap' : ''}`}
-                >
-                  Analytics
+                <TabsTrigger value="upload" className="text-xs py-1 rounded-md gap-1">
+                  <Database className="h-3.5 w-3.5" />
+                  <span>Data</span>
                 </TabsTrigger>
-                <TabsTrigger 
-                  value="export" 
-                  className={`transition-all duration-200 hover:bg-accent/50 data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary/20 data-[state=active]:to-accent/20 data-[state=active]:shadow-sm ${isMobile ? 'text-xs px-3 py-2 whitespace-nowrap' : ''}`}
-                >
-                  {isMobile ? 'Export' : 'Export Data'}
+                <TabsTrigger value="export" className="text-xs py-1 rounded-md gap-1">
+                  <Export className="h-3.5 w-3.5" />
+                  <span>Export</span>
                 </TabsTrigger>
               </TabsList>
             </div>
+          </header>
 
-            <TabsContent value="upload" className="space-y-6">
-              <motion.div
-                key="upload-content"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3, ease: "easeInOut" }}
-              >
-                <FileUploadPanel
-                  ref={fileUploadRef}
-                  onDevicesLoaded={handleDevicesLoaded}
-                  onClearDevices={handleClearDevices}
-                  deviceCount={devices.length}
-                  currentDevices={devices}
-                  onActivateUrlTab={handleUseLatestDataset}
-                />
-              </motion.div>
-            </TabsContent>
+          {/* Main Workspace Container */}
+          <main className="container mx-auto px-4 py-6 flex-1 space-y-6">
+            <MobileBanner />
 
-            <TabsContent value="devices" className="space-y-6">
+            <TabsContent value="devices" className="space-y-5 mt-0">
               <motion.div
                 key="devices-content"
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3, ease: "easeInOut" }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
+                className="space-y-5"
               >
                 <DeviceFiltersPanel
                   filters={filters}
@@ -251,13 +302,12 @@ function App() {
               </motion.div>
             </TabsContent>
 
-            <TabsContent value="analytics" className="space-y-6">
+            <TabsContent value="analytics" className="space-y-6 mt-0">
               <motion.div
                 key="analytics-content"
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3, ease: "easeInOut" }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
               >
                 <DeviceStatsPanel
                   stats={allStats}
@@ -268,15 +318,32 @@ function App() {
               </motion.div>
             </TabsContent>
 
-            <TabsContent value="export" className="space-y-6">
+            <TabsContent value="upload" className="space-y-6 mt-0">
+              <motion.div
+                key="upload-content"
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
+              >
+                <FileUploadPanel
+                  ref={fileUploadRef}
+                  onDevicesLoaded={handleDevicesLoaded}
+                  onClearDevices={handleClearDevices}
+                  deviceCount={devices.length}
+                  currentDevices={devices}
+                  onActivateUrlTab={handleUseLatestDataset}
+                />
+              </motion.div>
+            </TabsContent>
+
+            <TabsContent value="export" className="space-y-6 mt-0">
               <motion.div
                 key="export-content"
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3, ease: "easeInOut" }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
               >
-                <div className="grid gap-6 lg:grid-cols-2">
+                <div className="grid gap-6 lg:grid-cols-2 items-start">
                   <DeviceExportPanel
                     devices={devices}
                     filteredDevices={filteredDevices}
@@ -294,19 +361,19 @@ function App() {
                 </div>
               </motion.div>
             </TabsContent>
-          </Tabs>
+          </main>
+        </Tabs>
 
-          <DeviceDetailModal
-            device={selectedDevice}
-            open={detailModalOpen}
-            onOpenChange={setDetailModalOpen}
-          />
+        <DeviceDetailModal
+          device={selectedDevice}
+          open={detailModalOpen}
+          onOpenChange={setDetailModalOpen}
+        />
 
-          <DeviceComparisonModal
-            open={comparisonModalOpen}
-            onOpenChange={setComparisonModalOpen}
-          />
-        </div>
+        <DeviceComparisonModal
+          open={comparisonModalOpen}
+          onOpenChange={setComparisonModalOpen}
+        />
 
         <ComparisonBar onOpenComparison={handleOpenComparison} />
         <BackToTopButton />

@@ -8,15 +8,14 @@ export const BackToTopButton = () => {
 
   useEffect(() => {
     const toggleVisibility = () => {
-      if (window.pageYOffset > 300) {
+      if (window.scrollY > 400) {
         setIsVisible(true);
       } else {
         setIsVisible(false);
       }
     };
 
-    window.addEventListener('scroll', toggleVisibility);
-
+    window.addEventListener('scroll', toggleVisibility, { passive: true });
     return () => window.removeEventListener('scroll', toggleVisibility);
   }, []);
 
@@ -27,8 +26,9 @@ export const BackToTopButton = () => {
   return (
     <Button
       onClick={scrollToTop}
-      size="sm"
-      className="fixed bottom-6 right-6 z-50 h-12 w-12 rounded-full shadow-lg"
+      variant="outline"
+      size="icon"
+      className="fixed bottom-6 right-6 z-40 h-10 w-10 rounded-xl bg-card/90 backdrop-blur-md border-border/80 shadow-lg hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all"
       aria-label="Back to top"
     >
       <ArrowUp size={16} />
