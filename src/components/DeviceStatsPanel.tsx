@@ -228,6 +228,19 @@ export const DeviceStatsPanel = ({ stats, devices, onFilterByManufacturer, onFil
     ? ((stats.highResolutionSupportCount / stats.totalDevices) * 100)
     : 0;
 
+  const chartPalette = [
+    '#10b981', // Emerald
+    '#3b82f6', // Blue
+    '#8b5cf6', // Violet
+    '#06b6d4', // Cyan
+    '#f59e0b', // Amber
+    '#6366f1', // Indigo
+    '#ec4899', // Pink
+    '#14b8a6', // Teal
+    '#f97316', // Orange
+    '#64748b', // Slate
+  ];
+
   const processorChartData = useMemo(() => {
     return Object.entries(stats.processorManufacturerCounts || {})
       .sort(([,a], [,b]) => b - a)
@@ -235,7 +248,7 @@ export const DeviceStatsPanel = ({ stats, devices, onFilterByManufacturer, onFil
       .map(([processor, count], index) => ({
         label: processor.length > 20 ? `${processor.substring(0, 20)}...` : processor,
         value: count,
-        color: `hsl(${(index * 137.5) % 360}, 65%, 50%)`
+        color: chartPalette[index % chartPalette.length]
       }));
   }, [stats.processorManufacturerCounts]);
 
@@ -245,7 +258,7 @@ export const DeviceStatsPanel = ({ stats, devices, onFilterByManufacturer, onFil
       .map(([gpu, count], index) => ({
         label: gpu,
         value: count,
-        color: `hsl(${(index * 95) % 360}, 70%, 55%)`
+        color: chartPalette[index % chartPalette.length]
       }));
   }, [stats.gpuManufacturerCounts]);
 
@@ -255,7 +268,7 @@ export const DeviceStatsPanel = ({ stats, devices, onFilterByManufacturer, onFil
       .map(([arch, count], index) => ({
         label: arch,
         value: count,
-        color: `hsl(${(index * 120) % 360}, 60%, 50%)`
+        color: chartPalette[index % chartPalette.length]
       }));
   }, [stats.architectureCounts]);
 
@@ -289,7 +302,7 @@ export const DeviceStatsPanel = ({ stats, devices, onFilterByManufacturer, onFil
       .map(([resolution, count], index) => ({
         label: resolution,
         value: count,
-        color: `hsl(${(index * 85) % 360}, 65%, 55%)`
+        color: chartPalette[index % chartPalette.length]
       }));
   }, [stats.screenResolutionCounts]);
 

@@ -84,18 +84,34 @@ export const ManufacturersDialog = ({
                   bottom: 60,
                 }}
               >
-                <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
                 <XAxis 
                   dataKey="displayName" 
+                  stroke="var(--border)"
+                  tick={{ fill: 'var(--muted-foreground)', fontSize: 11 }}
+                  tickLine={{ stroke: 'var(--border)' }}
+                  axisLine={{ stroke: 'var(--border)' }}
                   angle={-45}
                   textAnchor="end"
                   height={60}
                   interval={0}
-                  fontSize={12}
                 />
-                <YAxis />
+                <YAxis
+                  stroke="var(--border)"
+                  tick={{ fill: 'var(--muted-foreground)', fontSize: 11 }}
+                  tickLine={{ stroke: 'var(--border)' }}
+                  axisLine={{ stroke: 'var(--border)' }}
+                />
                 <Tooltip 
-                  formatter={(value, name, props) => [
+                  cursor={{ fill: 'var(--muted)', opacity: 0.35 }}
+                  contentStyle={{
+                    backgroundColor: 'var(--popover)',
+                    borderColor: 'var(--border)',
+                    color: 'var(--popover-foreground)',
+                    borderRadius: '0.5rem',
+                    fontSize: '0.75rem',
+                  }}
+                  formatter={(value, _name, props) => [
                     `${value} devices`,
                     props.payload.manufacturer
                   ]}
@@ -106,6 +122,7 @@ export const ManufacturersDialog = ({
                 <Bar 
                   dataKey="count" 
                   fill="var(--primary)"
+                  radius={[4, 4, 0, 0]}
                   cursor="pointer"
                   onClick={(data) => handleManufacturerClick(data.manufacturer)}
                 />

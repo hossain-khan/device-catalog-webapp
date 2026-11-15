@@ -97,18 +97,26 @@ export const SdkVersionsDialog = ({ open, onOpenChange, stats }: SdkVersionsDial
                         bottom: 20,
                       }}
                     >
-                      <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
+                      <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
                       <XAxis 
                         dataKey="sdk" 
-                        fontSize={12}
+                        stroke="var(--border)"
+                        tick={{ fill: 'var(--muted-foreground)', fontSize: 11 }}
+                        tickLine={{ stroke: 'var(--border)' }}
+                        axisLine={{ stroke: 'var(--border)' }}
                         angle={-45}
                         textAnchor="end"
                         height={60}
                         interval={0}
                       />
-                      <YAxis fontSize={12} />
-                      <Tooltip content={<CustomTooltip />} />
-                      <Bar dataKey="count" fill="var(--chart-2)" />
+                      <YAxis
+                        stroke="var(--border)"
+                        tick={{ fill: 'var(--muted-foreground)', fontSize: 11 }}
+                        tickLine={{ stroke: 'var(--border)' }}
+                        axisLine={{ stroke: 'var(--border)' }}
+                      />
+                      <Tooltip content={<CustomTooltip />} cursor={{ fill: 'var(--muted)', opacity: 0.35 }} />
+                      <Bar dataKey="count" fill="var(--chart-2)" radius={[4, 4, 0, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>

@@ -19,6 +19,19 @@ interface TooltipPayload {
   };
 }
 
+const DEFAULT_CHART_PALETTE = [
+  '#10b981',
+  '#3b82f6',
+  '#8b5cf6',
+  '#06b6d4',
+  '#f59e0b',
+  '#6366f1',
+  '#ec4899',
+  '#14b8a6',
+  '#f97316',
+  '#64748b',
+];
+
 export const RechartsBarChart = ({
   data,
   height = 300,
@@ -26,19 +39,19 @@ export const RechartsBarChart = ({
   className = ""
 }: RechartsBarChartProps) => {
   // Transform data for Recharts
-  const chartData = data.map(item => ({
+  const chartData = data.map((item, index) => ({
     name: item.label,
     value: item.value,
-    color: item.color || '#3b82f6'
+    color: item.color || DEFAULT_CHART_PALETTE[index % DEFAULT_CHART_PALETTE.length]
   }));
 
   const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: TooltipPayload[] }) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (
-        <div className="bg-popover border rounded-lg p-3 shadow-lg">
-          <p className="font-medium">{data.name}</p>
-          <p className="text-sm text-muted-foreground">
+        <div className="bg-popover text-popover-foreground border border-border rounded-lg px-3 py-2 shadow-md">
+          <p className="text-xs font-semibold">{data.name}</p>
+          <p className="text-xs font-mono text-muted-foreground mt-0.5">
             {data.value.toLocaleString()} devices
           </p>
         </div>
@@ -58,25 +71,32 @@ export const RechartsBarChart = ({
       <ResponsiveContainer width="100%" height={height}>
         <BarChart
           data={chartData}
-          margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
+          margin={{ top: 12, right: 12, left: 4, bottom: 48 }}
           onClick={handleBarClick}
         >
-          <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+          <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
           <XAxis 
             dataKey="name" 
-            stroke="hsl(var(--muted-foreground))"
-            fontSize={12}
-            angle={-45}
+            stroke="var(--border)"
+            tick={{ fill: 'var(--muted-foreground)', fontSize: 11 }}
+            tickLine={{ stroke: 'var(--border)' }}
+            axisLine={{ stroke: 'var(--border)' }}
+            angle={-40}
             textAnchor="end"
-            height={80}
+            height={64}
+            interval={0}
           />
-          <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} />
-          <Tooltip content={<CustomTooltip />} />
+          <YAxis
+            stroke="var(--border)"
+            tick={{ fill: 'var(--muted-foreground)', fontSize: 11 }}
+            tickLine={{ stroke: 'var(--border)' }}
+            axisLine={{ stroke: 'var(--border)' }}
+            width={46}
+          />
+          <Tooltip content={<CustomTooltip />} cursor={{ fill: 'var(--muted)', opacity: 0.35 }} />
           <Bar 
             dataKey="value" 
-            fill="#3b82f6"
-            stroke="hsl(var(--border))"
-            strokeWidth={1}
+            fill="#10b981"
             radius={[4, 4, 0, 0]}
             cursor="pointer"
           >
