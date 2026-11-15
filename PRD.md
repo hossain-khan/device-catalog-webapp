@@ -46,30 +46,19 @@ The app manages device data, filters, search state, and statistics calculations 
 - **Missing data fields**: Display "Not specified" for undefined device properties
 - **Network issues**: Cache device data locally for offline browsing capability
 
-## Design Direction
-The design should feel like a professional developer tool - clean, data-dense, and efficient rather than consumer-friendly, emphasizing quick access to technical information over visual appeal.
+## Design Direction & Specification
+The application follows a **modern developer & telemetry console** aesthetic (see [`DESIGN_SYSTEM.md`](./DESIGN_SYSTEM.md) for the complete Design Specification & UI/UX Guidelines).
 
 ## Color Selection
-Complementary (blue/orange contrast) - Using cool blues for the interface foundation to convey technical professionalism, with warm orange accents to highlight key actions and statistics.
+Adaptive dual-theme architecture (**Dark Mode** & **Light Mode**) built on a cool **Slate/Zinc** foundation with **Android Emerald** (`--primary`) and **Technical Blue/Violet** semantic accents in the `oklch()` color space:
 
-- **Primary Color**: Deep Blue `oklch(0.45 0.15 250)` - Conveys technical authority and trust
-- **Secondary Colors**: Light Blue `oklch(0.92 0.05 250)` for backgrounds, maintaining the technical theme
-- **Accent Color**: Vibrant Orange `oklch(0.70 0.15 45)` - Draws attention to interactive elements and key metrics
-- **Foreground/Background Pairings**: 
-  - Background (Light Blue): Dark Blue text `oklch(0.25 0.12 250)` - Ratio 5.2:1 ✓
-  - Card (White): Dark Blue text `oklch(0.25 0.12 250)` - Ratio 6.8:1 ✓
-  - Primary (Deep Blue): White text `oklch(0.98 0 0)` - Ratio 8.1:1 ✓
-  - Accent (Orange): White text `oklch(0.98 0 0)` - Ratio 4.9:1 ✓
+- **Light Mode**: Crisp alabaster slate background `oklch(0.985 0.003 250)`, pure white elevated cards `oklch(1 0 0)`, deep Android emerald primary `oklch(0.50 0.145 162)`
+- **Dark Mode**: Deep obsidian slate background `oklch(0.14 0.012 255)`, carbon slate elevated cards `oklch(0.185 0.014 255)`, vibrant Android emerald primary `oklch(0.72 0.155 160)`
+- **Semantic Category Accents**: Applied strictly to `4px` top card accent bars, status dots, translucent badges, and distribution bars—never as full-card pastel background fills.
 
 ## Font Selection
-Use Inter for its excellent readability in data-heavy interfaces and technical documentation, conveying precision and modernity appropriate for developer tools.
-
-- **Typographic Hierarchy**:
-  - H1 (App Title): Inter Bold/32px/tight letter spacing
-  - H2 (Section Headers): Inter SemiBold/24px/normal spacing  
-  - H3 (Device Names): Inter Medium/18px/normal spacing
-  - Body (Specifications): Inter Regular/14px/relaxed line height
-  - Caption (Metadata): Inter Regular/12px/tight line height
+- **Primary Sans (`--font-sans`)**: `Inter` (`400`, `500`, `600`, `700`) with OpenType features (`cv02`, `cv03`, `cv04`, `cv11`) and `tabular-nums` for aligned numerical telemetry.
+- **Technical Monospace (`--font-mono`)**: `JetBrains Mono` / `Fira Code` for device codenames, ABI tags, DPI metrics, and JSON schemas.
 
 ## Animations
 Subtle and functional animations that enhance data exploration without distracting from technical content - focus on smooth transitions during filtering and search operations.
