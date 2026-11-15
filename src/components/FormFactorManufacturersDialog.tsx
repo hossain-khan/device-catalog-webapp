@@ -151,19 +151,28 @@ export const FormFactorManufacturersDialog = ({
                 bottom: 60,
               }}
             >
-              <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
               <XAxis
                 dataKey="displayName"
+                stroke="var(--border)"
+                tick={{ fill: 'var(--muted-foreground)', fontSize: 11 }}
+                tickLine={{ stroke: 'var(--border)' }}
+                axisLine={{ stroke: 'var(--border)' }}
                 angle={-45}
                 textAnchor="end"
                 height={60}
                 interval={0}
-                fontSize={12}
               />
-              <YAxis />
-              <Tooltip content={<CustomTooltip />} />
+              <YAxis
+                stroke="var(--border)"
+                tick={{ fill: 'var(--muted-foreground)', fontSize: 11 }}
+                tickLine={{ stroke: 'var(--border)' }}
+                axisLine={{ stroke: 'var(--border)' }}
+              />
+              <Tooltip content={<CustomTooltip />} cursor={{ fill: 'var(--muted)', opacity: 0.35 }} />
               <Bar
                 dataKey="count"
+                radius={[4, 4, 0, 0]}
                 cursor="pointer"
                 onClick={(_, index) => {
                   const item = manufacturerData[index as number];

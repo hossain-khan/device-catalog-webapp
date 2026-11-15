@@ -94,13 +94,25 @@ export const RamDistributionDialog = ({
                   bottom: 20,
                 }}
               >
-                <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
-                <XAxis dataKey="range" />
-                <YAxis />
-                <Tooltip content={<CustomTooltip />} />
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+                <XAxis
+                  dataKey="range"
+                  stroke="var(--border)"
+                  tick={{ fill: 'var(--muted-foreground)', fontSize: 11 }}
+                  tickLine={{ stroke: 'var(--border)' }}
+                  axisLine={{ stroke: 'var(--border)' }}
+                />
+                <YAxis
+                  stroke="var(--border)"
+                  tick={{ fill: 'var(--muted-foreground)', fontSize: 11 }}
+                  tickLine={{ stroke: 'var(--border)' }}
+                  axisLine={{ stroke: 'var(--border)' }}
+                />
+                <Tooltip content={<CustomTooltip />} cursor={{ fill: 'var(--muted)', opacity: 0.35 }} />
                 <Bar 
                   dataKey="count" 
                   fill="var(--chart-3)"
+                  radius={[4, 4, 0, 0]}
                 />
               </BarChart>
             </ResponsiveContainer>
