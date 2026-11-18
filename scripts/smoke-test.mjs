@@ -29,19 +29,19 @@ async function run() {
   });
 
   let browser;
+  const pageErrors = [];
   try {
     await waitForServer(PREVIEW_URL);
 
     browser = await chromium.launch();
     const page = await browser.newPage();
 
-    const pageErrors = [];
     page.on('pageerror', (err) => {
       pageErrors.push(err);
     });
 
     await page.goto(PREVIEW_URL, { waitUntil: 'domcontentloaded' });
-    await page.waitForSelector('#root > *', { timeout: 10000 });
+    await page.waitForSelector('#root > :not(script)', { timeout: 10000 });
     // Allow initial effects to settle
     await page.waitForTimeout(1000);
 
@@ -52,6 +52,10 @@ async function run() {
 
     console.log('✅ Production bundle smoke test passed (app mounted with 0 uncaught page errors).');
   } catch (err) {
+    if (pageErrors.length > 0) {
+      const messages = pageErrors.map((e) => e.stack || e.message).join('\n---\n');
+      console.error('Uncaught page errors:\n', messages);
+    }
     if (previewStderr) {
       console.error('vite preview stderr:\n', previewStderr);
     }
