@@ -19,8 +19,8 @@ async function waitForServer(url, timeoutMs = 15000) {
 }
 
 async function run() {
-  const preview = spawn('npx', ['vite', 'preview', '--port', String(PREVIEW_PORT), '--strictPort'], {
-    stdio: ['ignore', 'pipe', 'pipe'],
+  const preview = spawn('node', ['./node_modules/vite/bin/vite.js', 'preview', '--port', String(PREVIEW_PORT), '--strictPort'], {
+    stdio: ['ignore', 'ignore', 'pipe'],
   });
 
   let previewStderr = '';
@@ -64,11 +64,13 @@ async function run() {
     if (browser) {
       await browser.close();
     }
-    preview.kill('SIGTERM');
+    preview.kill('SIGKILL');
   }
 }
 
-run().catch((err) => {
-  console.error('❌ Smoke test failed:', err);
-  process.exit(1);
-});
+run()
+  .then(() => process.exit(0))
+  .catch((err) => {
+    console.error('❌ Smoke test failed:', err);
+    process.exit(1);
+  });
